@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}OBY{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/jquery.lazyload.min.js' %}" type="text/javascript"></script>
+    <script>
+        $(document).ready(function(){
+            $("img.lazy").lazyload({threshold: 150});
+        });
+    </script>
+    <script src="{% static 'js/typeahead.bundle.min.js' %}" type="text/javascript"></script>
+{% endblock %}
+{% block photo_adjustment %}
+    <script src="{% static 'js/photo-auto-adjustment.min.js' %}" type="text/javascript" async></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="search-container">
+        <form role="search" action="/search/">
+            <div class="custom-search-input">
+                <div id="remote" class="input-group col-md-12 twitter-typeahead">
+                    <input type="text" class="form-control input-lg typeahead tt-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-lg" type="submit">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="category-items">
+        {% for item in categories %}
+            <div class="category-item" style="border: 3px solid {{ item.border_color }}; text-shadow: 0 1px 1px {{ item.border_color }};" onclick="window.location='{{ item.get_absolute_url }}'">
+                <h4>{{ item }}</h4>
+            </div>
+        {% endfor %}
+    </div>
+    <div class='col-sm-12'>
+        <h1 class="trending-banner">Trending</h1>
+    </div>
+    {% include "photos/photo_information_base.html" %}
+{% endblock %}
+
+<script>
+    {% block jquery %}
+        {% include "photos/like_button_base.min.js" %}
+        var usersDisplay = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: 6,
+            remote: {
+                url: "{% url 'search_ajax' %}",
+                replace: function(url, query) {
+                    return url + "?q=" + query;
+                }
+            }
+        });
+        $('#remote .typeahead').typeahead({
+            minLength: 1,
+            highlight: true},
+            {name: 'users-display',
+            display: 'username',
+            source: usersDisplay,
+        });
+    {% endblock %}
+</script>
+
+
+{% block get_notifications %}
+    <script type="text/javascript" async>
+        $(window).load(function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'get_notifications_ajax' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(data){
+                    var count = data.count
+                    if (count == 0) {
+                    } else {
+                        $(".notification-count").css({"color": "#34ce93"})
+                        $(".notification-count").html("Notifications (" + data.count + ")")
+                    }
+                },
+                error: function(rs, e) {
+                }
+            })
+        });
+    </script>
+{% endblock %}

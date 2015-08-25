@@ -1,0 +1,62 @@
+{% extends "visitor_base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}OBY{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/jquery-color.min.js' %}" type="text/javascript" defer></script>
+    <script src="{% static 'js/bg-change.min.js' %}" type="text/javascript" defer></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="visitor-container">
+        <div class="col-md-12">
+            <img src="{% static 'img/oby_transparent.png' %}" style="margin-bottom: 21px;" />
+        </div>
+
+        <div class="col-md-12 slide">
+            <h1>CREATE. SHARE. THRIVE.</h1>
+            <div class="col-sm-2 col-sm-offset-4">
+                <h3><a href="{% url 'login' %}" class="submit-btn signin-btn">Sign in</a></h3>
+            </div>
+            <div class="col-sm-2">
+                <h3><a href="{% url 'register' %}" class="submit-btn special-btn">Sign up</a></h3>
+            </div>
+        </div>
+
+        <div class="col-md-12 hook-container slide">
+            <div class="col-sm-4 col-sm-offset-2 hook img-responsive">
+                <img src="{% static 'img/noticed.png' %}" />
+                <h4>Get noticed quickly!</h4>
+            </div>
+            <div class="col-sm-4 hook img-responsive">
+                <img src="{% static 'img/discover.png' %}" />
+                <h4>Discover new ideas!</h4>
+            </div>
+            <div class="col-sm-4 hook img-responsive">
+                <img src="{% static 'img/benefits.png' %}" />
+                <h4>The earlier you start,<br/>the greater the benefits!</h4>
+            </div>
+            <div class="col-sm-4 hook img-responsive">
+                <img src="{% static 'img/good.png' %}" />
+                <h4>See how great people can be!</h4>
+            </div>
+            <div class="col-sm-4 hook img-responsive">
+                <img src="{% static 'img/events.png' %}" />
+                <h4>Live events from everywhere<br/>in the world!</h4>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 visitor-footer">
+            <a href="{% url 'about' %}" class="visitor-footer-item">About</a>
+            <a href="mailto:team@obystudio.com" class="visitor-footer-item">team@obystudio.com</a>
+            <a href="{% url 'privacy_policy' %}" class="visitor-footer-item">Privacy</a>
+            <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>
+            <a href="{% url 'login' %}" class="visitor-footer-item">Sign in</a>
+            <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
+        </div>
+    </div>
+{% endblock %}

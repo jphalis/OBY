@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block title %}OBY / #{{ tag }}{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("img.lazy").lazyload({threshold: 150});
+        });
+    </script>
+{% endblock %}
+{% block photo_adjustment %}
+    <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="hashtag-header">
+        <h1>#{{ tag }}</h1>
+    </div>
+    {% include "photos/photo_information_base.html" %}
+{% endblock %}
+
+
+<script>
+    {% block jquery %}
+        {% include "photos/like_button_base.min.js" %}
+    {% endblock %}
+</script>

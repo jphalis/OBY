@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %}OBY / {{ obj.title }}{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("img.lazy").lazyload({threshold: 150});
+        });
+    </script>
+{% endblock %}
+{% block photo_adjustment %}
+    <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class='col-sm-12'>
+        <h1 class="trending-banner">{{ obj.title }}</h1>
+    </div>
+    {% if photos %}
+        {% include "photos/photo_information_base.html" %}
+    {% else %}
+        <h3 style='text-align: center;'>There are no pictures yet. Be the first!</h3>
+    {% endif %}
+{% endblock %}
+
+<script>
+    {% block jquery %}
+        {% include "photos/like_button_base.min.js" %}
+    {% endblock %}
+</script>

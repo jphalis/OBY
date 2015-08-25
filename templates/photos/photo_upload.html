@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}OBY / Upload{% endblock %}
+
+
+{% block content %}
+    <div class="col-sm-6 col-sm-offset-3 general-container">
+        <p style="text-align: center;" class="lead">Please upload your photo here.</p>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="submit-btn go-btn" type="submit" value="Upload" />
+        </form>
+    </div>
+{% endblock %}
+
+
+<script>
+    {% block jquery %}
+        window.URL = window.URL || window.webkitURL;
+        $("form").submit(function(e) {
+            var form = this;
+            e.preventDefault();
+            var fileInput = $(this).find("input[type=file]")[0],
+                file = fileInput.files && fileInput.files[0];
+            if (file) {
+                var img = new Image();
+                img.src = window.URL.createObjectURL(file);
+                img.onload = function() {
+                    var width = img.naturalWidth,
+                        height = img.naturalHeight;
+                    window.URL.revokeObjectURL( img.src );
+                    if (width < 80 || height < 80) {
+                        alert('Please choose an image that is at least 80 x 80 pixels.');
+                    }
+                    else if (file.size > 5242880) {
+                        alert('Image size may not exceed 5MB.');
+                    } else {
+                        form.submit();
+                    }
+                };
+            } else {
+                form.submit();
+            }
+        });
+    {% endblock %}
+</script>

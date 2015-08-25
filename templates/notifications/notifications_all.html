@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+
+{% block title %}OBY / Notifications{% endblock %}
+
+
+{% block content %}
+    <div class='col-sm-6 col-sm-offset-3 general-container'>
+        {% if notifications %}
+            <table class='table'>
+                {% for note in notifications %}
+                    <tr>
+                        <td>{{ note|safe }}</td>
+                        {% if note.target_object %}
+                            <td><a href="{{ note.get_photo_url }}"><img src="{{ note.target_object.get_photo_url }}" class="img-rounded" style="width: 28px; height: 28px;" /></a>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h1 class="notification-title">No new notifications</h1> 
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block get_notifications %}
+    <script type="text/javascript" async>
+        $(window).load(function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'get_notifications_ajax' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(data){
+                    var count = data.count
+                    if (count == 0) {
+                    } else {
+                        $(".notification-count").css({"color": "#34ce93"})
+                        $(".notification-count").html("Notifications (" + data.count + ")")
+                    }
+                },
+                error: function(rs, e) {
+                }
+            })
+        });
+    </script>
+{% endblock %}

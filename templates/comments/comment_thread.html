@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}OBY / Comment Thread{% endblock %}
+
+
+{% block content %}
+    <div class="col-sm-8 col-sm-offset-2">
+        <h2 class="comment-title">Comments</h2>
+        <a href="{% url 'home' %}">Home</a>
+        <table class='table'>
+            <tr>
+                <td class="thread-parent-comment">
+                    <p class="post-date">{{ comment.timestamp|timesince }}</p>
+                    <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: <span class="find-hashtag">{{ comment.get_comment }}</span>
+                </td>
+            </tr>
+            {% if not comment.is_child %}
+                {% for child in comment.get_children %}
+                    <tr>
+                        <td>
+                            <a href="{{ child.user.get_profile_view }}">{{ child.user }}:</a> <span class="find-hashtag">{{ child.get_comment }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        <form method="POST" action='{% url "comment_create" %}'>
+            {% csrf_token %}
+            <input type='hidden' name='parent_id' value='{{ comment.id }}' />
+            {% crispy form form.helper %}
+        </form>
+    </div>
+
+{% endblock %}

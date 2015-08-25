@@ -1,0 +1,67 @@
+<div class="photo-items">
+    {% for photo in photos %}
+        <!-- PHOTO -->
+        <div class="photo-item">
+            {% if request.user == photo.creator %}
+                <button type="button" class="close">
+                    <span aria-hidden="true">
+                        <a href="{{ photo.get_delete_url }}">&times;</a>
+                    </span>
+                </button>
+            {% endif %}
+            <!-- <p class="post-date">{{ photo.timestamp|timesince }}</p> -->
+            <h5><a href="{{ photo.creator.get_profile_view }}">{{ photo.creator.username|truncatechars:21 }}</a></h5>
+            <p>{{ photo.hashtag_enabled_description|safe }}</p>
+            <div class="img-container">
+                <img src="{{ photo.get_photo_url }}" class="lazy img-responsive" />
+            </div>
+            <div class="photo-item-interactions">
+                <div class="photo-item-interaction">
+                    <label class="like_count" data-toggle="modal" data-target=".like-modal-{{ photo.pk }}">
+                        {% if photo.likers %}{{ photo.likers.count }}{% else %}0{% endif %} likes
+                    </label>
+                    <label onclick="window.location='{{ photo.get_comments_all }}'">
+                        {% if photo.comment_set %}{{ photo.comment_set.count }}{% else %}0{% endif %} comments
+                    </label>
+                </div>
+            </div>
+            <div class="photo-item-interactions">
+                <div class="photo-item-interaction">
+                    <input class="like_btn{% if request.user.username in photo.get_likers_usernames %} liked{% endif %}"
+                        data-photo="{{ photo.pk }}"
+                        value="{% if request.user.username in photo.get_likers_usernames %}Liked{% else %}Like{% endif %}"
+                        type="button" />
+                    <input type="button" value="Comment" onclick="window.location='{{ photo.get_comments_all }}'" style="margin-left: 15px;" />
+                </div>
+            </div>
+        </div>
+        <!-- MODAL -->
+        <div class="modal fade like-modal-{{ photo.pk }}" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Likes</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% if photo.likers.count > 0 %}
+                            {% for liker in photo.likers.all %}
+                                <ul>
+                                    <a href="{{ liker.get_profile_view }}">
+                                        <img src="{{ liker.default_profile_picture }}" class="img-rounded" />
+                                        <strong>@{{ liker }}</strong>
+                                    </a>
+                                </ul>
+                                <hr/>
+                            {% endfor %}
+                        {% else %}
+                            <h5>No one has liked this photo yet.</h5>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

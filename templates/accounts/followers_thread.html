@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}OBY / Followers{% endblock %}
+
+
+{% block content %}
+    <div class="support-container">
+        {% if followers_set %}
+            {% for follow in followers_set %}
+                {% for followers in follow.followers.all %}
+                    <a href="{{ followers.user.get_profile_view }}">
+                        <ul>
+                            <img src="{{ followers.user.default_profile_picture }}" />
+                            <strong>{{ followers.user.get_full_name }}</strong> 
+                            <small>{{ followers }}</small>
+                        </ul>
+                    </a>
+                    <hr/>
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h5>No one is following this user yet.</h5>
+        {% endif %}
+    </div>
+{% endblock %}
