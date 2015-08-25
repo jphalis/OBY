@@ -19,7 +19,7 @@ class MyUserAdmin(UserAdmin):
         (None,
             {'fields': ('username', 'email', 'password',)}),
         ('Additional information',
-            {'fields': ('full_name', 'gender', 'bio', 'website',
+            {'fields': ('full_name', 'edu_email', 'gender', 'bio', 'website',
                         'profile_picture',)}),
         ('Permissions',
             {'fields': ('is_active', 'is_admin',
