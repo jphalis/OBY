@@ -51,7 +51,7 @@ def like_ajax(request):
 
 
 @login_required
-@cache_page(18)
+@cache_page(60 * 2)
 def category_detail(request, cat_slug):
     obj = get_object_or_404(Category, slug=cat_slug)
 

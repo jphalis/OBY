@@ -25,7 +25,7 @@ from .models import Follower, MyUser
 
 
 @login_required
-@cache_page(60)
+@cache_page(60 * 2)
 def profile_view(request, username):
     user = get_object_or_404(MyUser, username=username)
 
@@ -223,6 +223,7 @@ def auth_logout(request):
     return HttpResponseRedirect(reverse("home"))
 
 
+@cache_page(60 * 10)
 def auth_login(request):
     if request.user.is_authenticated():
         return redirect("home")
@@ -255,6 +256,7 @@ def auth_login(request):
         return render(request, "visitor/login_register.html", context)
 
 
+@cache_page(60 * 10)
 def auth_register(request):
     if request.user.is_authenticated():
         return redirect("home")

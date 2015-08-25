@@ -10,7 +10,7 @@ from photos.models import Category, Photo
 # Create views here.
 
 
-@cache_page(60)
+@cache_page(60 * 2)
 def home(request):
     if request.user.is_authenticated():
         categories = Category.objects.most_posts()
@@ -25,7 +25,7 @@ def home(request):
 
 
 @login_required
-@cache_page(60)
+@cache_page(60 * 2)
 def timeline(request):
     user = request.user
 
