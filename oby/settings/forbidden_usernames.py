@@ -121,6 +121,8 @@ FORBIDDEN_USERNAMES = [
     'order',
     'orders',
     'organizations',
+    'payitforward',
+    'pif',
     'plans',
     'popular',
     'position',
