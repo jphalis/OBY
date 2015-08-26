@@ -12,7 +12,7 @@
                     <tr>
                         <td class="notification-note">{{ note|safe }}</td>
                         {% if note.target_object %}
-                            <td><a href="{{ note.get_photo_url }}"><img src="{{ note.target_object.get_photo_url }}" class="img-rounded" style="width: 28px; height: 28px;" /></a>
+                            <td><img src="{{ note.target_object.get_photo_url }}" class="img-rounded" style="width: 28px; height: 28px;" />
                         {% else %}
                             <td></td>
                         {% endif %}
