@@ -12,8 +12,8 @@
                 {% for comment in comments %}
                     <tr>
                         <td>
-                            <p style="float: right; font-weight: 118; font-size: 7px; color: #a3a3a3; margin-top: -6px;">{{ comment.timestamp|timesince }} ago</p>
-                            <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: <span class="find-hashtag">{{ comment.get_comment }}</span>
+                            <p class="comment-post-date">{{ comment.timestamp|timesince }} ago</p>
+                            <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: {{ comment.get_comment }}
                             <br/>
                             {% if not comment.is_child %}
                                 {% if comment.get_children_count > 0 %}
@@ -41,7 +41,7 @@
                 {% endfor %}
             </table>
         {% else %}
-            <span style="text-align: center;">
+            <span class="no-comments">
                 <h4>There are no comments yet.</h4>
                 <h4>Be the first!</h4>
             </span>

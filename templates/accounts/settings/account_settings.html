@@ -27,7 +27,7 @@
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ account_change_form|crispy }}
-            <input class="submit-btn go-btn" type="submit" value="Update Settings" />
+            <input class="submit-btn go-btn-form" type="submit" value="Update Settings" />
         </form>    
     </div>
 {% endblock %}

@@ -12,14 +12,14 @@
             <tr>
                 <td class="thread-parent-comment">
                     <p class="post-date">{{ comment.timestamp|timesince }}</p>
-                    <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: <span class="find-hashtag">{{ comment.get_comment }}</span>
+                    <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: {{ comment.get_comment }}
                 </td>
             </tr>
             {% if not comment.is_child %}
                 {% for child in comment.get_children %}
                     <tr>
                         <td>
-                            <a href="{{ child.user.get_profile_view }}">{{ child.user }}:</a> <span class="find-hashtag">{{ child.get_comment }}</span>
+                            <a href="{{ child.user.get_profile_view }}">{{ child.user }}:</a> {{ child.get_comment }}
                         </td>
                     </tr>
                 {% endfor %}
