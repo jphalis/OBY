@@ -70,6 +70,7 @@ RESERVED_USERNAMES = [
     'danieltosh',
     'davidguetta',
     'ddlovato',
+    'dominiqueansel',
     'drake',
     'dylanobrien',
     'edsheeran',
