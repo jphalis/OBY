@@ -20,6 +20,13 @@ ALLOWED_HOSTS = [
 FULL_DOMAIN_NAME = 'www.obystudio.com'
 
 
+##########
+# STRIPE #
+##########
+STRIPE_SECRET_KEY = 'sk_live_6OlOtvEapbxPwcf1CZATzOXA'
+STRIPE_PUBLISHABLE_KEY = 'pk_live_uPcfHpqs1fckJYjY8NqimMWZ'
+
+
 #########
 # EMAIL #
 #########

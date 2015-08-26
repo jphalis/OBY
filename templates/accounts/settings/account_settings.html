@@ -5,6 +5,15 @@
 {% block title %}OBY / Profile Settings{% endblock %}
 
 
+<style>
+    {% block style %}
+        body{
+            background-color: #24282f;
+        }
+    {% endblock %}
+</style>
+
+
 {% block content %}
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
@@ -15,7 +24,7 @@
     </div>
     <div class="col-sm-7 col-sm-offset-3 account-settings-container general-container">
         <h2 class="page-header settings-title">Profile Settings</h2>
-        <form method="POST" enctype="multipart/form-data">
+        <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ account_change_form|crispy }}
             <input class="submit-btn go-btn" type="submit" value="Update Settings" />

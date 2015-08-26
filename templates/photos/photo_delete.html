@@ -11,7 +11,7 @@
             <h1 class="notification-title">Delete Photo</h1> 
             <p>Are you sure you want to delete this picture?</p>
             <img src="{{ object.get_photo_url }}" />
-            <form method="POST">
+            <form action="" method="POST">
                 {% csrf_token %}
                 <input class='submit-btn caution-btn' type="submit" value="Delete" />
                 <input class='submit-btn cancel-btn' type="button" value="Cancel"

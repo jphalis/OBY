@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% block title %}OBY / Make Donation{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/stripe-checkout.min.js' %}" type="text/javascript" async></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="col-sm-6 col-sm-offset-3 general-container">
+        <p style="text-align: center;" class="lead">Donations</p>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ donation_form|crispy }}
+            <input class="submit-btn go-btn" type="submit" value="Donate" />
+        </form>
+    </div>
+{% endblock %}

@@ -127,7 +127,6 @@ def account_settings(request):
 
             account_change_form.username = username
             account_change_form.email = email
-
             account_change_form.save()
             messages.success(request,
                              "You have successfully updated your profile.")

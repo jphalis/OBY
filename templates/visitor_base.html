@@ -15,8 +15,7 @@
         <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet" media="screen">
         <link href="{% static 'css/visitor-theme.min.css' %}" rel="stylesheet" media="screen">
         <style>
-            {% block style %}
-            {% endblock %}
+            {% block style %}{% endblock %}
         </style>
     </head>
 
@@ -48,8 +47,7 @@
             </nav>
         {% endif %}
 
-        {% block jumbotron %}
-        {% endblock %}
+        {% block jumbotron %}{% endblock %}
         
         <div class="container">
             {% if messages %}
@@ -77,14 +75,12 @@
                 {% endfor %}
             {% endif %}
 
-            {% block content %}
-            {% endblock %}
+            {% block content %}{% endblock %}
         </div>
 
         <script src="{% static 'js/jquery.min.js' %}" type="text/javascript" defer></script>
         <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" defer></script>
-        {% block js %}
-        {% endblock %}
+        {% block js %}{% endblock %}
         {% analytics_async 'UA-66160514-1' %}
     </body>
 </html>

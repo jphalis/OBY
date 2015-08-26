@@ -114,9 +114,9 @@ class UserChangeForm(forms.ModelForm):
 class RegisterForm(forms.Form):
     username = forms.CharField(widget=forms.widgets.TextInput(
                                 attrs={'placeholder': 'Username'}))
-    email = forms.EmailField(widget=forms.widgets.TextInput(
-                                attrs={'placeholder': 'Email'}),
-                             max_length=80)
+    email = forms.EmailField(max_length=80,
+                             widget=forms.widgets.TextInput(
+                                attrs={'placeholder': 'Email'}))
     password1 = forms.CharField(label='Create password',
                                 widget=forms.PasswordInput(
                                     attrs={'placeholder': 'Password'}))
@@ -177,7 +177,7 @@ class LoginForm(forms.Form):
                                     attrs={'placeholder': 'Password'}))
 
     def clean_username(self):
-        username = self.cleaned_data["username"].lower()
+        username = self.cleaned_data.get("username").lower()
         # if not self.user.is_active:
         #     raise forms.ValidationError("This account has been disabled")
         return username
@@ -243,7 +243,7 @@ class AccountBasicsChangeForm(forms.ModelForm):
         return email
 
     def clean_edu_email(self):
-        edu_email = self.cleaned_data['edu_email'].lower()
+        edu_email = self.cleaned_data.get('edu_email').lower()
         if MyUser.objects.filter(
                 Q(edu_email=edu_email) & ~Q(id=self.user.id)).exists():
             raise forms.ValidationError("This email is already taken. \
