@@ -54,6 +54,7 @@ def like_ajax(request):
 @cache_page(60 * 2)
 def category_detail(request, cat_slug):
     obj = get_object_or_404(Category, slug=cat_slug)
+    categories = Category.objects.most_posts().exclude(id=obj.id)
 
     most_liked = Photo.objects.category_detail(obj)[:600]
     photos = list(most_liked)[:250]
@@ -61,6 +62,7 @@ def category_detail(request, cat_slug):
 
     if request.user.is_authenticated():
         context = {
+            'categories': categories,
             'obj': obj,
             'photos': photos
         }

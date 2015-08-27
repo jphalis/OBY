@@ -19,6 +19,13 @@
 
 
 {% block content %}
+    <div class="category-items">
+        {% for item in categories %}
+            <div class="category-item" style="border: 3px solid {{ item.border_color }}; text-shadow: 0 1px 1px {{ item.border_color }};" onclick="window.location='{{ item.get_absolute_url }}'">
+                <h4>{{ item }}</h4>
+            </div>
+        {% endfor %}
+    </div>
     <div class='col-sm-12'>
         <h1 class="trending-banner">{{ obj.title }}</h1>
     </div>
