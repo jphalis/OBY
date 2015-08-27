@@ -9,7 +9,10 @@ from photos.models import Photo
 
 @cache_page(60 * 3)
 def hashtagged_item_list(request, tag):
-    photos = Photo.objects.filter(Q(description__icontains=tag))[:200]
+    photos = Photo.objects.filter(
+        Q(description__icontains=tag) |
+        Q(comment__hashtag_enabled_text__icontains=tag)
+    )[:200]
 
     context = {
         'photos': photos,

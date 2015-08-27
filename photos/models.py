@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Count, Q
+from django.db.models import Count
 
 from datetime import datetime, timedelta
 

@@ -5,8 +5,9 @@ from crispy_forms.layout import Submit
 
 
 class CommentForm(forms.Form):
-    comment = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Add a comment"})
+    comment = forms.CharField(max_length=240,
+        widget=forms.TextInput(
+            attrs={"placeholder": "Add a comment"})
     )
 
     def __init__(self, data=None, files=None, **kwargs):

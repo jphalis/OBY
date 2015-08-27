@@ -41,7 +41,9 @@ class Comment(HashtagMixin, models.Model):
     parent = models.ForeignKey("self", null=True, blank=True)
     path = models.CharField(max_length=350)
     photo = models.ForeignKey(Photo)
-    text = models.TextField()
+    text = models.TextField(max_length=240)
+    hashtag_enabled_text = models.TextField(blank=True,
+        help_text='Contains the description with hashtags replaced with links')
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
