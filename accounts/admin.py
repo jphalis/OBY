@@ -12,7 +12,8 @@ class MyUserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'is_superuser', 'is_admin', 'is_verified')
+    list_display = ('username', 'is_superuser', 'is_admin', 'is_verified',
+                    'date_joined')
     list_filter = ('is_active', 'is_admin', 'is_verified')
     readonly_fields = ['date_joined', 'last_login', 'updated']
     fieldsets = (
