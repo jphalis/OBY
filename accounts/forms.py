@@ -112,8 +112,9 @@ class UserChangeForm(forms.ModelForm):
 
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(widget=forms.widgets.TextInput(
-                                attrs={'placeholder': 'Username'}))
+    username = forms.CharField(max_length=30,
+                               widget=forms.widgets.TextInput(
+                                    attrs={'placeholder': 'Username'}))
     email = forms.EmailField(max_length=80,
                              widget=forms.widgets.TextInput(
                                 attrs={'placeholder': 'Email'}))
