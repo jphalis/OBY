@@ -53,6 +53,7 @@ class Comment(HashtagMixin, models.Model):
 
     class Meta:
         app_label = 'comments'
+        ordering = ['timestamp']
 
     def __unicode__(self):
         return self.text
