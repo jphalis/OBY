@@ -33,7 +33,10 @@
                         height = img.naturalHeight;
                     window.URL.revokeObjectURL( img.src );
                     if (width < 80 || height < 80) {
-                        alert('Please choose an image that is at least 80 x 80 pixels.');
+                        alert('Please choose an image that is at least 80 x 80 px.');
+                    }
+                    else if (height > 1500){
+                        alert('Please choose an image that is smaller than 1500 px tall.')
                     }
                     else if (file.size > 5242880) {
                         alert('Image size may not exceed 5MB.');

@@ -39,12 +39,21 @@ class PhotoUploadForm(forms.ModelForm):
             # validate dimensions
             min_width = 80
             min_height = 80
+            max_height = 1500
             if min_width > w or min_height > h:
                 raise forms.ValidationError(
                     u'That image is too small. '
                     'Please choose an image that is at least '
                     '{} x {} pixels.'.format(
                         min_width, min_height))
+            elif h > max_height:
+                raise forms.ValidationError(
+                    u'That image is too large. '
+                    'Please choose an image that is smaller than '
+                    '{} pixels tall.'.format(
+                        max_height))
+            else:
+                pass
 
             # validate file size
             if photo.size > settings.FILE_UPLOAD_MAX_MEMORY_SIZE:
