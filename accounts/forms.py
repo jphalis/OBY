@@ -23,7 +23,7 @@ from .models import MyUser
 
 # For admin interface use
 class UserCreationForm(forms.ModelForm):
-    email = forms.EmailField(widget=forms.TextInput(), max_length=80)
+    email = forms.EmailField(widget=forms.EmailInput(), max_length=80)
     password1 = forms.CharField(label='Password',
                                 widget=forms.PasswordInput)
     password2 = forms.CharField(label='Verify',
@@ -116,7 +116,7 @@ class RegisterForm(forms.Form):
                                widget=forms.widgets.TextInput(
                                     attrs={'placeholder': 'Username'}))
     email = forms.EmailField(max_length=80,
-                             widget=forms.widgets.TextInput(
+                             widget=forms.widgets.EmailInput(
                                 attrs={'placeholder': 'Email'}))
     password1 = forms.CharField(label='Create password',
                                 widget=forms.PasswordInput(
@@ -190,8 +190,8 @@ class AccountBasicsChangeForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False,
                                        widget=ClearableFileInput(
                                             attrs={'class': 'form-control'}))
-    email = forms.EmailField(widget=forms.TextInput(), max_length=80)
-    edu_email = forms.EmailField(widget=forms.widgets.TextInput(),
+    email = forms.EmailField(widget=forms.EmailInput(), max_length=80)
+    edu_email = forms.EmailField(widget=forms.widgets.EmailInput(),
                                  label="University email", max_length=80,
                                  required=False,
                                  help_text='Allows you to upload to the '
@@ -335,7 +335,7 @@ class SetPasswordForm(forms.Form):
 
 # Need to fix the from_email to send from a set email, not jphalisnj
 class ResetPasswordForm(forms.Form):
-    email = forms.EmailField(widget=forms.widgets.TextInput(
+    email = forms.EmailField(widget=forms.widgets.EmailInput(
                                 attrs={'placeholder': 'Email'}))
 
     def send_mail(self, subject_template_name, email_template_name,

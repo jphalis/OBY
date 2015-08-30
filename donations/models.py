@@ -6,28 +6,18 @@ from decimal import Decimal
 # Create your models here.
 
 
-STATUS_CHOICES = (
-    ("Started", "Started"),
-    ("Abandoned", "Abandoned"),
-    ("Finished", "Finished"),
-)
-
-
 class Donation(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    order_id = models.CharField(max_length=30, default="ABC", unique=True)
-    amount = models.DecimalField(default=0.00, max_digits=1000,
-                                 decimal_places=2)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    donation_id = models.CharField(max_length=30, default="ABC", unique=True)
+    amount = models.DecimalField(default=0.00, max_digits=30, decimal_places=2)
     name = models.CharField(max_length=80)
     email = models.EmailField(verbose_name='email', max_length=80)
     message = models.CharField(max_length=4000, null=True, blank=True)
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES,
-                              default="Started")
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return self.order_id
+        return self.donation_id
 
     class Meta:
         app_label = 'donations'

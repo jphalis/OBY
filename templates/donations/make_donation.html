@@ -13,11 +13,45 @@
 
 {% block content %}
     <div class="col-sm-6 col-sm-offset-3 general-container">
-        <p style="text-align: center;" class="lead">Donations</p>
+        <p style="text-align: center;" class="lead">Make A Donation</p>
         <form action="" method="POST">
             {% csrf_token %}
             {{ donation_form|crispy }}
-            <input class="submit-btn go-btn" type="submit" value="Donate" />
+            <input class="submit-btn go-btn-form" type="submit" value="Continue" />
+                <p style="text-align: center;" class="lead">Card Information</p>
+
+                    <div id="card_errors_div" class="alert alert-danger hidden payment-errors" role="alert">
+                    </div>
+
+                <div class="form-row">
+                    <div class="row">
+                        <div class="col-xs-6" style="padding-right: 0px;">
+                            <b class="text">Card Number</b>
+                            <input class="form-control" type="text" size="20" data-stripe="number" placeholder="XXXX-XXXX-XXXX-XXXX"/>
+                        </div>
+
+                        <div class="col-xs-3">
+                            <b class="text">CVC</b>
+                            <input class="form-control" type="text" size="4" data-stripe="cvc"/>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+
+                <div class="form-row">
+                    <b class="text">Expiration (MM/YYYY)</b>
+                    <div class="row">
+                        <div class="col-xs-2" style="padding-right: 0px;">
+                              <input class="form-control" type="text" size="2" data-stripe="exp-month" placeholder="MM"/>
+                        </div>
+                        <div class="col-xs-3">
+                            <input class="form-control" type="text" size="4" data-stripe="exp-year" placeholder="YYYY"/>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+
+            <input class="submit-btn go-btn-form" type="submit" value="Donate" />
         </form>
     </div>
 {% endblock %}

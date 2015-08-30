@@ -16,6 +16,7 @@
                 {% url "home" as home %}
                 {% url "timeline" as timeline %}
                 {% url "notifications_all" as notifications %}
+                {% url "make_donation" as make_donation %}
                 <li>
                     <a href="{% url 'home' %}" {% if request.path == home %} class="selected" {% endif %}>
                         Home
@@ -31,6 +32,11 @@
                         <span class="notification-count">Notifications</span>
                     </a>
                 </li>
+                <!-- <li>
+                    <a href="{% url 'make_donation' %}" {% if request.path == make_donation %} class="selected" {% endif %}>
+                        Pay It Forward
+                    </a>
+                </li> -->
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li >

@@ -6,8 +6,8 @@ from .models import Donation
 
 
 class DonationAdmin(admin.ModelAdmin):
-    list_display = ['user', 'order_id', 'status', 'updated']
-    search_fields = ['user__username', 'order_id']
+    list_display = ['user', 'donation_id', 'updated']
+    search_fields = ['user__username', 'donation_id']
 
     class Meta:
         model = Donation

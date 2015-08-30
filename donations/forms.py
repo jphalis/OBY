@@ -17,7 +17,7 @@ class DonationForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"placeholder": "Name"})
     )
     email = forms.EmailField(max_length=80,
-                             widget=forms.widgets.TextInput(
+                             widget=forms.widgets.EmailInput(
                                 attrs={'placeholder': 'Email'}))
     message = forms.CharField(
         max_length=4000, required=False,
