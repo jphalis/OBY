@@ -9,7 +9,7 @@
                     </span>
                 </button>
             {% endif %}
-            <!-- <p class="post-date">{{ photo.timestamp|timesince }}</p> -->
+            <!-- <p class="post-date">{{ photo.created|timesince }}</p> -->
             <h5><a href="{{ photo.creator.get_profile_view }}">{{ photo.creator.username|truncatechars:21 }}</a></h5>
             <p>{{ photo.hashtag_enabled_description|safe }}</p>
             <div class="img-container">

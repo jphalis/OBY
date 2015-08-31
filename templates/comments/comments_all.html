@@ -12,7 +12,7 @@
                 {% for comment in comments %}
                     <tr>
                         <td>
-                            <p class="comment-post-date">{{ comment.timestamp|timesince }} ago</p>
+                            <p class="comment-post-date">{{ comment.created|timesince }} ago</p>
                             <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: {{ comment.hashtag_enabled_text|safe }}
                             <br/>
                             {% if not comment.is_child %}

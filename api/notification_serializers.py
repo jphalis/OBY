@@ -43,5 +43,6 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
             'target_slug',
             'recipient',
             'read',
-            'timestamp',
+            'created',
+            'modified',
         ]

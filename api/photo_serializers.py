@@ -61,7 +61,8 @@ class PhotoSerializer(serializers.ModelSerializer):
             'like_count',
             'likers',
             'comment_set',
-            'timestamp',
+            'created',
+            'modified',
         ]
 
 

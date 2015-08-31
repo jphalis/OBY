@@ -11,7 +11,7 @@
         <table class='table'>
             <tr>
                 <td class="thread-parent-comment">
-                    <p class="post-date">{{ comment.timestamp|timesince }}</p>
+                    <p class="post-date">{{ comment.created|timesince }}</p>
                     <a href="{{ comment.user.get_profile_view }}">{{ comment.user }}</a>: {{ comment.get_comment }}
                 </td>
             </tr>

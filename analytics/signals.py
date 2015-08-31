@@ -23,10 +23,10 @@ def page_view_received(sender, **kwargs):
 
     if not user.is_authenticated():
         new_page_view = PageView.objects.create(path=page_path,
-                                                timestamp=datetime.now())
+                                                created=datetime.now())
     else:
         new_page_view = PageView.objects.create(path=page_path, user=user,
-                                                timestamp=datetime.now())
+                                                created=datetime.now())
 
     if primary_obj:
         new_page_view.primary_object_id = primary_obj.id

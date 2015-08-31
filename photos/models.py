@@ -20,7 +20,7 @@ class PhotoManager(models.Manager):
         date_from = datetime.now() - timedelta(days=21)
         return super(PhotoManager, self).get_queryset().annotate(
             the_count=(Count('likers'))).filter(
-                is_active=True, timestamp__gte=date_from,
+                is_active=True, created__gte=date_from,
                 category=obj).order_by('-the_count')
 
     def most_commented(self):
@@ -37,7 +37,7 @@ class PhotoManager(models.Manager):
         date_from = datetime.now() - timedelta(days=21)
         return super(PhotoManager, self).get_queryset().annotate(
             the_count=(Count('likers'))).filter(
-                is_active=True, timestamp__gte=date_from).order_by(
+                is_active=True, created__gte=date_from).order_by(
                     '-the_count')
 
     def own(self, user):
@@ -105,14 +105,12 @@ class CategoryManager(models.Manager):
                 is_active=True).order_by('-the_count')
 
 
-class Category(models.Model):
+class Category(TimeStampedModel):
     is_active = models.BooleanField(default=True)
     border_color = models.CharField(default='#', max_length=7)
     featured = models.BooleanField(default=False)
     title = models.CharField(max_length=120)
     slug = models.SlugField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
     objects = CategoryManager()
 
