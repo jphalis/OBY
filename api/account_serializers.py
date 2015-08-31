@@ -101,7 +101,7 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
             'is_admin',
             'is_verified',
             'date_joined',
-            'updated'
+            'modified'
         ]
 
     def get_photo_set(self, request):

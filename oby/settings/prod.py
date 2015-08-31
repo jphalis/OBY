@@ -63,6 +63,7 @@ DATABASES = {
         'PASSWORD': '84e52ccc-de80-4bc1-ae4c-5dd0934d42a6',
         'HOST': 'oby-dbs-virginia.cmyml5gujc5c.us-east-1.rds.amazonaws.com',
         'PORT': '5432',
+        # 'ATOMIC_REQUESTS': True,
     },
     'extra': {
         'ENGINE': 'django.db.backends.sqlite3',
