@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.list import ListView
 
 from accounts.models import MyUser
-from common.mixins import LoginRequiredMixin
+from core.mixins import LoginRequiredMixin
 
 # Create your views here.
 

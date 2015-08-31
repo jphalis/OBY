@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     'api',
     'comments',
     'contact',
+    'core',
     'hashtags',
     'newsletter',
     'notifications',

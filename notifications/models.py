@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from core.models import TimeStampedModel
+
 # Create your models here.
 
 
@@ -53,7 +55,7 @@ class NotificationManager(models.Manager):
         return self.get_queryset().get_user(user)[:num]
 
 
-class Notification(models.Model):
+class Notification(TimeStampedModel):
     # JP
     sender_content_type = models.ForeignKey(ContentType,
                                             related_name='nofity_sender')
@@ -84,12 +86,11 @@ class Notification(models.Model):
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   related_name='notifications')
     read = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
 
     objects = NotificationManager()
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-created']
         app_label = 'notifications'
 
     def __unicode__(self):

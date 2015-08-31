@@ -28,9 +28,13 @@ class Permalinkable(models.Model):
     #     return self.title
 
 
-class Timestampable(models.Model):
-    create_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
+class TimeStampedModel(models.Model):
+    """
+    An abstract base class model that provides self-
+    updating ``created`` and ``modified`` fields.
+    """
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

@@ -8,7 +8,7 @@ from .models import Comment
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['user', 'path', 'text']
     search_fields = ['user__username']
-    readonly_fields = ['timestamp']
+    readonly_fields = ['created', 'modified']
 
     class Meta:
         model = Comment

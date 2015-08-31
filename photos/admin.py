@@ -9,7 +9,7 @@ class PhotoAdmin(admin.ModelAdmin):
     # use if you want to limit which category is shown
     # form = PhotoUploadForm
 
-    list_display = ['creator', 'category', 'slug', 'timestamp',
+    list_display = ['creator', 'category', 'slug', 'created',
                     'is_active', 'featured', 'like_count']
     search_fields = ['creator__username']
     fields = ['creator', 'photo', 'category', 'slug',

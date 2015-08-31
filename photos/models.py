@@ -5,6 +5,7 @@ from django.db.models import Count
 
 from datetime import datetime, timedelta
 
+from core.models import TimeStampedModel
 from hashtags.models import HashtagMixin
 
 # Create your models here.
@@ -49,7 +50,7 @@ class PhotoManager(models.Manager):
                 creator__follower__in=user.follower.following.all())
 
 
-class Photo(HashtagMixin, models.Model):
+class Photo(HashtagMixin, TimeStampedModel):
     is_active = models.BooleanField(default=True)
     category = models.ForeignKey("Category")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -61,7 +62,6 @@ class Photo(HashtagMixin, models.Model):
                                     related_name='likers', blank=True)
     photo = models.ImageField(upload_to=upload_location)
     slug = models.SlugField()
-    timestamp = models.DateTimeField(auto_now_add=True)
 
     hashtag_text_field = 'description'
 
@@ -69,7 +69,7 @@ class Photo(HashtagMixin, models.Model):
 
     class Meta:
         unique_together = ('slug', 'category',)
-        ordering = ['-timestamp']
+        ordering = ['-created']
         app_label = 'photos'
 
     def __unicode__(self):

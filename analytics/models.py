@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from core.models import TimeStampedModel
 from photos.models import Category, Photo
 
 
@@ -35,7 +36,7 @@ class PageViewManager(models.Manager):
         return self.get_queryset().users()
 
 
-class PageView(models.Model):
+class PageView(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     path = models.CharField(max_length=350)
 
@@ -53,12 +54,10 @@ class PageView(models.Model):
     secondary_object = GenericForeignKey("secondary_content_type",
                                          "secondary_object_id")
 
-    timestamp = models.DateTimeField(auto_now_add=True)
-
     objects = PageViewManager()
 
     def __unicode__(self):
         return u"{}".format(self.path)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-created']

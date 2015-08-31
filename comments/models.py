@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import Truncator
 
+from core.models import TimeStampedModel
 from hashtags.models import HashtagMixin
 from photos.models import Photo
 
@@ -35,7 +36,7 @@ class CommentManager(models.Manager):
         return comment
 
 
-class Comment(HashtagMixin, models.Model):
+class Comment(HashtagMixin, TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     is_active = models.BooleanField(default=True)
     parent = models.ForeignKey("self", null=True, blank=True)
@@ -44,8 +45,6 @@ class Comment(HashtagMixin, models.Model):
     text = models.TextField(max_length=240)
     hashtag_enabled_text = models.TextField(blank=True,
         help_text='Contains the description with hashtags replaced with links')
-    timestamp = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
     hashtag_text_field = 'text'
 
@@ -53,7 +52,7 @@ class Comment(HashtagMixin, models.Model):
 
     class Meta:
         app_label = 'comments'
-        ordering = ['timestamp']
+        ordering = ['created']
 
     def __unicode__(self):
         return self.text

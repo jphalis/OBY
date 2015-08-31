@@ -7,7 +7,7 @@ from .models import PageView
 
 class PageViewAdmin(admin.ModelAdmin):
     list_display = ['__unicode__']
-    readonly_fields = ['timestamp']
+    readonly_fields = ['created']
     search_fields = ['user__username']
 
     class Meta:

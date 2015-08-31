@@ -7,6 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from datetime import datetime
 
+from core.models import TimeStampedModel
+
 # Create models here.
 
 
@@ -66,7 +68,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(_('admin'), default=False)
     is_verified = models.BooleanField(_('verified'), default=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True)
 
     objects = MyUserManager()
 
@@ -109,14 +111,13 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
-class Follower(models.Model):
+class Follower(TimeStampedModel):
     user = models.OneToOneField(MyUser)
     followers = models.ManyToManyField('self', related_name='following',
                                        symmetrical=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-created']
         app_label = 'accounts'
 
     def __unicode__(self):

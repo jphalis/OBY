@@ -15,7 +15,7 @@ class MyUserAdmin(UserAdmin):
     list_display = ('username', 'is_superuser', 'is_admin', 'is_verified',
                     'date_joined')
     list_filter = ('is_active', 'is_admin', 'is_verified')
-    readonly_fields = ['date_joined', 'last_login', 'updated']
+    readonly_fields = ['date_joined', 'last_login', 'modified']
     fieldsets = (
         (None,
             {'fields': ('username', 'email', 'password',)}),
@@ -26,7 +26,7 @@ class MyUserAdmin(UserAdmin):
             {'fields': ('is_active', 'is_admin',
                         'is_verified', 'user_permissions')}),
         (_('Dates'),
-            {'fields': ('date_joined', 'last_login', 'updated',)}),
+            {'fields': ('date_joined', 'last_login', 'modified',)}),
     )
 
     # overrides get_fieldsets to use this attribute when creating a user

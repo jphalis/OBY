@@ -8,7 +8,7 @@ from .models import Newsletter
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ['user', 'email', '__unicode__']
     list_filter = ['subscribed']
-    readonly_fields = ['timestamp', 'updated']
+    readonly_fields = ['created', 'modified']
     search_fields = ['user__username']
 
     class Meta:
