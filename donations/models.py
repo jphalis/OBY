@@ -14,7 +14,7 @@ class Donation(TimeStampedModel):
     amount = models.DecimalField(default=0.00, max_digits=30, decimal_places=2)
     name = models.CharField(max_length=80)
     email = models.EmailField(verbose_name='email', max_length=80)
-    message = models.CharField(max_length=4000, null=True, blank=True)
+    message = models.CharField(max_length=4000, blank=True)
 
     def __unicode__(self):
         return self.donation_id

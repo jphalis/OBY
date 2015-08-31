@@ -55,15 +55,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(verbose_name='email',
                               max_length=80, unique=True)
-    full_name = models.CharField(max_length=50, null=True, blank=True)
-    bio = models.TextField(max_length=140, null=True, blank=True)
-    website = models.CharField(max_length=90, null=True, blank=True)
+    full_name = models.CharField(max_length=50, blank=True)
+    bio = models.TextField(max_length=140, blank=True)
+    website = models.CharField(max_length=90, blank=True)
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
                                   unique=True, null=True, blank=True)
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
-                              blank=True, null=True)
-    profile_picture = models.ImageField(upload_to=upload_location,
-                                        null=True, blank=True)
+                              blank=True)
+    profile_picture = models.ImageField(upload_to=upload_location, blank=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_admin = models.BooleanField(_('admin'), default=False)
     is_verified = models.BooleanField(_('verified'), default=False)
