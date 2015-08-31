@@ -1,12 +1,10 @@
 {% extends "visitor_base.html" %}
 
-
-{% block title %}OBY / Naughty{% endblock %}
-
+{% block title %}OBY / Naughty{% endblock title %}
 
 {% block content %}
     <div class="http-error">
         <h3>Sorry, but you are not allowed to be here.</h3>
         <h4>We won't tell anyone, but please <a href="{% url 'home' %}">return to the homepage</a>.</h4>
     </div>
-{% endblock %}
+{% endblock content %}

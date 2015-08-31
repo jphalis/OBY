@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}{% endblock title %}</title>
         <meta name="author" content="OBY Studio">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1">
         <meta name="msapplication-tap-highlight" content="no" />
@@ -15,7 +15,7 @@
         <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet" media="screen">
         <link href="{% static 'css/visitor-theme.min.css' %}" rel="stylesheet" media="screen">
         <style>
-            {% block style %}{% endblock %}
+            {% block style %}{% endblock style %}
         </style>
     </head>
 
@@ -47,7 +47,7 @@
             </nav>
         {% endif %}
 
-        {% block jumbotron %}{% endblock %}
+        {% block jumbotron %}{% endblock jumbotron %}
         
         <div class="container">
             {% if messages %}
@@ -75,12 +75,12 @@
                 {% endfor %}
             {% endif %}
 
-            {% block content %}{% endblock %}
+            {% block content %}{% endblock content %}
         </div>
 
         <script src="{% static 'js/jquery.min.js' %}" type="text/javascript" defer></script>
         <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" defer></script>
-        {% block js %}{% endblock %}
+        {% block js %}{% endblock js %}
         {% analytics_async 'UA-66160514-1' %}
     </body>
 </html>

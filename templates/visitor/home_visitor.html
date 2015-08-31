@@ -1,15 +1,12 @@
 {% extends "visitor_base.html" %}
 {% load staticfiles %}
 
-
-{% block title %}OBY{% endblock %}
-
+{% block title %}OBY{% endblock title %}
 
 {% block js %}
     <script src="{% static 'js/jquery-color.min.js' %}" type="text/javascript" defer></script>
     <script src="{% static 'js/bg-change.min.js' %}" type="text/javascript" defer></script>
-{% endblock %}
-
+{% endblock js %}
 
 {% block content %}
     <div class="visitor-container">
@@ -59,4 +56,4 @@
             <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

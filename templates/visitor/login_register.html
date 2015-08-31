@@ -1,18 +1,15 @@
 {% extends "visitor_base.html" %}
 {% load crispy_forms_tags %}
 
-
-{% block title %}OBY / Authenticate{% endblock %}
-
+{% block title %}OBY / Authenticate{% endblock title %}
 
 <style>
     {% block style %}
         body{
             background: #F9615B;
         }
-    {% endblock %}
+    {% endblock style %}
 </style>
-
 
 {% block content %}
     <div class="authentication-container">
@@ -62,4 +59,4 @@
             <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

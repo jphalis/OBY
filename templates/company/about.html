@@ -1,9 +1,7 @@
 {% extends "visitor_base.html" %}
 {% load staticfiles %}
 
-
-{% block title %}OBY / About{% endblock %}
-
+{% block title %}OBY / About{% endblock title %}
 
 <style>
     {% block style %}
@@ -11,9 +9,8 @@
             background: #252525;
             -webkit-font-smoothing: antialiased;
         }
-    {% endblock %}
+    {% endblock style %}
 </style>
-
 
 {% block jumbotron %}
     <div class="jumbotron">
@@ -31,7 +28,7 @@
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock jumbotron %}
 
 {% block content %}
     <div class="col-sm-12 visitor-footer">
@@ -44,4 +41,4 @@
         {% endif %}
         <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
     </div>
-{% endblock %}
+{% endblock content %}

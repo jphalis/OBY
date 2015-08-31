@@ -1,8 +1,6 @@
 {% extends "visitor_base.html" %}
 
-
-{% block title %}OBY / Privacy{% endblock %}
-
+{% block title %}OBY / Privacy{% endblock title %}
 
 <style>
     {% block style %}
@@ -10,9 +8,8 @@
             background-color: #24282f;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
-    {% endblock %}
+    {% endblock style %}
 </style>
-
 
 {% block content %}
     <div class="col-sm-8 col-sm-offset-2 policy-container">
@@ -111,4 +108,4 @@
         {% endif %}
         <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
     </div>
-{% endblock %}
+{% endblock content %}

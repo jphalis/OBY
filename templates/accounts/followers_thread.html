@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-
-{% block title %}OBY / Followers{% endblock %}
-
+{% block title %}OBY / Followers{% endblock title %}
 
 {% block content %}
     <div class="support-container">
@@ -24,4 +22,4 @@
             <h5>No one is following this user yet.</h5>
         {% endif %}
     </div>
-{% endblock %}
+{% endblock content %}

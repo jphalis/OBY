@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-
-{% block title %}OBY / Upload{% endblock %}
-
+{% block title %}OBY / Upload{% endblock title %}
 
 {% block content %}
     <div class="col-sm-6 col-sm-offset-3 general-container">
@@ -14,8 +12,7 @@
             <input class="submit-btn go-btn-form" type="submit" value="Upload" />
         </form>
     </div>
-{% endblock %}
-
+{% endblock content %}
 
 <script>
     {% block jquery %}
@@ -48,5 +45,5 @@
                 form.submit();
             }
         });
-    {% endblock %}
+    {% endblock jquery %}
 </script>

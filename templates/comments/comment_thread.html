@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}OBY / Comment Thread{% endblock %}
-
+{% block title %}OBY / Comment Thread{% endblock title %}
 
 {% block content %}
     <div class="col-sm-8 col-sm-offset-2">
@@ -31,5 +30,4 @@
             {% crispy form form.helper %}
         </form>
     </div>
-
-{% endblock %}
+{% endblock content %}

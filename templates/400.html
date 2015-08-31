@@ -1,12 +1,10 @@
 {% extends "visitor_base.html" %}
 
-
-{% block title %}OBY / 400 Error{% endblock %}
-
+{% block title %}OBY / 400 Error{% endblock title %}
 
 {% block content %}
     <div class="http-error">
         <h3>Oops, something went wrong</h3>
         <h4>You can try another page or <a href="{% url 'home' %}">return to the homepage</a>.</h4>
     </div>
-{% endblock %}
+{% endblock content %}

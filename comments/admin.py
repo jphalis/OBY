@@ -12,6 +12,6 @@ class CommentAdmin(admin.ModelAdmin):
 
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = '__all__'  # List all fields
 
 admin.site.register(Comment, CommentAdmin)

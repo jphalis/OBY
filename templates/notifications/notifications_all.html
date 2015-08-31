@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
-
-{% block title %}OBY / Notifications{% endblock %}
-
+{% block title %}OBY / Notifications{% endblock title %}
 
 {% block content %}
     <div class='col-sm-6 col-sm-offset-3 general-container'>
@@ -23,8 +21,7 @@
             <h1 class="notification-title">No new notifications</h1> 
         {% endif %}
     </div>
-{% endblock %}
-
+{% endblock content %}
 
 {% block get_notifications %}
     <script type="text/javascript" async>
@@ -48,4 +45,4 @@
             })
         });
     </script>
-{% endblock %}
+{% endblock get_notifications %}

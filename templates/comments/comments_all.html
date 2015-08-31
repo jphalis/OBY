@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}OBY / All Comments{% endblock %}
-
+{% block title %}OBY / All Comments{% endblock title %}
 
 {% block content %}
     <div class="col-sm-4 col-sm-offset-1">
@@ -21,20 +20,18 @@
                                         <small>VIEW THREAD ({{ comment.get_children_count }})</small> |
                                     </a>
                                 {% endif %}
-                                {% if not request.user.ghost %}
-                                    <a href='#' class='reply_btn comment-interaction'>
-                                        <small>REPLY</small>
-                                    </a>
-                                    <div class='reply_comment'>
-                                        <form method="POST" action='{% url "comment_create" %}'>
-                                            {% csrf_token %}
-                                            <input type='hidden' name='parent_id' value='{{ comment.id }}' />
-                                            <input type='hidden' name='photo_id' value='{% url "comment_create" %}'/>
-                                            <input type='hidden' name='origin_path' value='{{ comment.get_origin }}'/>
-                                            {% crispy comment_form comment_form.helper %}
-                                        </form>
-                                    </div>
-                                {% endif %}
+                                <a href='#' class='reply_btn comment-interaction'>
+                                    <small>REPLY</small>
+                                </a>
+                                <div class='reply_comment'>
+                                    <form method="POST" action='{% url "comment_create" %}'>
+                                        {% csrf_token %}
+                                        <input type='hidden' name='parent_id' value='{{ comment.id }}' />
+                                        <input type='hidden' name='photo_id' value='{% url "comment_create" %}'/>
+                                        <input type='hidden' name='origin_path' value='{{ comment.get_origin }}'/>
+                                        {% crispy comment_form comment_form.helper %}
+                                    </form>
+                                </div>
                             {% endif %}
                         </td>
                     </tr>
@@ -47,18 +44,15 @@
             </span>
         {% endif %}
     </div>
-    {% if not request.user.ghost %}
-        <div class="col-sm-4 col-sm-offset-1" style="margin-top: 19px;">
-            <form method="POST" action='{% url "comment_create" %}'>
-                {% csrf_token %}
-                <input type='hidden' name='photo_id' value='{{ photo.id }}'/>
-                <input type='hidden' name='origin_path' value='{{ request.get_full_path }}'/>
-                {% crispy comment_form comment_form.helper %}
-            </form>
-        </div>
-    {% endif %}
-{% endblock %}
-
+    <div class="col-sm-4 col-sm-offset-1" style="margin-top: 19px;">
+        <form method="POST" action='{% url "comment_create" %}'>
+            {% csrf_token %}
+            <input type='hidden' name='photo_id' value='{{ photo.id }}'/>
+            <input type='hidden' name='origin_path' value='{{ request.get_full_path }}'/>
+            {% crispy comment_form comment_form.helper %}
+        </form>
+    </div>
+{% endblock content %}
 
 <script>
     {% block jquery %}
@@ -66,5 +60,5 @@
             e.preventDefault();
             $(this).next(".reply_comment").fadeToggle();
         })
-    {% endblock %}
+    {% endblock jquery %}
 </script>

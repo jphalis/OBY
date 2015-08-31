@@ -2,8 +2,7 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
-{% block title %}{{ user }}{% endblock %}
-
+{% block title %}{{ user }}{% endblock title %}
 
 {% block js %}
     <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
@@ -12,11 +11,11 @@
             $("img.lazy").lazyload({threshold: 150});
         });
     </script>
-{% endblock %}
+{% endblock js %}
+
 {% block photo_adjustment %}
     <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
-{% endblock %}
-
+{% endblock photo_adjustment %}
 
 {% block content %}
     <!-- PROFILE INFORMATION -->
@@ -91,7 +90,7 @@
                 <div class="photo-item-interactions">
                     <div class="photo-item-interaction">
                         <label class="like_count" style="cursor: default;">
-                            {% if photo.likers %}{{ photo.likers.count }}{% else %}0{% endif %} likes
+                            {% if photo.likers %}{{ photo.like_count }}{% else %}0{% endif %} likes
                         </label>
                         <label style="cursor: default;">
                             {% if photo.comment_set %}{{ photo.comment_set.count }}{% else %}0{% endif %} comments
@@ -110,8 +109,7 @@
             </div>
         {% endfor %}
     </div>
-{% endblock %}
-
+{% endblock content %}
 
 <script>
 	{% block jquery %}
@@ -176,8 +174,5 @@
                 }
             });
         });
-	{% endblock %}
+	{% endblock jquery %}
 </script>
-
-
-

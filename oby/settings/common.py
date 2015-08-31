@@ -157,19 +157,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-#######################
-# SECURITY MIDDLEWARE #
-#######################
-SECURE_BROWSER_XSS_FILTER = False
-SECURE_CONTENT_TYPE_NOSNIFF = False
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_SECONDS = 0
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_REDIRECT_EXEMPT = []
-SECURE_SSL_HOST = None
-SECURE_SSL_REDIRECT = False
-
-
 ROOT_URLCONF = 'oby.urls'
 WSGI_APPLICATION = 'oby.wsgi.application'
 
@@ -178,17 +165,6 @@ WSGI_APPLICATION = 'oby.wsgi.application'
 # TEMPLATES #
 #############
 CRISPY_TEMPLATE_PACK = "bootstrap3"
-
-
-########################################
-# CROSS-ORIGIN RESOURCE SHARING (CORS) #
-########################################
-# CORS_URLS_REGEX = r'^/api2/.*'
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost',
-#     'obystudio.com',
-# )
 
 
 ############################

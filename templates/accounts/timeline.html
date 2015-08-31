@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-
-{% block title %}OBY / Timeline{% endblock %}
-
+{% block title %}OBY / Timeline{% endblock title %}
 
 {% block js %}
     <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
@@ -12,11 +10,11 @@
             $("img.lazy").lazyload({threshold: 150});
         });
     </script>
-{% endblock %}
+{% endblock js %}
+
 {% block photo_adjustment %}
     <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
-{% endblock %}
-
+{% endblock photo_adjustment %}
 
 {% block content %}
     <div class="timeline-profile">
@@ -48,16 +46,14 @@
             </div>
         </div>
     </div>
-    {% include "photos/photo_information_base.html" %}
-{% endblock %}
-
+    {% include "photos/_photo_information_base.html" %}
+{% endblock content %}
 
 <script>
     {% block jquery %}
         {% include "photos/like_button_base.min.js" %}
-    {% endblock %}
+    {% endblock jquery %}
 </script>
-
 
 {% block get_notifications %}
     <script type="text/javascript" async>
@@ -81,4 +77,4 @@
             })
         });
     </script>
-{% endblock %}
+{% endblock get_notifications %}

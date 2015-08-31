@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-
-{% block title %}OBY / {{ obj.title }}{% endblock %}
-
+{% block title %}OBY / {{ obj.title }}{% endblock title %}
 
 {% block js %}
     <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
@@ -12,11 +10,11 @@
             $("img.lazy").lazyload({threshold: 150});
         });
     </script>
-{% endblock %}
+{% endblock js %}
+
 {% block photo_adjustment %}
     <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
-{% endblock %}
-
+{% endblock photo_adjustment %}
 
 {% block content %}
     <div class="category-items">
@@ -30,14 +28,14 @@
         <h1 class="trending-banner">{{ obj.title }}</h1>
     </div>
     {% if photos %}
-        {% include "photos/photo_information_base.html" %}
+        {% include "photos/_photo_information_base.html" %}
     {% else %}
         <h3 style='text-align: center; color: #e9eaed;'>There are no pictures yet. Be the first!</h3>
     {% endif %}
-{% endblock %}
+{% endblock content %}
 
 <script>
     {% block jquery %}
         {% include "photos/like_button_base.min.js" %}
-    {% endblock %}
+    {% endblock jquery %}
 </script>

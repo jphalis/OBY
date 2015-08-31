@@ -18,7 +18,7 @@
             <div class="photo-item-interactions">
                 <div class="photo-item-interaction">
                     <label class="like_count" data-toggle="modal" data-target=".like-modal-{{ photo.pk }}">
-                        {% if photo.likers %}{{ photo.likers.count }}{% else %}0{% endif %} likes
+                        {% if photo.likers %}{{ photo.like_count }}{% else %}0{% endif %} likes
                     </label>
                     <label onclick="window.location='{{ photo.get_comments_all }}'">
                         {% if photo.comment_set %}{{ photo.comment_set.count }}{% else %}0{% endif %} comments

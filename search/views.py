@@ -13,7 +13,6 @@ from core.mixins import LoginRequiredMixin
 class SearchListView(LoginRequiredMixin, ListView):
     model = MyUser
     template_name = 'search/search_results.html'
-    queryset = MyUser.objects.all()
 
     def get_context_data(self, *args, **kwargs):
         context = super(SearchListView, self).get_context_data(*args, **kwargs)
