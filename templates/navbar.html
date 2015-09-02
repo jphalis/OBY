@@ -12,30 +12,30 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                {% url "home" as home %}
-                {% url "timeline" as timeline %}
-                {% url "notifications_all" as notifications %}
-                {% url "make_donation" as make_donation %}
+                {% url "home" as home_url %}
+                {% url "timeline" as timeline_url %}
+                {% url "notifications_all" as notifications_url %}
+                {% url "donation:make" as make_donation_url %}
                 <li>
-                    <a href="{% url 'home' %}" {% if request.path == home %} class="selected" {% endif %}>
+                    <a href="{{ home_url }}" {% if request.path == home_url %} class="selected" {% endif %}>
                         Home
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'timeline' %}" {% if request.path == timeline %} class="selected" {% endif %}>
+                    <a href="{{ timeline_url }}" {% if request.path == timeline_url %} class="selected" {% endif %}>
                         Timeline
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'notifications_all' %}" {% if request.path == notifications %} class="selected" {% endif %}>
+                    <a href="{{ notifications_url }}" {% if request.path == notifications_url %} class="selected" {% endif %}>
                         <span class="notification-count">Notifications</span>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="{% url 'make_donation' %}" {% if request.path == make_donation %} class="selected" {% endif %}>
+                <li>
+                    <a href="{{ make_donation_url }}" {% if request.path == make_donation_url %} class="selected" {% endif %}>
                         Pay It Forward
                     </a>
-                </li> -->
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li >

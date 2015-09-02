@@ -114,8 +114,7 @@ class StripeCreditCardForm(forms.Form):
                 source=self.card
             )
         except self.stripe.CardError:
-            raise forms.ValidationError(
-                "We're sorry, your card could not be charged at this time.")
+            charge = None
         return charge
 
     def clean(self):

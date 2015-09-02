@@ -1,73 +1,52 @@
-import stripe
-
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import HttpResponseRedirect, render
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
-from .forms import DonationForm
+from donations.forms import DonationForm
+from ecomm.forms import StripeCreditCardForm
 from .models import Donation
 
-# Create your views here.
+
+@login_required
+def make(request):
+    credit_card_form = StripeCreditCardForm(request.POST or None,
+        user=request.user)
+    donation_form = DonationForm(request.POST or None, user=request.user)
+
+    if request.method == 'POST' and credit_card_form.is_valid() \
+            and donation_form.is_valid():
+
+        # create charge at Stripe
+        charge = credit_card_form.charge_customer(
+            amount=donation_form.cleaned_data.get('amount'),
+            description='Donation from {} to OBY'.format(request.user.email)
+        )
+
+        if charge:
+            # persist charge ID returned from Stripe
+            donation_form.charge_id = charge.id
+            donation_form.save()
+
+            return HttpResponseRedirect(reverse('donations:complete'))
+
+        else:
+            # highly unlikely this will happen, but always code defensively
+            messages.error(request, "We're sorry, but your credit card "
+                "could not be charged at this time. We regret that this "
+                "has occured. Please try again later.")
+
+    return render(request, 'donations/make.html',
+        {'credit_card_form': credit_card_form, 'donation_form': donation_form})
 
 
 @login_required
-def make_donation(request):
-    donation_form = DonationForm(request.POST or None)
-    # stripe.api_key = settings.STRIPE_SECRET_KEY
-    # pub_key = settings.STRIPE_PUBLISHABLE_KEY
-
-    if request.method == 'POST':
-        # token = request.POST['stripeToken']
-
-        if donation_form.is_valid():
-            amount = donation_form.cleaned_data.get('amount')
-            email = donation_form.cleaned_data.get('email')
-
-            obj = donation_form.save(commit=False)
-            obj.user = request.user
-            obj.amount = amount
-            obj.email = email
-            obj.save()
-
-            context = {'amount': amount}
-
-            # try:
-            #     charge = stripe.Charge.create(
-            #         amount=1000,  # amount in cents, again
-            #         currency="usd",
-            #         source=token,
-            #         description="OBY donation"
-            #     )
-            #     # return HttpResponseRedirect(reverse("donation_complete"))
-            #     # Place message on this template ^
-            #     messages.success(request,
-            #                      "Thank you for your contribution! "
-            #                      "It's because of people like you that "
-            #                      "we are able to make a difference together!")
-            # except stripe.error.CardError, e:
-            #     # The card has been declined
-            #     messages.error(request,
-            #                    "We're sorry, but your card has been declined. "
-            #                    "Please try again!")
-            #     pass
-    context = {
-        'donation_form': donation_form,
-        # 'pub_key': pub_key
-    }
-    return render(request, 'donations/make_donation.html', context)
+def complete(request):
+    return render(request, 'donations/complete.html')
 
 
 @login_required
-def donation_complete(request):
-    context = {}
-    return render(request, 'donations/donation_complete.html', context)
-
-
-@login_required
-def donation_history(request):
-    history = Donation.objects.filter(user=request.user, status='Finished')
-    context = {
-        'history': history
-    }
-    return render(request, "donations/donation_history.html", context)
+def history(request):
+    donations = Donation.objects.filter(user=request.user, status='Finished')
+    return render(request, 'donations/history.html', {'donations': donations})
