@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'comments',
     'contact',
     'core',
+    'ecomm',
     'hashtags',
     'newsletter',
     'notifications',

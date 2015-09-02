@@ -68,6 +68,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(_('verified'), default=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    stripe_customer_id = models.CharField(max_length=30, editable=False,
+        blank=True)
 
     objects = MyUserManager()
 

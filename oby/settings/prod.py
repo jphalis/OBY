@@ -205,3 +205,8 @@ LOGGING = {
         },
     }
 }
+
+# Stripe
+STRIPE_MODE = 'live'
+STRIPE_API_KEY = ''
+TEST_STRIPE_API_KEY = ''

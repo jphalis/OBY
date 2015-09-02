@@ -9,12 +9,11 @@ from core.models import TimeStampedModel
 
 
 class Donation(TimeStampedModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    donation_id = models.CharField(max_length=30, default="ABC", unique=True)
-    amount = models.DecimalField(default=0.00, max_digits=30, decimal_places=2)
-    name = models.CharField(max_length=80)
-    email = models.EmailField(verbose_name='email', max_length=80)
-    message = models.CharField(max_length=4000, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    charge_id = models.CharField('Charge ID', max_length=100, help_text='The '
+        'charge ID from Stripe.')
+    amount = models.DecimalField(decimal_places=2, max_digits=6)
+    message = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.donation_id
