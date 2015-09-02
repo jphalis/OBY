@@ -48,5 +48,5 @@ def complete(request):
 
 @login_required
 def history(request):
-    donations = Donation.objects.filter(user=request.user, status='Finished')
+    donations = Donation.objects.filter(user=request.user)
     return render(request, 'donations/history.html', {'donations': donations})
