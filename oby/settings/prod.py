@@ -39,7 +39,6 @@ SECURE_SSL_REDIRECT = False
 # STRIPE #
 ##########
 STRIPE_SECRET_KEY = 'sk_live_6OlOtvEapbxPwcf1CZATzOXA'
-STRIPE_PUBLISHABLE_KEY = 'pk_live_uPcfHpqs1fckJYjY8NqimMWZ'
 
 
 #########
@@ -205,8 +204,3 @@ LOGGING = {
         },
     }
 }
-
-# Stripe
-STRIPE_MODE = 'live'
-STRIPE_API_KEY = ''
-TEST_STRIPE_API_KEY = ''

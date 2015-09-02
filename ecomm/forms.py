@@ -22,12 +22,7 @@ class StripeCreditCardForm(forms.Form):
         self.token = None
         self.amount = None
         self.stripe = stripe
-
-        # assume test mode
-        api_key = settings.TEST_STRIPE_API_KEY
-        if settings.STRIPE_MODE == 'live':
-            settings.STRIPE_API_KEY
-        self.stripe.api_key = api_key
+        self.stripe.api_key = settings.STRIPE_SECRET_KEY
 
         # set expire months/years
         expire_month = self.fields['expire_month']
