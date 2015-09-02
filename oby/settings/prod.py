@@ -153,8 +153,8 @@ S3_URL = '//{}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME)
 MEDIA_ROOT = '/home/ubuntu/obystudio.com/oby/static/media'
 STATIC_ROOT = '/home/ubuntu/obystudio.com/oby/static/static'
 # With cloudfront
-MEDIA_URL = '//{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, STATIC_S3_PATH)
-STATIC_URL = '//{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, DEFAULT_S3_PATH)
+MEDIA_URL = '/{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, STATIC_S3_PATH)
+STATIC_URL = '/{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, DEFAULT_S3_PATH)
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 AWS_PRELOAD_METADATA = False
