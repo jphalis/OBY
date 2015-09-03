@@ -23,13 +23,13 @@ class DonationForm(forms.ModelForm):
 
         self.fields['amount'].initial = None
 
-    def clean_donation(self):
-        donation = self.cleaned_data.get('donation')
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
 
-        if donation == 0:
+        if amount == 0:
             raise forms.ValidationError('Please enter a value greater than 0.')
 
-        return donation
+        return amount
 
     def save(self, commit=True):
         instance = super(DonationForm, self).save(commit=False)
