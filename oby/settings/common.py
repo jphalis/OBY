@@ -114,7 +114,7 @@ USE_TZ = False
 # APPLICATIONS #
 ################
 INSTALLED_APPS = (
-    'grappelli',
+    'flat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

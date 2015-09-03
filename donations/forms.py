@@ -8,6 +8,15 @@ class DonationForm(forms.ModelForm):
     Used to gather message from user. Donation transaction is handled
     through StripeEcommerceForm.
     """
+    amount = forms.IntegerField(
+        widget=forms.NumberInput(
+            attrs={"min": "1", "max": '10000'}))
+    message = forms.CharField(
+        max_length=2000, required=False,
+        widget=forms.Textarea(
+            attrs={"placeholder": "Leave a message for us",
+                   "style": "height: 8em;"})
+    )
 
     class Meta:
         fields = ('amount', 'message',)
@@ -26,7 +35,7 @@ class DonationForm(forms.ModelForm):
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
 
-        if amount == 0:
+        if 0 >= amount:
             raise forms.ValidationError('Please enter a value greater than 0.')
 
         return amount

@@ -9,7 +9,7 @@ class Donation(TimeStampedModel):
     charge_id = models.CharField('Charge ID', max_length=100, help_text='The '
         'charge ID from Stripe.', blank=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
-    message = models.TextField(blank=True)
+    message = models.TextField(max_length=2000, blank=True)
 
     def __unicode__(self):
         return '{:.2f}'.format(self.amount)

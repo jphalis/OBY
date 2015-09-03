@@ -15,7 +15,7 @@
                 {% url "home" as home_url %}
                 {% url "timeline" as timeline_url %}
                 {% url "notifications_all" as notifications_url %}
-                {% url "donation:make" as make_donation_url %}
+                {% url "donations:make" as make_donation_url %}
                 <li>
                     <a href="{{ home_url }}" {% if request.path == home_url %} class="selected" {% endif %}>
                         Home

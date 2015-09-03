@@ -68,7 +68,7 @@ class StripeCreditCardFormUnitTest(TestCase):
         actual_result = form.strip_non_numbers(value)
         self.assertEqual(expected_result, actual_result, 'Expected result: '
             '{} did not match actual result: {}'.format(expected_result,
-                actual_result))
+                                                        actual_result))
 
     def test_luhn_checksum(self):
         card_data = {

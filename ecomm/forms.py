@@ -33,7 +33,6 @@ class StripeCreditCardForm(forms.Form):
 
     def card_luhn_checksum_valid(self):
         # Checks to make sure that the card passes a luhn mod-10 checksum
-
         card_number = self.strip_non_numbers(
             self.cleaned_data.get('card_number', ''))
         sum = 0
@@ -132,7 +131,8 @@ class StripeCreditCardForm(forms.Form):
         expire_year = int(cleaned_data.get('expire_year'))
 
         if expire_year == this_year and expire_month < this_month:
-            raise forms.ValidationError('Expiration month must be greater '
+            raise forms.ValidationError(
+                'Expiration month must be greater '
                 'than or equal to {} for {}'.format(this_month, this_year))
 
         # Validate card number and create Stripe token

@@ -12,7 +12,7 @@ from .models import Donation
 @login_required
 def make(request):
     credit_card_form = StripeCreditCardForm(request.POST or None,
-        user=request.user)
+                                            user=request.user)
     donation_form = DonationForm(request.POST or None, user=request.user)
 
     if request.method == 'POST' and credit_card_form.is_valid() \
@@ -33,20 +33,20 @@ def make(request):
 
         else:
             # highly unlikely this will happen, but always code defensively
-            messages.error(request, "We're sorry, but your credit card "
-                "could not be charged at this time. We regret that this "
-                "has occured. Please try again later.")
+            messages.error(request,
+                           "We're sorry, but your credit card "
+                           "could not be charged at this time. "
+                           "We regret that this has occured. "
+                           "Please try again later.")
 
-    return render(request, 'donations/make.html',
-        {'credit_card_form': credit_card_form, 'donation_form': donation_form})
+    context = {
+        'credit_card_form': credit_card_form,
+        'donation_form': donation_form
+    }
+
+    return render(request, 'donations/make.html', context)
 
 
 @login_required
 def complete(request):
     return render(request, 'donations/complete.html')
-
-
-@login_required
-def history(request):
-    donations = Donation.objects.filter(user=request.user)
-    return render(request, 'donations/history.html', {'donations': donations})

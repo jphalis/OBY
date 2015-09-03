@@ -11,7 +11,7 @@ from .models import Donation
 
 def make_user(username='testuser', email='test@user.com', password='testuser'):
     return MyUser.objects.create_user(username=username, email=email,
-        password=password)
+                                      password=password)
 
 
 class DonationFormUnitTest(TestCase):
@@ -22,7 +22,7 @@ class DonationFormUnitTest(TestCase):
         user = make_user()
 
         form = DonationForm(data={'amount': 10}, charge_id='abc123',
-            user=user)
+                            user=user)
 
         self.assertTrue(form.is_valid(), "DonationForm should be valid")
 
@@ -35,8 +35,8 @@ class DonationFormUnitTest(TestCase):
         user = make_user()
 
         form = DonationForm(data={'amount': 0}, charge_id='abc123', user=user)
-        self.assertFalse(form.is_valid(), "Form should not be valid with 0 "
-            "for amount.")
+        self.assertFalse(form.is_valid(),
+                         "Form should not be valid with 0 for amount.")
 
 
 class DonationViewsFunctionalTest(TestCase):
@@ -47,7 +47,8 @@ class DonationViewsFunctionalTest(TestCase):
 
     @patch('donations.views.StripeCreditCardForm.create_card')
     @patch('donations.views.StripeCreditCardForm.charge_customer')
-    def test_valid_post_data_creates_donation(self, mock_charge_customer, mock_create_card):
+    def test_valid_post_data_creates_donation(self, mock_charge_customer,
+                                              mock_create_card):
 
         # create user
         user = make_user()
@@ -60,13 +61,13 @@ class DonationViewsFunctionalTest(TestCase):
 
         # post data
         data = {'card_number': '4242424242424242',
-            'expire_month': 12,
-            'expire_year': datetime.now().year + 1,
-            'cvc': 123, 'amount': 10, 'message': 'Test Donation'}
+                'expire_month': 12,
+                'expire_year': datetime.now().year + 1,
+                'cvc': 123, 'amount': 10, 'message': 'Test Donation'}
 
         # make post request
         response = self.client.post(self.make_donation_url, data,
-            follow=True)
+                                    follow=True)
 
         # donations:make should redirect on a successful post.
         # assert 200 status code returned
@@ -93,7 +94,7 @@ class DonationViewsFunctionalTest(TestCase):
         expected_amount = data['amount']
         self.assertEqual(donation_amount, expected_amount, "Donation amount "
             "is not correct. Expected: {}. Was: ".format(expected_amount,
-                donation_amount))
+                                                         donation_amount))
 
         expected_charge_id = 'abc123'
         self.assertEqual(donation.charge_id, expected_charge_id,
@@ -102,7 +103,8 @@ class DonationViewsFunctionalTest(TestCase):
 
     @patch('donations.views.StripeCreditCardForm.create_card')
     @patch('donations.views.StripeCreditCardForm.charge_customer')
-    def test_invalid_post_data_fails(self, mock_charge_customer, mock_create_card):
+    def test_invalid_post_data_fails(self, mock_charge_customer,
+                                     mock_create_card):
 
         # create user
         user = make_user()
@@ -115,13 +117,13 @@ class DonationViewsFunctionalTest(TestCase):
 
         # post data
         data = {'card_number': '4242424242424242',
-            'expire_month': 12,
-            'expire_year': datetime.now().year,
-            'cvc': 123, 'amount': 0, 'message': 'Test Donation'}
+                'expire_month': 12,
+                'expire_year': datetime.now().year,
+                'cvc': 123, 'amount': 0, 'message': 'Test Donation'}
 
         # make post request
         response = self.client.post(self.make_donation_url, data,
-            follow=True)
+                                    follow=True)
 
         # donations:make should redirect on a successful post.
         # assert 200 status code returned
@@ -149,13 +151,13 @@ class DonationViewsFunctionalTest(TestCase):
 
         # post data
         data = {'card_number': '4242424242424242',
-            'expire_month': 12,
-            'expire_year': datetime.now().year,
-            'cvc': 123, 'amount': 10, 'message': 'Test Donation'}
+                'expire_month': 12,
+                'expire_year': datetime.now().year,
+                'cvc': 123, 'amount': 10, 'message': 'Test Donation'}
 
         # make post request
         response = self.client.post(self.make_donation_url, data,
-            follow=True)
+                                    follow=True)
 
         # if charge fails, donations:make should be rendered again
         self.assertEqual(response.status_code, 200, "donation:make view "
