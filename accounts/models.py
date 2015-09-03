@@ -56,7 +56,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email',
                               max_length=80, unique=True)
     full_name = models.CharField(max_length=50, blank=True)
-    bio = models.TextField(max_length=140, blank=True)
+    bio = models.TextField(max_length=200, blank=True)
     website = models.CharField(max_length=90, blank=True)
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
                                   unique=True, null=True, blank=True)

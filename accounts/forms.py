@@ -60,7 +60,9 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('__all__')  # List all fields
+        fields = ['username', 'email', 'full_name', 'bio', 'website',
+                  'edu_email', 'gender', 'profile_picture', 'is_active',
+                  'is_admin', 'is_verified']
 
     def clean_password(self):
         return self.initial["password"]
@@ -196,7 +198,7 @@ class AccountBasicsChangeForm(forms.ModelForm):
                                  required=False,
                                  help_text='Allows you to upload to the '
                                  'UNIVERSITY category.')
-    bio = forms.CharField(required=False, max_length=140,
+    bio = forms.CharField(required=False, max_length=200,
                           widget=forms.Textarea(
                                 attrs={"style": "height: 5em;"}))
     website = forms.CharField(widget=forms.TextInput(), required=False,
