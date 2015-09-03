@@ -1,6 +1,5 @@
 from datetime import datetime
-import mock
-from mock import Mock, MagicMock
+from mock import patch, MagicMock
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
@@ -46,8 +45,8 @@ class DonationViewsFunctionalTest(TestCase):
         self.client = Client()
         self.make_donation_url = reverse('donations:make')
 
-    @mock.patch('donations.views.StripeCreditCardForm.create_card')
-    @mock.patch('donations.views.StripeCreditCardForm.charge_customer')
+    @patch('donations.views.StripeCreditCardForm.create_card')
+    @patch('donations.views.StripeCreditCardForm.charge_customer')
     def test_valid_post_data_creates_donation(self, mock_charge_customer, mock_create_card):
 
         # create user
@@ -101,8 +100,8 @@ class DonationViewsFunctionalTest(TestCase):
             "Donation charge id is not correct. Expected: {} instead was "
             "{}".format(expected_charge_id, donation.charge_id))
 
-    @mock.patch('donations.views.StripeCreditCardForm.create_card')
-    @mock.patch('donations.views.StripeCreditCardForm.charge_customer')
+    @patch('donations.views.StripeCreditCardForm.create_card')
+    @patch('donations.views.StripeCreditCardForm.charge_customer')
     def test_invalid_post_data_fails(self, mock_charge_customer, mock_create_card):
 
         # create user
@@ -133,8 +132,8 @@ class DonationViewsFunctionalTest(TestCase):
         self.assertEqual(Donation.objects.filter(amount=0, user=user).count(),
             0, "Donation should not be created on a failed POST.")
 
-    @mock.patch('donations.views.StripeCreditCardForm.create_card')
-    @mock.patch('donations.views.StripeCreditCardForm.charge_customer')
+    @patch('donations.views.StripeCreditCardForm.create_card')
+    @patch('donations.views.StripeCreditCardForm.charge_customer')
     def test_charge_failure(self, mock_charge_customer, mock_create_card):
 
         # create user
