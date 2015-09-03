@@ -19,34 +19,18 @@
 
 {% block content %}
     <!-- PROFILE INFORMATION -->
-    <div class="col-sm-8 col-sm-offset-2 account-home-profile">
-        <div class="col-sm-3">
+    <div class="col-sm-12 account-home-profile">
+        <div class="col-sm-12">
             <img class="account-home-profile-pic" src="{{ user.default_profile_picture }}" />
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-6 col-sm-offset-3">
             <h2 class="account-home-profile-name">
-                {{ user.username }} 
-                {% if request.user == user %}
-                    <a href="{% url 'account_settings' %}" class="submit-btn go-btn edit-profile-btn">Edit Profile</a>
-                {% endif %}
+                {{ user.full_name }} <small>{{ user.username }}</small>
             </h2>
-            {% if not request.user == user %}
-                <input id="follow_btn" 
-                       class="submit-btn{% if request.user.username in follow.get_followers_usernames %} following-btn{% else %} go-btn{% endif %}" 
-                       name="{{ user.id }}" 
-                       value="{% if request.user.username in follow.get_followers_usernames %}Supporting{% else %}Support{% endif %}" 
-                       type="button" />
-            {% endif %}
-            {% if user.bio %}
-                <h5 class="account-home-profile-description">{{ user.bio }}</h5>
-            {% else %}
-                <h5 class="account-home-profile-description"></h5>
-            {% endif %}
-            {% if user.website %}
-                <h5 class="account-home-profile-description">
-                    <a href="http://{{ user.website }}">{{ user.website }}</a>
-                </h5>
-            {% endif %}
+            <h5 class="account-home-profile-description">{{ user.bio }}</h5>
+            <h5 class="account-home-profile-description">
+                <a href="http://{{ user.website }}">{{ user.website }}</a>
+            </h5>
             <div class="account-home-stats">
                 <div class="account-home-stat">
                     Supporters: 
@@ -72,9 +56,17 @@
                     Posts: <b>{{ photos.count }}</b>
                 </div>
             </div>
+            {% if request.user == user %}
+                <a href="{% url 'account_settings' %}" class="submit-btn go-btn edit-profile-btn">Edit Profile</a>
+            {% else %}
+                <input id="follow_btn" 
+                       class="submit-btn{% if request.user.username in follow.get_followers_usernames %} following-btn{% else %} go-btn{% endif %}" 
+                       name="{{ user.id }}" 
+                       value="{% if request.user.username in follow.get_followers_usernames %}Supporting{% else %}Support{% endif %}" 
+                       type="button" />
+            {% endif %}
         </div>
     </div>
-
     <!-- UPLOADED PICTURES -->
     <div class="ponder-items">
         {% for photo in photos %}
@@ -112,7 +104,7 @@
 {% endblock content %}
 
 <script>
-	{% block jquery %}
+    {% block jquery %}
         $('#follow_btn').click(function(e){
             e.preventDefault();
             var $follow_btn = $(this);
@@ -174,5 +166,5 @@
                 }
             });
         });
-	{% endblock jquery %}
+    {% endblock jquery %}
 </script>
