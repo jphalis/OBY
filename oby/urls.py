@@ -22,7 +22,6 @@ from search.views import SearchListView
 
 urlpatterns = patterns('',
     # ADMIN
-    url(r'^grappelli/', include('grappelli.urls')),
     url(r'^hide/oby/admin/', include(admin.site.urls)),
 
     # GENERAL
