@@ -4,10 +4,6 @@
 
 {% block title %}OBY / Make Donation{% endblock title %}
 
-{% block js %}
-    <script src="{% static 'js/donate.js' %}"></script>
-{% endblock js %}
-
 {% block content %}
     <div class="col-sm-6 col-sm-offset-3 general-container">
         <p class="lead" style="text-align: center;">Make A Donation</p>
@@ -80,3 +76,7 @@
         </form>
     </div>
 {% endblock content %}
+
+{% block js %}
+    <script src="{% static 'js/donate.js' %}"></script>
+{% endblock js %}
