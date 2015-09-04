@@ -5,17 +5,15 @@ from rest_framework import generics, mixins, permissions
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.decorators import api_view
+from rest_framework.response import Response as RestResponse
+from rest_framework.reverse import reverse as api_reverse
 
 from accounts.models import Follower, MyUser
 from comments.models import Comment
 from hashtags.models import Hashtag
 from notifications.models import Notification
 from photos.models import Category, Photo
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response as RestResponse
-from rest_framework.reverse import reverse as api_reverse
-
 from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
                                   MyUserSerializer)
 from .comment_serializers import (CommentCreateSerializer, CommentSerializer,

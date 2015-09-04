@@ -1,11 +1,10 @@
 import re
+import stripe
 
 from django import forms
 from django.conf import settings
 from django.template.defaultfilters import mark_safe
 from django.utils import timezone
-
-import stripe
 
 
 class StripeCreditCardForm(forms.Form):
@@ -98,9 +97,9 @@ class StripeCreditCardForm(forms.Form):
             })
 
         except stripe.error.CardError:
-            raise forms.ValidationError("Sorry, we weren't able to "
-                "validate your credit card details at this time. Please try "
-                "again later.")
+            raise forms.ValidationError(
+                "Sorry, we weren't able to validate your credit card "
+                "at this time. Please try again later!")
 
     def charge_customer(self, amount, description):
         # Amount must be a positive integer in cents.
@@ -141,7 +140,7 @@ class StripeCreditCardForm(forms.Form):
 
         if card_number and cvc:
             # we aren't storing any card ids, so create a new one.
-            # When the Stripe "card" object is created, is also functions
+            # When the Stripe "card" object is created, it also functions
             # as the stripe "token".
             self.create_card(card_number, expire_month, expire_year, cvc)
 

@@ -15,7 +15,6 @@ from django.utils.translation import ugettext_lazy as _
 from oby.settings.approved_universities import APPROVED_UNIVERSITIES
 from oby.settings.forbidden_usernames import FORBIDDEN_USERNAMES
 from oby.settings.reserved_usernames import RESERVED_USERNAMES
-
 from .models import MyUser
 
 # Create models here.

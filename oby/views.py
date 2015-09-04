@@ -1,8 +1,8 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
-
-from itertools import chain
 
 from accounts.models import Follower
 from photos.models import Category, Photo

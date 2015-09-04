@@ -5,7 +5,6 @@ from rest_framework.reverse import reverse
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from photos.models import Category, Photo
-
 from .comment_serializers import CommentSerializer
 
 

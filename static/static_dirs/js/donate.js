@@ -5,7 +5,8 @@ $(document).ready(function() {
     var submitButton = $('#submitButton');
 
     submitButton.on('click', function() {
-        submitButton.find('span').toggle();
+        // disable the button to prevent multiple submissions
         submitButton.attr('disabled', 'disabled').addClass('btn-disabled');
+        submitButton.parents('form:first').submit();
     });
 });

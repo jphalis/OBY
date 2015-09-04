@@ -1,11 +1,11 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-from datetime import datetime
 
 from core.models import TimeStampedModel
 

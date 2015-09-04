@@ -11,7 +11,6 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import DeleteView
 
 from notifications.signals import notify
-
 from .forms import PhotoUploadForm
 from .models import Category, Photo
 

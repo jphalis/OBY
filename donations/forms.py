@@ -35,7 +35,7 @@ class DonationForm(forms.ModelForm):
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
 
-        if 0 >= amount:
+        if not amount > 0:
             raise forms.ValidationError('Please enter a value greater than 0.')
 
         return amount

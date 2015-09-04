@@ -6,7 +6,6 @@ from django.shortcuts import render
 
 from donations.forms import DonationForm
 from ecomm.forms import StripeCreditCardForm
-from .models import Donation
 
 
 @login_required

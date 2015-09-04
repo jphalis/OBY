@@ -13,10 +13,8 @@ from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_http_methods
 
-# from analytics.signals import page_view
 from notifications.signals import notify
 from photos.models import Photo
-
 from .forms import (AccountBasicsChangeForm, LoginForm, PasswordChangeForm,
                     RegisterForm, ResetPasswordForm, SetPasswordForm)
 from .models import Follower, MyUser

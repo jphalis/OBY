@@ -1,9 +1,9 @@
+from datetime import datetime
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db.models.signals import post_save
 from django.dispatch import receiver, Signal
-
-from datetime import datetime
 
 from .models import PageView
 

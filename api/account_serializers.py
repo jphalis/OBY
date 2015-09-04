@@ -6,7 +6,6 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from accounts.models import Follower, MyUser
 from photos.models import Photo
-
 from .photo_serializers import PhotoSerializer
 
 

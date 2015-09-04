@@ -7,7 +7,6 @@ from django.views.decorators.http import require_http_methods
 
 from notifications.signals import notify
 from photos.models import Category, Photo
-
 from .forms import CommentForm
 from .models import Comment
 
