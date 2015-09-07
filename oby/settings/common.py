@@ -138,7 +138,6 @@ INSTALLED_APPS = (
     'notifications',
     'photos',
     'search',
-    'test_without_migrations',
     'widget_tweaks',
 )
 
