@@ -19,7 +19,7 @@ class DonationForm(forms.ModelForm):
     )
 
     class Meta:
-        fields = ('amount', 'message',)
+        fields = ('amount', 'message', 'is_anonymous',)
         model = Donation
 
     def __init__(self, *args, **kwargs):

@@ -11,6 +11,7 @@ from rest_framework.reverse import reverse as api_reverse
 
 from accounts.models import Follower, MyUser
 from comments.models import Comment
+from donations.models import Donation
 from hashtags.models import Hashtag
 from notifications.models import Notification
 from photos.models import Category, Photo
@@ -18,6 +19,7 @@ from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
                                   MyUserSerializer)
 from .comment_serializers import (CommentCreateSerializer, CommentSerializer,
                                   CommentUpdateSerializer)
+from .donation_serializers import DonationSerializer
 from .hashtag_serializers import HashtagSerializer
 from .notification_serializers import NotificationSerializer
 from .permissions import (IsCreatorOrReadOnly, IsOwnerOrReadOnly,
@@ -42,6 +44,10 @@ def api_home(request):
         'comments': {
             'count': Comment.objects.all().count(),
             'url': api_reverse('comment_list_api'),
+        },
+        'donations': {
+            'count': Donation.objects.all().count(),
+            'url': api_reverse('donation_list_api'),
         },
         'hashtags': {
             'count': Hashtag.objects.all().count(),
@@ -139,6 +145,16 @@ class CommentDetailAPIView(mixins.DestroyModelMixin, generics.RetrieveAPIView):
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+# D O N A T I O N S
+class DonationListAPIView(generics.ListAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication,
+                              JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = DonationSerializer
+    queryset = Donation.objects.all()
+    paginate_by = 150
 
 
 # H A S H T A G S

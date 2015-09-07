@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}OBY / Pay It Forward{% endblock title %}
+
+{% block content %}
+    <a href="{% url 'donations:make' %}">
+        <input class="submit-btn contribute-btn" type="submit" value="Make A Donation" />
+    </a>
+    <div class="col-sm-12" style="color: #fff;">
+        <h2>Total raised: <span style="font-weight: bold;">${{ total_amount }}</span></h2>
+    </div>
+    <div class="col-sm-12">
+        {% for donation in donations %}
+            <span style="width: 200px; background-color: #fff;">{{ donation }}</span>
+        {% endfor %}
+    </div>
+{% endblock content %}

@@ -8,8 +8,9 @@ class Donation(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True)
     charge_id = models.CharField('Charge ID', max_length=100, help_text='The '
         'charge ID from Stripe.', blank=True)
-    amount = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    amount = models.DecimalField(max_digits=7, decimal_places=2, default=0.00)
     message = models.TextField(max_length=2000, blank=True)
+    is_anonymous = models.BooleanField(default=True)
 
     def __unicode__(self):
         return '{:.2f}'.format(self.amount)

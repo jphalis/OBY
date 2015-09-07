@@ -65,6 +65,15 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                        <label for="{{ donation_form.is_anonymous.auto_id }}" class="control-label">
+                            Do you want your name hidden?
+                        </label><br/>
+                        {{ donation_form.is_anonymous }}
+                        {{ donation_form.is_anonymous.errors }}
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12 text-right">
                         {% csrf_token %}
                         <button id="submitButton" type="submit" class="submit-btn go-btn-form">

@@ -1,11 +1,25 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from donations.forms import DonationForm
 from ecomm.forms import StripeCreditCardForm
+from .models import Donation
+
+
+@login_required
+def info(request):
+    total_amount = Donation.objects.aggregate(Sum('amount')).values()[0]
+    donations = Donation.objects.values('amount')
+
+    context = {
+        'donations': donations,
+        'total_amount': total_amount
+    }
+    return render(request, 'donations/info.html', context)
 
 
 @login_required
@@ -28,10 +42,10 @@ def make(request):
             donation_form.charge_id = charge.id
             donation_form.save()
 
-            return HttpResponseRedirect(reverse('donations:complete'))
+            messages.success(request, "Thank you for your donation!")
+            return HttpResponseRedirect(reverse('donations:info'))
 
         else:
-            # highly unlikely this will happen, but always code defensively
             messages.error(request,
                            "We're sorry, but your credit card "
                            "could not be charged at this time. "
@@ -42,10 +56,4 @@ def make(request):
         'credit_card_form': credit_card_form,
         'donation_form': donation_form
     }
-
     return render(request, 'donations/make.html', context)
-
-
-@login_required
-def complete(request):
-    return render(request, 'donations/complete.html')

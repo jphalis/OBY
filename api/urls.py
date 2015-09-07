@@ -4,6 +4,7 @@ from .views import (AccountCreateAPIView, FollowerListAPIView, HomepageAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
 from .views import (CommentCreateAPIView, CommentDetailAPIView,
                     CommentListAPIView)
+from .views import DonationListAPIView
 from .views import HashtagListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView,
@@ -26,6 +27,8 @@ urlpatterns = patterns('',
         name='comment_create_api'),
     url(r'^comment/(?P<id>\d+)/$', CommentDetailAPIView.as_view(),
         name='comment_detail_api'),
+    url(r'^donations/$', DonationListAPIView.as_view(),
+        name='donation_list_api'),
     url(r'^follows/$', FollowerListAPIView.as_view(),
         name='follow_list_api'),
     url(r'^hashtags/$', HashtagListAPIView.as_view(),
