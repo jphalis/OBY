@@ -13,7 +13,7 @@ from .models import Donation
 @login_required
 def info(request):
     total_amount = Donation.objects.aggregate(Sum('amount')).values()[0]
-    donations = Donation.objects.values('amount')
+    donations = Donation.objects.select_related('user')
 
     context = {
         'donations': donations,

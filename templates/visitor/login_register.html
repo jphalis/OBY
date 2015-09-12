@@ -17,12 +17,12 @@
             <h1>{{ title }}</h1>
             <br/>
         </div>
-        <div class='col-sm-4 col-sm-offset-4' >
-            <form method='POST' action='{{ action_url }}'>
+        <div class="col-sm-4 col-sm-offset-4">
+            <form method="POST" action="{{ action_url }}">
                 {% csrf_token %}
                 {{ form|crispy }}
                 <br/>
-                <input class='submit-btn signin-btn btn-block' type='submit' value='{{ submit_btn }}'/>
+                <input class="submit-btn signin-btn btn-block" type="submit" value="{{ submit_btn }}" />
             </form>
             {% if title == "Register" %}
                     <p class="account-create-agreement">

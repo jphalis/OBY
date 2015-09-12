@@ -3,15 +3,23 @@
 {% block title %}OBY / Pay It Forward{% endblock title %}
 
 {% block content %}
-    <a href="{% url 'donations:make' %}">
-        <input class="submit-btn contribute-btn" type="submit" value="Make A Donation" />
-    </a>
-    <div class="col-sm-12" style="color: #fff;">
-        <h2>Total raised: <span style="font-weight: bold;">${{ total_amount }}</span></h2>
+    <div class="col-sm-12 donation-container">
+        <h3>
+            <span class="total-raised">${{ total_amount }}</span> raised
+        </h3>
+        <a href="{% url 'donations:make' %}">
+            <input class="submit-btn make-donation-btn" type="submit" value="Make A Donation" />
+        </a>
     </div>
-    <div class="col-sm-12">
-        {% for donation in donations %}
-            <span style="width: 200px; background-color: #fff;">{{ donation }}</span>
-        {% endfor %}
+    <div class="col-sm-8 col-sm-offset-2">
+        <p class="donation-info">
+            Our goal is to help. We want to make people happy, and provide opportunities for success. Whether it’s to further your education, pay for medical bills, aid in charitable fundraising, hosting events to raise awareness for a cause, etc., we are here.
+            <br/><br/>
+            There are ample causes to donate to, so let us help you find the right one. We provide an opportunity for success, not a direct path. Recipients will have to work hard, but we want to provide the tools to reach that goal.
+            <br/><br/>
+            90% of all donations are put directly towards good causes. The outstanding 10% is used to make sure transactions are secure, and that the most beneficial causes are chosen. We are not yet registered as a 501(c) organization, but it is something we are pursuing.
+            <br/><br/>
+            Thank you for putting <b>O</b>thers <b>B</b>efore <b>Y</b>ourself!
+        </p>
     </div>
 {% endblock content %}
