@@ -74,10 +74,10 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Photo
         fields = [
-            'creator',
             'photo',
             'category',
             'description',

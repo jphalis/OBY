@@ -13,7 +13,8 @@ class PhotoAdmin(admin.ModelAdmin):
                     'is_active', 'featured', 'like_count']
     search_fields = ['creator__username']
     fields = ['creator', 'photo', 'category', 'slug',
-              'description', 'is_active', 'featured']
+              'description', 'is_active', 'featured', 'created', 'modified']
+    readonly_fields = ['created', 'modified']
     ordering = ['-likers']
 
     class Meta:
@@ -30,7 +31,9 @@ admin.site.register(Photo, PhotoAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['title', 'border_color', 'is_active', 'featured']
-    fields = ['title', 'slug', 'border_color', 'is_active', 'featured']
+    fields = ['title', 'slug', 'border_color', 'is_active', 'featured',
+              'created', 'modified']
+    readonly_fields = ['created', 'modified']
     prepopulated_fields = {'slug': ["title"], }
 
     class Meta:

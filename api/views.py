@@ -1,13 +1,16 @@
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from django.utils.crypto import get_random_string
 
 from rest_framework import generics, mixins, permissions
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.decorators import api_view
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response as RestResponse
 from rest_framework.reverse import reverse as api_reverse
+from rest_framework.viewsets import ModelViewSet
 
 from accounts.models import Follower, MyUser
 from comments.models import Comment
@@ -177,8 +180,15 @@ class NotificationAPIView(generics.ListAPIView):
 
 
 # P H O T O S
-class PhotoCreateAPIView(generics.CreateAPIView):
+class PhotoCreateAPIView(ModelViewSet):
+    queryset = Photo.objects.all()
     serializer_class = PhotoCreateSerializer
+    parser_classes = (MultiPartParser, FormParser,)
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user,
+                        slug=get_random_string(length=10),
+                        photo=self.request.data.get('photo'))
 
 
 class PhotoListAPIView(generics.ListAPIView):
