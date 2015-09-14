@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 
 from donations.forms import DonationForm
 from ecomm.forms import StripeCreditCardForm
@@ -11,6 +12,7 @@ from .models import Donation
 
 
 @login_required
+@cache_page(60 * 5)
 def info(request):
     total_amount = Donation.objects.aggregate(Sum('amount')).values()[0]
     donations = Donation.objects.select_related('user')
@@ -23,6 +25,7 @@ def info(request):
 
 
 @login_required
+@cache_page(60 * 3)
 def make(request):
     credit_card_form = StripeCreditCardForm(request.POST or None,
                                             user=request.user)

@@ -84,7 +84,7 @@ ec2_keypair = 'oby_key_pair'
 ec2_secgroups = ['ObySecurityGroup']
 
 # API Name of instance type. http://bit.ly/mkWvpn
-ec2_instancetype = 't2.micro'
+ec2_instancetype = 't2.medium'
 
 # Existing instances - add the public dns of your instances here
 # when you have spawned them
