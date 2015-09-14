@@ -19,6 +19,7 @@
     </head>
 
     <body>
+        {% spaceless %}
         {% if request.user.is_authenticated %}
             <nav class="navbar navbar-default navbar-fixed-top">
                 <div class="container">
@@ -81,5 +82,6 @@
         <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" defer></script>
         {% block js %}{% endblock js %}
         {% analytics_async 'UA-66160514-1' %}
+        {% endspaceless %}
     </body>
 </html>

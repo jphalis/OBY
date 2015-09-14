@@ -28,6 +28,7 @@
     </head>
 
     <body>
+        {% spaceless %}
         {% if request.user.is_authenticated %}
             {% include 'navbar.html' %}
         {% endif %}
@@ -60,7 +61,7 @@
         {% block jumbotron %}{% endblock jumbotron %}
         
         <div class="container">
-          	{% block content %}{% endblock content %}
+            {% block content %}{% endblock content %}
         </div>
 
         <script type="text/javascript" async>
@@ -71,5 +72,6 @@
         {% block photo_adjustment %}{% endblock photo_adjustment %}
         {% block get_notifications %}{% endblock get_notifications %}
         {% analytics_async 'UA-66160514-1' %}
+        {% endspaceless %}
     </body>
 </html>
