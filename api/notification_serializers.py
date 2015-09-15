@@ -23,9 +23,9 @@ class NotificationSenderUrlField(serializers.HyperlinkedIdentityField):
 
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
-    recipient = NotificationRecipientUrlField("user_profile_detail_api")
+    recipient = NotificationRecipientUrlField("user_account_detail_api")
     sender = serializers.CharField(source='sender_object', read_only=True)
-    sender_url = NotificationSenderUrlField("user_profile_detail_api")
+    sender_url = NotificationSenderUrlField("user_account_detail_api")
     action = serializers.CharField(source='action_object', read_only=True)
     target_id = serializers.CharField(source='target_object_id',
                                       read_only=True)

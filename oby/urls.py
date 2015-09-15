@@ -5,20 +5,6 @@ from django.contrib import admin
 
 from search.views import SearchListView
 
-# from rest_framework import routers
-
-# from accounts.serializers import FollowerViewSet, MyUserViewSet
-# from comments.serializers import CommentViewSet
-# from photos.serializers import CategoryViewSet, PhotoViewSet
-
-
-# router = routers.DefaultRouter()
-# router.register(r"categories", CategoryViewSet)
-# router.register(r"comments", CommentViewSet)
-# router.register(r"follows", FollowerViewSet)
-# router.register(r"photos", PhotoViewSet)
-# router.register(r"profiles", MyUserViewSet)
-
 
 urlpatterns = patterns('',
     # ADMIN

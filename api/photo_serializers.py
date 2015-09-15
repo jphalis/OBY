@@ -1,8 +1,5 @@
-from rest_framework import permissions, serializers, viewsets
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
+from rest_framework import serializers
 from rest_framework.reverse import reverse
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from photos.models import Category, Photo
 from .comment_serializers import CommentSerializer
@@ -40,9 +37,9 @@ class PhotoSerializer(serializers.ModelSerializer):
     category_url = CategoryUrlField("category_detail_api")
     photo_url = PhotoUrlField("photo_detail_api")
     creator = serializers.CharField(source='creator.username', read_only=True)
-    creator_url = MyUserUrlField("user_profile_detail_api")
+    creator_url = MyUserUrlField("user_account_detail_api")
     likers = serializers.HyperlinkedRelatedField(
-        many=True, view_name='user_profile_detail_api', read_only=True,
+        many=True, view_name='user_account_detail_api', read_only=True,
         lookup_field='username')
     comment_set = CommentSerializer(many=True, read_only=True)
 
@@ -63,14 +60,6 @@ class PhotoSerializer(serializers.ModelSerializer):
             'created',
             'modified',
         ]
-
-
-class PhotoViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):
@@ -105,11 +94,3 @@ class CategorySerializer(serializers.ModelSerializer):
         serializer = PhotoSerializer(queryset, context=self.context,
                                      many=True, read_only=True)
         return serializer.data
-
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated, ]
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer

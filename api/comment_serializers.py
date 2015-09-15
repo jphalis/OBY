@@ -1,8 +1,5 @@
-from rest_framework import permissions, serializers, viewsets
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
+from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from comments.models import Comment
 
@@ -26,7 +23,7 @@ class CommentUpdateSerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField(read_only=True)
     user = serializers.CharField(source='user.username', read_only=True)
     user_url = serializers.HyperlinkedRelatedField(
-        view_name='user_profile_detail_api', read_only=True,
+        view_name='user_account_detail_api', read_only=True,
         lookup_field='username')
 
     class Meta:
@@ -90,7 +87,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
     comment_url = serializers.HyperlinkedIdentityField("comment_detail_api",
                                                        lookup_field='id')
     user = serializers.HyperlinkedRelatedField(
-        view_name='user_profile_detail_api', read_only=True,
+        view_name='user_account_detail_api', read_only=True,
         lookup_field='username')
     text = serializers.CharField(read_only=True)
     children = serializers.SerializerMethodField(read_only=True)
@@ -112,11 +109,3 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
                                             context={"request": instance},
                                             many=True)
         return serializer.data
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer

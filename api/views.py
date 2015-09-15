@@ -1,4 +1,3 @@
-from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 
@@ -36,9 +35,9 @@ from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
 @api_view(['GET'])
 def api_home(request):
     data = {
-        'profiles': {
+        'accounts': {
             'count': MyUser.objects.all().count(),
-            'url': api_reverse('user_profile_list_api'),
+            'url': api_reverse('user_account_list_api'),
         },
         'categories': {
             'count': Category.objects.all().count(),
@@ -73,6 +72,28 @@ def api_home(request):
     return RestResponse(data)
 
 
+class HomepageAPIView(generics.ListAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication,
+                              JSONWebTokenAuthentication]
+    serializer_class = PhotoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Photo.objects.most_liked_offset()[:30]
+
+
+class TimelineAPIView(generics.ListAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication,
+                              JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PhotoSerializer
+
+    def get_queryset(self):
+        photos_self = Photo.objects.own(self.request.user)
+        photos_following = Photo.objects.following(self.request.user)
+        return (photos_self | photos_following).distinct()
+
+
 # A C C O U N T S
 class AccountCreateAPIView(generics.CreateAPIView):
     serializer_class = AccountCreateSerializer
@@ -92,6 +113,7 @@ class MyUserDetailAPIView(generics.RetrieveAPIView,
                           mixins.UpdateModelMixin):
     permission_classes = [MyUserIsOwnerOrReadOnly]
     serializer_class = MyUserSerializer
+    parser_classes = (MultiPartParser, FormParser,)
 
     def get_object(self):
         username = self.kwargs["username"]
@@ -111,16 +133,7 @@ class FollowerListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowerSerializer
     queryset = Follower.objects.all()
-
-
-class HomepageAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    serializer_class = PhotoSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Photo.objects.most_liked_offset()[:8]
+    paginate_by = 150
 
 
 # C O M M E N T S
@@ -227,9 +240,7 @@ class CategoryListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Category.objects.annotate(
-            the_count=(Count('photo'))).filter(
-                is_active=True).order_by('-the_count')
+        return Category.objects.most_posts()
 
 
 class CategoryDetailAPIView(generics.RetrieveAPIView):
@@ -242,15 +253,3 @@ class CategoryDetailAPIView(generics.RetrieveAPIView):
         slug = self.kwargs["slug"]
         obj = get_object_or_404(Category, slug=slug)
         return obj
-
-
-class TimelineAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = PhotoSerializer
-
-    def get_queryset(self):
-        photos_self = Photo.objects.own(self.request.user)
-        photos_following = Photo.objects.following(self.request.user)
-        return (photos_self | photos_following).distinct()

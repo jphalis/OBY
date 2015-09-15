@@ -1,8 +1,5 @@
-from rest_framework import permissions, serializers, viewsets
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
+from rest_framework import serializers
 from rest_framework.reverse import reverse
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from accounts.models import Follower, MyUser
 from photos.models import Photo
@@ -29,9 +26,9 @@ class FollowerUrlField(serializers.HyperlinkedIdentityField):
 
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
     # username = serializers.CharField(source='user.username', read_only=True)
-    # user_url = FollowerUrlField("user_profile_detail_api")
-    followers = FollowerUrlField("user_profile_detail_api", many=True)
-    following = FollowerUrlField("user_profile_detail_api", many=True)
+    # user_url = FollowerUrlField("user_account_detail_api")
+    followers = FollowerUrlField("user_account_detail_api", many=True)
+    following = FollowerUrlField("user_account_detail_api", many=True)
 
     class Meta:
         model = Follower
@@ -41,14 +38,6 @@ class FollowerSerializer(serializers.HyperlinkedModelSerializer):
             'followers',
             'following',
         ]
-
-
-class FollowerViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Follower.objects.all()
-    serializer_class = FollowerSerializer
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):
@@ -77,7 +66,7 @@ class MyUserUrlField(serializers.HyperlinkedIdentityField):
 
 
 class MyUserSerializer(serializers.HyperlinkedModelSerializer):
-    account_url = MyUserUrlField("user_profile_detail_api")
+    account_url = MyUserUrlField("user_account_detail_api")
     follower = FollowerSerializer(read_only=True)
     photo_set = serializers.SerializerMethodField()
 
@@ -108,11 +97,3 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
         serializer = PhotoSerializer(queryset, context=self.context,
                                      many=True, read_only=True)
         return serializer.data
-
-
-class MyUserViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = MyUser.objects.all()
-    serializer_class = MyUserSerializer
