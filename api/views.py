@@ -150,7 +150,7 @@ class CommentListAPIView(generics.ListAPIView):
     paginate_by = 150
 
 
-class CommentDetailAPIView(mixins.DestroyModelMixin, generics.RetrieveAPIView):
+class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):
     lookup_field = 'id'
     permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
     serializer_class = CommentUpdateSerializer
