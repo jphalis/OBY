@@ -32,6 +32,7 @@ class SearchListView(LoginRequiredMixin, ListView):
             #     Q(username__icontains=query) |
             #     Q(username__startswith=query)
             #     )
+            # Add a separate tab for searching hashtags
         return user_qs
 
 

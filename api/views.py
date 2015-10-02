@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 
-from rest_framework import generics, mixins, permissions
+from rest_framework import filters, generics, mixins, permissions
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -109,7 +109,8 @@ class MyUserListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
-    paginate_by = 250
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["username"]
 
 
 class MyUserDetailAPIView(generics.RetrieveAPIView,
@@ -138,7 +139,6 @@ class FollowerListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowerSerializer
     queryset = Follower.objects.all()
-    paginate_by = 150
 
 
 # C O M M E N T S
@@ -153,7 +153,6 @@ class CommentListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-    paginate_by = 150
 
 
 class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):
@@ -176,7 +175,6 @@ class DonationListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = DonationSerializer
     queryset = Donation.objects.all()
-    paginate_by = 150
 
 
 # H A S H T A G S
@@ -187,7 +185,8 @@ class HashtagListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = HashtagSerializer
     queryset = Hashtag.objects.all()
-    paginate_by = 250
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["tag"]
 
 
 # N O T I F I C A T I O N S
@@ -219,7 +218,9 @@ class PhotoListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PhotoSerializer
     queryset = Photo.objects.all()
-    paginate_by = 250
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["description"]
+    ordering_fields = ["created", "modified"]
 
 
 class PhotoDetailAPIView(generics.RetrieveAPIView,
