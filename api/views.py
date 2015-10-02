@@ -24,6 +24,9 @@ from .comment_serializers import (CommentCreateSerializer, CommentSerializer,
 from .donation_serializers import DonationSerializer
 from .hashtag_serializers import HashtagSerializer
 from .notification_serializers import NotificationSerializer
+from .pagination import (AccountPagination, CommentPagination,
+                         HashtagPagination, NotificationPagination,
+                         PhotoPagination)
 from .permissions import (IsCreatorOrReadOnly, IsOwnerOrReadOnly,
                           MyUserIsOwnerOrReadOnly)
 from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
@@ -102,6 +105,7 @@ class AccountCreateAPIView(generics.CreateAPIView):
 class MyUserListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
                               JSONWebTokenAuthentication]
+    pagination_class = AccountPagination
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
@@ -111,7 +115,7 @@ class MyUserListAPIView(generics.ListAPIView):
 class MyUserDetailAPIView(generics.RetrieveAPIView,
                           mixins.DestroyModelMixin,
                           mixins.UpdateModelMixin):
-    permission_classes = [MyUserIsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, MyUserIsOwnerOrReadOnly]
     serializer_class = MyUserSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
@@ -130,6 +134,7 @@ class MyUserDetailAPIView(generics.RetrieveAPIView,
 class FollowerListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
                               JSONWebTokenAuthentication]
+    pagination_class = AccountPagination
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowerSerializer
     queryset = Follower.objects.all()
@@ -144,6 +149,7 @@ class CommentCreateAPIView(generics.CreateAPIView):
 class CommentListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
                               JSONWebTokenAuthentication]
+    pagination_class = CommentPagination
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
@@ -152,7 +158,7 @@ class CommentListAPIView(generics.ListAPIView):
 
 class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):
     lookup_field = 'id'
-    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = CommentUpdateSerializer
 
     def get_queryset(self, *args, **kwargs):
@@ -177,6 +183,7 @@ class DonationListAPIView(generics.ListAPIView):
 class HashtagListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
                               JSONWebTokenAuthentication]
+    pagination_class = HashtagPagination
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = HashtagSerializer
     queryset = Hashtag.objects.all()
@@ -187,6 +194,7 @@ class HashtagListAPIView(generics.ListAPIView):
 class NotificationAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
                               JSONWebTokenAuthentication]
+    pagination_class = NotificationPagination
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
     queryset = Notification.objects.all()
@@ -207,6 +215,7 @@ class PhotoCreateAPIView(ModelViewSet):
 class PhotoListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
                               JSONWebTokenAuthentication]
+    pagination_class = PhotoPagination
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PhotoSerializer
     queryset = Photo.objects.all()
