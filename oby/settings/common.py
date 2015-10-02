@@ -210,7 +210,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
-    'PAGINATE_BY': 300
+    'SEARCH_PARAM': 'q',
 }
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER':

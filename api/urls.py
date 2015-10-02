@@ -10,11 +10,12 @@ from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView,
                     TimelineAPIView)
 from .views import NotificationAPIView
+from .views import APIHomeView
 
 
 urlpatterns = patterns('',
     # G E N E R A L
-    url(r'^$', 'api.views.api_home',
+    url(r'^$', APIHomeView.as_view(),
         name='api_home'),
     url(r'^homepage/$', HomepageAPIView.as_view(),
         name='homepage_api'),

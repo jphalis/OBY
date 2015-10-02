@@ -5,10 +5,10 @@ from rest_framework import filters, generics, mixins, permissions
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework.decorators import api_view
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response as RestResponse
 from rest_framework.reverse import reverse as api_reverse
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from accounts.models import Follower, MyUser
@@ -35,44 +35,44 @@ from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
 # Create your views here.
 
 
-@api_view(['GET'])
-def api_home(request):
-    data = {
-        'accounts': {
-            'count': MyUser.objects.all().count(),
-            'url': api_reverse('user_account_list_api'),
-        },
-        'categories': {
-            'count': Category.objects.all().count(),
-            'url': api_reverse('category_list_api'),
-        },
-        'comments': {
-            'count': Comment.objects.all().count(),
-            'url': api_reverse('comment_list_api'),
-        },
-        'donations': {
-            'count': Donation.objects.all().count(),
-            'url': api_reverse('donation_list_api'),
-        },
-        'hashtags': {
-            'count': Hashtag.objects.all().count(),
-            'url': api_reverse('hashtag_list_api'),
-        },
-        'homepage': {
-            'url': api_reverse('homepage_api'),
-        },
-        'notifications': {
-            'url': api_reverse('notification_list_api'),
-        },
-        'photos': {
-            'count': Photo.objects.all().count(),
-            'url': api_reverse('photo_list_api'),
-        },
-        'timeline': {
-            'url': api_reverse('timeline_api'),
-        },
-    }
-    return RestResponse(data)
+class APIHomeView(APIView):
+    def get(self, request, format=None):
+        data = {
+            'accounts': {
+                'count': MyUser.objects.all().count(),
+                'url': api_reverse('user_account_list_api', request=request),
+            },
+            'categories': {
+                'count': Category.objects.all().count(),
+                'url': api_reverse('category_list_api', request=request),
+            },
+            'comments': {
+                'count': Comment.objects.all().count(),
+                'url': api_reverse('comment_list_api', request=request),
+            },
+            'donations': {
+                'count': Donation.objects.all().count(),
+                'url': api_reverse('donation_list_api', request=request),
+            },
+            'hashtags': {
+                'count': Hashtag.objects.all().count(),
+                'url': api_reverse('hashtag_list_api', request=request),
+            },
+            'homepage': {
+                'url': api_reverse('homepage_api', request=request),
+            },
+            'notifications': {
+                'url': api_reverse('notification_list_api', request=request),
+            },
+            'photos': {
+                'count': Photo.objects.all().count(),
+                'url': api_reverse('photo_list_api', request=request),
+            },
+            'timeline': {
+                'url': api_reverse('timeline_api', request=request),
+            },
+        }
+        return RestResponse(data)
 
 
 class HomepageAPIView(generics.ListAPIView):
