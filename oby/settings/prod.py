@@ -13,8 +13,9 @@ ALLOWED_HOSTS = [
     'obystudio.com',
     '*.obystudio.com',
     '127.0.0.1',
-    '52.2.52.114'  # AWS Elastic IP
+    '52.2.52.114',  # AWS Elastic IP
 ]
+CORS_URLS_REGEX = r'^/hide/oby/api/.*$'
 FULL_DOMAIN_NAME = 'www.obystudio.com'
 
 

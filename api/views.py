@@ -36,11 +36,20 @@ from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
 
 
 class APIHomeView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication,
+                              JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request, format=None):
         data = {
+            'authentication': {
+                'login': api_reverse('auth_login_api', request=request),
+            },
             'accounts': {
                 'count': MyUser.objects.all().count(),
                 'url': api_reverse('user_account_list_api', request=request),
+                'create_url': api_reverse('account_create_api',
+                                          request=request),
             },
             'categories': {
                 'count': Category.objects.all().count(),
@@ -49,6 +58,8 @@ class APIHomeView(APIView):
             'comments': {
                 'count': Comment.objects.all().count(),
                 'url': api_reverse('comment_list_api', request=request),
+                'create_url': api_reverse('comment_create_api',
+                                          request=request),
             },
             'donations': {
                 'count': Donation.objects.all().count(),
@@ -67,6 +78,7 @@ class APIHomeView(APIView):
             'photos': {
                 'count': Photo.objects.all().count(),
                 'url': api_reverse('photo_list_api', request=request),
+                'create_url': api_reverse('photo_create_api', request=request),
             },
             'timeline': {
                 'url': api_reverse('timeline_api', request=request),

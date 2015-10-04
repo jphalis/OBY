@@ -31,8 +31,9 @@ urlpatterns = patterns('',
     url(r'^hide/oby/api/auth/', include('rest_framework.urls',
         namespace='rest_framework')),
     url(r'^hide/oby/api/auth/token/$',
-        'rest_framework_jwt.views.obtain_jwt_token'),
-    # url(r'^api2/', include(router.urls)),
+        'rest_framework_jwt.views.obtain_jwt_token', name='auth_login_api'),
+    # url(r'^hide/oby/api/auth/token/refresh/$',
+    #     'rest_framework_jwt.views.refresh_jwt_token'),
 )
 
 
