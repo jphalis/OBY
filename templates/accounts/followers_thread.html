@@ -8,13 +8,20 @@
         {% if followers_set %}
             {% for follow in followers_set %}
                 {% for followers in follow.followers.all %}
-                    <a href="{{ followers.user.get_profile_view }}">
-                        <ul>
+                    <ul>
+                        <a href="{{ followers.user.get_profile_view }}">
                             <img src="{{ followers.user.default_profile_picture }}" />
                             <strong>{{ followers.user.get_full_name }} </strong> 
                             <small>{{ followers }}</small>
-                        </ul>
-                    </a>
+                        </a>
+                        <!-- {% if request.user.username in followers.get_followers_usernames %}
+                            <input id="follow_btn" 
+                               class="submit-btn{% if request.user.username in followers.get_followers_usernames %} support-thread-btn-active{% else %} support-thread-btn-not-active{% endif %}" 
+                               name="{{ user.id }}" 
+                               value="{% if request.user.username in followers.get_followers_usernames %}&#10004;{% else %}&#x2B;{% endif %}" 
+                               type="button" />
+                        {% endif %} -->
+                    </ul>
                     <hr/>
                 {% endfor %}
             {% endfor %}
@@ -23,3 +30,32 @@
         {% endif %}
     </div>
 {% endblock content %}
+
+<script>
+    // {% block jquery %}
+    //     $('#follow_btn').click(function(e){
+    //         e.preventDefault();
+    //         var $follow_btn = $(this);
+    //         if ($follow_btn.attr("class") == "submit-btn support-thread-btn-active"){
+    //             $follow_btn.val("&#x2B;");
+    //             $follow_btn.removeClass("support-thread-btn-active").addClass("support-thread-btn-not-active");
+    //         } else{
+    //             $follow_btn.val("&#10004;");
+    //             $follow_btn.removeClass("support-thread-btn-not-active").addClass("support-thread-btn-active");
+    //         }
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "{% url 'follow_ajax' %}",
+    //             data: {
+    //                 "user_id": $(this).attr("name"),
+    //                 csrfmiddlewaretoken: "{{ csrf_token }}",
+    //             },
+    //             dataType: "json",
+    //             success: function(data) {},
+    //             error: function (rs, e) {
+    //                 alert('Sorry, there was an error with your request. Please try again later.');
+    //             }
+    //         });
+    //     });
+    // {% endblock jquery %}
+</script>
