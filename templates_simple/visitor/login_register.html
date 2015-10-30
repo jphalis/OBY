@@ -1,0 +1,62 @@
+{% extends "visitor_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}OBY / Authenticate{% endblock title %}
+
+<style>
+    {% block style %}
+        body{
+            background: #F9615B;
+        }
+    {% endblock style %}
+</style>
+
+{% block content %}
+    <div class="authentication-container">
+        <div class="col-sm-12">
+            <h1>{{ title }}</h1>
+            <br/>
+        </div>
+        <div class="col-sm-4 col-sm-offset-4">
+            <form method="POST" action="{{ action_url }}">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <br/>
+                <input class="submit-btn signin-btn btn-block" type="submit" value="{{ submit_btn }}" />
+            </form>
+            {% if title == "Register" %}
+                    <p class="account-create-agreement">
+                        Creating an account means you're okay with OBY's<br/>
+                        <a href="{% url 'terms_of_use' %}">Terms</a> and <a href="{% url 'privacy_policy' %}">Privacy</a> policies.
+                    </p>
+                {% endif %}
+			<br/>
+            <div class="redirect-link">
+                {% if title == "Sign in" %}
+                    <br/>
+                    <p>Don't have an account? <a href="{% url 'register' %}">Sign up now!</a></p>
+                    <a href="{% url 'password_reset' %}" class="forgot-password">Forgot your password?</a>
+                {% endif %}
+
+                {% if title == "Register" %}
+                    <br/>
+                    <p>Already have an account? <a href="{% url 'login' %}">Sign in!</a></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-sm-12 visitor-footer" style="text-shadow: none;">
+            <a href="{% url 'home' %}" class="visitor-footer-item">OBY</a>
+            <a href="{% url 'about' %}" class="visitor-footer-item">About</a>
+            <a href="mailto:team@obystudio.com" class="visitor-footer-item">team@obystudio.com</a>
+            <a href="{% url 'privacy_policy' %}" class="visitor-footer-item">Privacy</a>
+            <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>
+            {% if title == "Sign in" %}
+                <a href="{% url 'register' %}" class="visitor-footer-item">Sign up</a>
+            {% endif %}
+            {% if title == "Register" %}
+                <a href="{% url 'login' %}" class="visitor-footer-item">Sign in</a>
+            {% endif %}
+            <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
+        </div>
+    </div>
+{% endblock content %}

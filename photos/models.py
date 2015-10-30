@@ -17,7 +17,7 @@ def upload_location(instance, filename):
 
 class PhotoManager(models.Manager):
     def category_detail(self, obj):
-        date_from = datetime.now() - timedelta(days=60)
+        date_from = datetime.now() - timedelta(days=90)
         return super(PhotoManager, self).get_queryset().annotate(
             the_count=(Count('likers'))).filter(
                 is_active=True, created__gte=date_from,
@@ -34,7 +34,7 @@ class PhotoManager(models.Manager):
                 is_active=True).order_by('-the_count')
 
     def most_liked_offset(self):
-        date_from = datetime.now() - timedelta(days=60)
+        date_from = datetime.now() - timedelta(days=90)
         return super(PhotoManager, self).get_queryset().annotate(
             the_count=(Count('likers'))).filter(
                 is_active=True, created__gte=date_from).order_by(
