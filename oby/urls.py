@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     # GENERAL
     url(r'^about/$', 'oby.views.about', name='about'),
     url(r'^c/', include('comments.urls')),
-    # url(r'^contact/', include('contact.urls')),
+    url(r'^contact/', include('contact.urls')),
     url(r'^donations/', include('donations.urls', namespace='donations')),
     url(r'^hashtag/', include('hashtags.urls')),
     url(r'^newsletter/', include('newsletter.urls')),

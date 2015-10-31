@@ -1,0 +1,40 @@
+{% extends 'visitor_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} / Partnership Inquiry{% endblock %}
+
+<style>
+    {% block style %}
+        body{
+            background-color: #24282f;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+    {% endblock style %}
+</style>
+
+{% block content %}
+    <div class="col-sm-6 col-sm-offset-3 contact-container">
+        <div>
+            <h1>Partnership Inquiry</h1>
+        </div>
+        <h5>Thank you for your interest in OBY!</h5>
+        <h5>We believe it is important to demonstrate acts of kindness to promote an inviting social environment. We do everything in our power to put others before ourselves, but help is always appreciated. This is where organizations like you play an important role.</h5>
+        <h5>By partnering with OBY, we can make a difference... together! We are asking organizations to contribute promotional offers to the users. This includes, but not limited to: coupons, sample products, charitable fundraisers, etc.</h5>
+        <h5>In return for your contribution, we can offer global brand awareness for your organization, customer feedback about your brand, analytics, and much more!</h5>
+        <h5>We would love to further discuss this opportunity with you. Please fill out the form below, and we will be in touch shortly regarding the next steps.</h5>
+        <h5>Thank you!</h5>
+        <form method='POST' action='.'>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type='submit' value='Submit' class='submit-btn special-btn' />
+        </form>
+    </div>
+    <div class="col-sm-12 visitor-footer">
+        <a href="{% url 'home' %}" class="visitor-footer-item">Home</a>
+        <a href="{% url 'about' %}" class="visitor-footer-item">About</a>
+        <a href="mailto:team@obystudio.com" class="visitor-footer-item">team@obystudio.com</a>
+        <a href="{% url 'privacy_policy' %}" class="visitor-footer-item">Privacy</a>
+        <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>
+        <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
+    </div>
+{% endblock content %}

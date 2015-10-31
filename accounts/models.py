@@ -103,8 +103,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def default_profile_picture(self):
         if self.profile_picture:
             return "{}{}".format(settings.MEDIA_URL, self.profile_picture)
-        else:
-            return settings.STATIC_URL + 'img/default_profile_picture.jpg'
+        return settings.STATIC_URL + 'img/default_profile_picture.jpg'
 
     @property
     def is_staff(self):

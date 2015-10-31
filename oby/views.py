@@ -53,17 +53,17 @@ def timeline(request):
     return render(request, 'accounts/timeline.html', context)
 
 
-@cache_page(60 * 10)
+@cache_page(60 * 15)
 def about(request):
     return render(request, 'company/about.html', {})
 
 
-@cache_page(60 * 10)
+@cache_page(60 * 15)
 def privacy_policy(request):
     return render(request, 'company/privacy_policy.html', {})
 
 
-@cache_page(60 * 10)
+@cache_page(60 * 15)
 def terms_of_use(request):
     return render(request, 'company/terms_of_use.html', {})
 

@@ -111,7 +111,6 @@ def follow_ajax(request):
 
 
 @login_required
-@cache_page(60)
 def account_settings(request):
     user = request.user
     account_change_form = AccountBasicsChangeForm(request.POST or None,
@@ -153,7 +152,6 @@ def password_change(request):
                   {'form': form})
 
 
-@cache_page(60 * 10)
 def password_reset(request,
                    template_name='accounts/settings/password_reset_form.html',
                    email_template_name='accounts/settings/password_reset_email.html',
@@ -220,7 +218,6 @@ def auth_logout(request):
     return HttpResponseRedirect(reverse("home"))
 
 
-@cache_page(60 * 10)
 def auth_login(request):
     if request.user.is_authenticated():
         return redirect("home")
@@ -253,7 +250,6 @@ def auth_login(request):
         return render(request, "visitor/login_register.html", context)
 
 
-@cache_page(60 * 10)
 def auth_register(request):
     if request.user.is_authenticated():
         return redirect("home")

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import Http404, render
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
 from .models import Notification
@@ -9,6 +10,7 @@ from .models import Notification
 
 
 @login_required
+@cache_page(60 * 3)
 def all(request):
     notifications = Notification.objects.all_for_user(request.user)[:50]
     for notification in notifications:

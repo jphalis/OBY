@@ -25,7 +25,6 @@ def info(request):
 
 
 @login_required
-@cache_page(60 * 3)
 def make(request):
     credit_card_form = StripeCreditCardForm(request.POST or None,
                                             user=request.user)

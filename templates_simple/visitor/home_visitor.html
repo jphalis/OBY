@@ -40,49 +40,22 @@
                 </h3>
             </div>
         </div>
-
         <div class="col-md-12 slide">
             <div class="col-md-12 app-store-badge">
                 <a href="#">
                     <img src="{% static 'img/app_store_135x40.svg' %}" />
                 </a>
             </div>
-            <div class="col-md-12">
+            <!-- <div class="col-md-12">
                 <h3>
                     <a href="{% url 'login' %}" class="submit-btn home-submit-btn signin-btn">Sign in</a>
                     <a href="{% url 'register' %}" class="submit-btn home-submit-btn special-btn">Sign up</a>
                 </h3>
-            </div>
-            <!-- <div class="col-sm-2">
-                <h3><a href="{% url 'register' %}" class="submit-btn special-btn">Sign up</a></h3>
             </div> -->
         </div>
-
-        <!-- <div class="col-md-12 hook-container slide">
-            <div class="col-sm-4 col-sm-offset-2 hook img-responsive">
-                <img src="{% static 'img/noticed.png' %}" />
-                <h4>Get noticed quickly!</h4>
-            </div>
-            <div class="col-sm-4 hook img-responsive">
-                <img src="{% static 'img/discover.png' %}" />
-                <h4>Discover new ideas!</h4>
-            </div>
-            <div class="col-sm-4 hook img-responsive">
-                <img src="{% static 'img/benefits.png' %}" />
-                <h4>The earlier you start,<br/>the greater the benefits!</h4>
-            </div>
-            <div class="col-sm-4 hook img-responsive">
-                <img src="{% static 'img/good.png' %}" />
-                <h4>See how great people can be!</h4>
-            </div>
-            <div class="col-sm-4 hook img-responsive">
-                <img src="{% static 'img/events.png' %}" />
-                <h4>Live events from everywhere<br/>in the world!</h4>
-            </div>
-        </div> -->
-        
         <div class="col-sm-12 visitor-footer">
             <a href="{% url 'about' %}" class="visitor-footer-item">About</a>
+            <a href="{% url 'business_inquiry' %}" class="visitor-footer-item">Partnerships</a>
             <a href="mailto:team@obystudio.com" class="visitor-footer-item">team@obystudio.com</a>
             <a href="{% url 'privacy_policy' %}" class="visitor-footer-item">Privacy</a>
             <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>

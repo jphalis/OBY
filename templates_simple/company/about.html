@@ -19,9 +19,8 @@
                 <h1>About Us</h1>
                 <p>Whenever there is news, more often than not, it's something sad, violent, scary, negative, etc. No one likes to hear that. We want to create a platform that shares quality content to inspire and reward positive events. A picture is worth a thousand words, so let's write some books together.</p>
                 <li>Do you have a cute picture with your family? <b>Share it!</b></li>
-                <li>Did you do something fun with your friends last night? <b>Share it!</b></li>
-                <li>Did you do something charitable? <b>Share it!</b></li>
-                <li>Are you beautiful and want to flaunt it? Do us all a favor... <b>Share it!</b></li><br/>
+                <li>Did you do something fun with your friends last night? <b>Post it!</b></li>
+                <li>Are you beautiful and want to flaunt it? Do us all a favor... <b>Broadcast it!</b></li><br/>
                 <p>OBY is great for those that want to share personal pictures, businesses wanting to broadcast new products, spreading awareness for causes, and much more!</p>
                 <p>We want to see your stories and show people how great the world we live in truly is. Please help us make our dream come true and make a difference.</p>
                 <p>Thank you for putting <b>O</b>thers <b>B</b>efore <b>Y</b>ourself!</p>
@@ -32,13 +31,11 @@
 
 {% block content %}
     <div class="col-sm-12 visitor-footer">
-        <a href="{% url 'home' %}" class="visitor-footer-item">OBY</a>
+        <a href="{% url 'home' %}" class="visitor-footer-item">Home</a>
+        <a href="{% url 'business_inquiry' %}" class="visitor-footer-item">Partnerships</a>
         <a href="mailto:team@obystudio.com" class="visitor-footer-item">team@obystudio.com</a>
         <a href="{% url 'privacy_policy' %}" class="visitor-footer-item">Privacy</a>
-            <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>
-        {% if not request.user.is_authenticated %}
-            <a href="{% url 'login' %}" class="visitor-footer-item">Sign in</a>
-        {% endif %}
+        <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>
         <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
     </div>
 {% endblock content %}

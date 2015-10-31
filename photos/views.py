@@ -79,7 +79,6 @@ class PhotoDelete(DeleteView):
 
 
 @login_required
-@cache_page(60 * 10)
 def photo_upload(request):
     form = PhotoUploadForm(request.POST or None,
                            request.FILES or None,
