@@ -7,6 +7,7 @@ from django.db.models import Count
 
 from core.models import TimeStampedModel
 from hashtags.models import HashtagMixin
+from oby.utils import readable_number
 
 # Create your models here.
 
@@ -88,8 +89,13 @@ class Photo(HashtagMixin, TimeStampedModel):
     def get_likers_usernames(self):
         return map(str, self.likers.all().values_list('username', flat=True))
 
-    def like_count(self):
-        return self.likers.count()
+    def like_count(self, short=True):
+        count = self.likers.count()
+        return readable_number(count, short=short)
+
+    def comment_count(self, short=True):
+        count = self.comment_set.count()
+        return readable_number(count, short=short)
 
 
 class CategoryManager(models.Manager):

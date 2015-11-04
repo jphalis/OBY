@@ -79,14 +79,12 @@ class Comment(HashtagMixin, TimeStampedModel):
     def get_children(self):
         if self.is_child:
             return None
-        else:
-            return Comment.objects.filter(parent=self)
+        return Comment.objects.filter(parent=self)
 
     def get_children_count(self):
         if self.is_child:
             return None
-        else:
-            return Comment.objects.filter(parent=self).count()
+        return Comment.objects.filter(parent=self).count()
 
     @property
     def get_comment(self):

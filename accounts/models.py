@@ -16,12 +16,6 @@ def upload_location(instance, filename):
     return "{}/profile_pictures/{}".format(instance.username, filename)
 
 
-GENDER_CHOICES = (
-    ('DUDE', 'Dude'),
-    ('BETTY', 'Betty'),
-)
-
-
 class MyUserManager(BaseUserManager):
     def create_user(self, username=None, email=None, password=None):
         if not username:
@@ -60,6 +54,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     website = models.CharField(max_length=90, blank=True)
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
                                   unique=True, null=True, blank=True)
+    GENDER_CHOICES = (
+        ('DUDE', 'Dude'),
+        ('BETTY', 'Betty'),
+    )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               blank=True)
     profile_picture = models.ImageField(upload_to=upload_location, blank=True)
@@ -69,7 +67,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     stripe_customer_id = models.CharField(max_length=30, editable=False,
-        blank=True)
+                                          blank=True)
 
     objects = MyUserManager()
 
