@@ -9,9 +9,10 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 
 
 def readable_number(value, short=False):
-    powers = [10 ** x for x in (3, 6, 9, 12)]
-    human_powers = ('thousand', 'million', 'billion', 'trillion')
-    human_powers_short = ('K', 'M', 'B', 'T')
+    powers = [10 ** x for x in (3, 6, 9, 12, 18)]
+    human_powers = ('thousand', 'million', 'billion', 'trillion',
+                    'quadrillion')
+    human_powers_short = ('K', 'M', 'B', 'T', 'QD')
 
     try:
         value = int(value)

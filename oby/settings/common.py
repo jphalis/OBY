@@ -215,7 +215,7 @@ REST_FRAMEWORK = {
     'SEARCH_PARAM': 'q',
 }
 JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'oby.utils.jwt_response_payload_handler',
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'core.utils.jwt_response_payload_handler',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=180),
     'JWT_ALLOW_REFRESH': False,
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),

@@ -6,8 +6,8 @@ from django.db import models
 from django.db.models import Count
 
 from core.models import TimeStampedModel
+from core.utils import readable_number
 from hashtags.models import HashtagMixin
-from oby.utils import readable_number
 
 # Create your models here.
 
