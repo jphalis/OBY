@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 
@@ -104,9 +106,28 @@ class TimelineAPIView(generics.ListAPIView):
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
-        photos_self = Photo.objects.own(self.request.user)
-        photos_following = Photo.objects.following(self.request.user)
-        return (photos_self | photos_following).distinct()
+        user = self.request.user
+        photos_self = Photo.objects.own(user)
+
+        try:
+            follow = Follower.objects.get(user=user)
+        except Follower.DoesNotExist:
+            follow = None
+
+        if follow:
+            photos_following = Photo.objects.following(user)
+            return (photos_self | photos_following).distinct()[:250]
+        else:
+            # Add suggested users
+            photos_suggested = Photo.objects.all() \
+                .select_related("creator", "category") \
+                .exclude(creator=user)[:50]
+            photos = chain(photos_self, photos_suggested)
+            return photos
+
+        # photos_self = Photo.objects.own(self.request.user)
+        # photos_following = Photo.objects.following(self.request.user)
+        # return (photos_self | photos_following).distinct()
 
 
 # A C C O U N T S
