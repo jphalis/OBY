@@ -84,14 +84,17 @@ ec2_keypair = 'oby_key_pair'
 ec2_secgroups = ['ObySecurityGroup']
 
 # API Name of instance type. http://bit.ly/mkWvpn
-ec2_instancetype = 't2.medium'
+ec2_instancetype = 't2.micro'
 
 # Existing instances - add the public dns of your instances here
 # when you have spawned them
 # If you are using an Elastic IP, add that instead
 fabconf['EC2_INSTANCES'] = ["52.2.52.114"]
 
-# update git files
+# Spawn a new instance
+# fab spawn instance
+
+# Update git files
 # fab update_packages
 # fab deploy
 # fab reload_gunicorn

@@ -38,7 +38,7 @@ class HashtagMixin(models.Model):
         if not isinstance(self.hashtag_field,
                           (models.CharField, models.TextField,)):
             raise Exception(u'"hashtag_text_field" must be of type: '
-                u'models.CharField or TextField.')
+                            u'models.CharField or TextField.')
 
     def _get_hashtags(self):
         # split the string if the word starts with '#'

@@ -11,6 +11,7 @@ from photos.models import Photo
 
 
 class CommentManager(models.Manager):
+    # Need to change "all" to "active"
     def all(self):
         return super(CommentManager, self).filter(is_active=True).filter(
             parent=None)
@@ -45,7 +46,6 @@ class Comment(HashtagMixin, TimeStampedModel):
     text = models.TextField(max_length=240)
     hashtag_enabled_text = models.TextField(blank=True,
         help_text='Contains the description with hashtags replaced with links')
-
     hashtag_text_field = 'text'
 
     objects = CommentManager()
