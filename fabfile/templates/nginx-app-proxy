@@ -28,10 +28,6 @@ server {
             proxy_pass http://app_server;
             break;
         }
-        if (!-e $request_filename){
-            rewrite ^(.*)$ /base.html;
-        }
-        base base.html;
     }
     error_page 500 502 503 504 /500.html;
     location = /500.html {
