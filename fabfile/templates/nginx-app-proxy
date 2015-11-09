@@ -4,76 +4,31 @@ upstream app_server {
 }
 
 server {
-    server_name %(DOMAINS)s %(EC2_INSTANCES)s;
+    # Access Logs
     access_log %(PROJECT_PATH)s/logs/nginx-access.log;
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
+
+    listen 80 proxy_protocol;
+
+    client_max_body_size 4G;
+    client_header_timeout 60;
+    client_body_buffer_size 1K;
+    client_header_buffer_size 1k;
+    server_name %(DOMAINS)s %(EC2_INSTANCES)s;
+    keepalive_timeout 20;
     root %(PROJECT_PATH)s;
 
-    listen 80;
-
-    ## Deny illegal Host headers
-    if ($host !~* ^(%(DOMAINS)s|%(EC2_INSTANCES)s)$ ) {
-        return 444;
-    }
-
-    ## Redirect example.com to www.example.com
-    #if ($host !~* '^www.example.com$') {
-        #rewrite ^/(.*)$ http://www.example.com/$1 permanent;
-    #}
-
-    ## Return a 404 for the favicon
-    #location = /favicon.ico {
-        #return  404;
-    #}
-
     location / {
-        proxy_pass               http://obystudio.com_app_server;
-        proxy_redirect           off;
-        proxy_set_header         Host             $host;
-        proxy_set_header         X-Real-IP        $remote_addr;
-        proxy_set_header         X-Forwarded-For  $proxy_add_x_forwarded_for;
-        client_max_body_size     10m;
-        proxy_buffer_size        4k;
-        proxy_buffers            30 100k;
-        proxy_busy_buffers_size  100k;
-        proxy_intercept_errors   on;
-
-        error_page 500 502 503 504 /500.html;
-        location = /500.html {
-            root %(PROJECT_PATH)s;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_redirect default;
+        if (!-f $request_filename) {
+            proxy_pass http://app_server;
+            break;
         }
     }
-
-}
-
-server {
-
-    listen 443;
-    server_name %(DOMAINS)s %(EC2_INSTANCES)s;
-    access_log %(PROJECT_PATH)s/logs/nginx-access.log;
-    error_log %(PROJECT_PATH)s/logs/nginx-error.log;
-
-    ## Deny illegal Host headers
-    if ($host !~* ^(example.com|www.example.com)$ ) {
-        return 444;
-    }
-
-    location  / {
-        proxy_pass               hhttp://obystudio.com_app_server;
-        proxy_redirect           off;
-        proxy_set_header         Host                  $host;
-        proxy_set_header         X-Real-IP             $remote_addr;
-        proxy_set_header         X-Forwarded-For       $proxy_add_x_forwarded_for;
-        proxy_set_header         X-Forwarded-Protocol  $scheme;
-        client_max_body_size     10m;
-        proxy_buffer_size        4k;
-        proxy_buffers            30 100k;
-        proxy_busy_buffers_size  100k;
-        proxy_intercept_errors   off;
-
-        error_page 500 502 503 504 /500.html;
-        location = /500.html {
-            root %(PROJECT_PATH)s;
-        }
+    error_page 500 502 503 504 /500.html;
+    location = /500.html {
+        root %(PROJECT_PATH)s;
     }
 }
