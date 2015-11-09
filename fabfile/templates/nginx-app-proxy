@@ -7,20 +7,27 @@ server {
     access_log %(PROJECT_PATH)s/logs/nginx-access.log;
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
-    listen 80 default;
+    listen 80;
+    server_name %(DOMAINS)s %(EC2_INSTANCES)s;
+    rewrite ^(.*)$ http://%(DOMAINS)s$1 permanent;
 
     client_max_body_size 4G;
     client_header_timeout 60;
     client_body_buffer_size 1K;
     client_header_buffer_size 1k;
-    server_name %(DOMAINS)s %(EC2_INSTANCES)s;
-    keepalive_timeout 20;
     root %(PROJECT_PATH)s;
 
+    proxy_redirect off;
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header  X-Real-IP  $remote_addr;
+    proxy_set_header Host $http_host;
+
+    location /static {
+        root %(PROJECT_PATH)s/static;
+    }
+
     location / {
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $http_host;
-        proxy_redirect default;
         if (!-f $request_filename) {
             proxy_pass http://app_server;
             break;
@@ -28,6 +35,6 @@ server {
     }
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root /path/to/app/current/public;
+        root %(PROJECT_PATH)s;
     }
 }
