@@ -9,7 +9,6 @@ server {
 
     listen 80;
     server_name %(DOMAINS)s %(EC2_INSTANCES)s;
-    rewrite ^(.*)$ http://%(DOMAINS)s$1 permanent;
 
     client_max_body_size 4G;
     client_header_timeout 60;
@@ -23,14 +22,15 @@ server {
         proxy_set_header X-Forwarded-Host $http_host;
         proxy_set_header  X-Real-IP  $remote_addr;
         proxy_set_header Host $http_host;
-    
+
         if (!-f $request_filename) {
             proxy_pass http://app_server;
             break;
         }
     }
+
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root %(PROJECT_PATH)s;
+        root /path/to/app/current/public;
     }
 }
