@@ -8,9 +8,9 @@ server {
     access_log %(PROJECT_PATH)s/logs/nginx-access.log;
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
-    listen 80 default;
+    listen 80;
     # the following is a newly added line
-    listen 443 ssl;
+    listen 443 default ssl;
 
     # the following is a newly added line
     # rewrite ^(.*) https://$host$1 permanent;
