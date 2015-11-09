@@ -4,12 +4,16 @@ upstream app_server {
 }
 
 server {
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+server {
     # Access Logs
     access_log %(PROJECT_PATH)s/logs/nginx-access.log;
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
-    listen 80 default;
-    # listen 443 default_server ssl;
+    listen 443;
 
     # the following is a newly added line
     # rewrite ^(.*) https://$host$1 permanent;
@@ -24,13 +28,14 @@ server {
 
     location / {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $http_host;
-        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_redirect https://www.obystudio.com;
         if (!-f $request_filename) {
             proxy_pass http://app_server;
             break;
         }
     }
+    
     error_page 500 502 503 504 /500.html;
     location = /500.html {
         root /path/to/app/current/public;
