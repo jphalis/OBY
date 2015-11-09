@@ -8,16 +8,18 @@ server {
     access_log %(PROJECT_PATH)s/logs/nginx-access.log;
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
+    listen 80 default;
+    # the following is a newly added line
+    listen 443 ssl;
 
-    listen 80;
     # the following is a newly added line
     # rewrite ^(.*) https://$host$1 permanent;
+
     client_max_body_size 4G;
     client_header_timeout 60;
     client_body_buffer_size 1K;
     client_header_buffer_size 1k;
     server_name %(DOMAINS)s %(EC2_INSTANCES)s;
-    # server_name _;
     keepalive_timeout 20;
     root %(PROJECT_PATH)s;
 
