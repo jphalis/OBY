@@ -9,10 +9,7 @@ server {
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
     listen 80 proxy_protocol;
-    listen 443 proxy_protocol;
-
-    # the following is a newly added line
-    # rewrite ^(.*) https://$host$1 permanent;
+    #listen 443 proxy_protocol;
 
     client_max_body_size 4G;
     client_header_timeout 60;
@@ -27,7 +24,6 @@ server {
 
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto tcp;
