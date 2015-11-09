@@ -89,7 +89,7 @@ ec2_instancetype = 't2.micro'
 # Existing instances - add the public dns of your instances here
 # when you have spawned them
 # If you are using an Elastic IP, add that instead
-fabconf['EC2_INSTANCES'] = ["ec2-54-173-38-84.compute-1.amazonaws.com"]
+fabconf['EC2_INSTANCES'] = [""]
 
 # Spawn a new instance
 # fab spawn instance
