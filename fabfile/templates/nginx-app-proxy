@@ -9,7 +9,7 @@ server {
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
     listen 80 proxy_protocol;
-    listen 443 proxy_protocol ssl;
+    listen 443 proxy_protocol;
 
     # the following is a newly added line
     # rewrite ^(.*) https://$host$1 permanent;
@@ -24,7 +24,7 @@ server {
 
     location / {
         proxy_redirect default;
-        
+
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
