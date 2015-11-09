@@ -8,8 +8,8 @@ server {
     access_log %(PROJECT_PATH)s/logs/nginx-access.log;
     error_log %(PROJECT_PATH)s/logs/nginx-error.log;
 
-    listen 80 proxy_protocol;
-    #listen 443 proxy_protocol;
+    listen 80;
+    listen 443;
 
     client_max_body_size 4G;
     client_header_timeout 60;
@@ -18,6 +18,10 @@ server {
     server_name %(DOMAINS)s %(EC2_INSTANCES)s;
     keepalive_timeout 20;
     root %(PROJECT_PATH)s;
+
+    if ($http_x_forwarded_proto != 'https') { 
+        return 301 https://$host$request_uri;
+    }
 
     location / {
         proxy_redirect default;
