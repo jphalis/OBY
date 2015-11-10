@@ -17,11 +17,9 @@ class FollowerCreateSerializer(serializers.ModelSerializer):
 class FollowerUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
 
-        kwargs = {
-            'username': obj.user.username
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'username': obj.user.username}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,12 +30,7 @@ class FollowerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Follower
-        fields = [
-            # 'username',
-            # 'user_url',
-            'followers',
-            'following',
-        ]
+        fields = ('followers', 'following')
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):
@@ -58,11 +51,9 @@ class AccountCreateSerializer(serializers.ModelSerializer):
 
 class MyUserUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'username': obj.username
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'username': obj.username}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class MyUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,28 +63,13 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = [
-            'id',
-            'account_url',
-            'username',
-            'email',
-            'full_name',
-            'bio',
-            'website',
-            'edu_email',
-            'gender',
-            'photo_set',
-            'profile_picture',
-            'follower',
-            'is_active',
-            'is_admin',
-            'is_verified',
-            'date_joined',
-            'modified'
-        ]
+        fields = ('id', 'account_url', 'username', 'email', 'full_name', 'bio',
+                  'website', 'edu_email', 'gender', 'photo_set',
+                  'profile_picture', 'follower', 'is_active', 'is_admin',
+                  'is_verified', 'date_joined', 'modified')
 
     def get_photo_set(self, request):
         queryset = Photo.objects.own(request.pk)
-        serializer = PhotoSerializer(queryset, context=self.context,
-                                     many=True, read_only=True)
+        serializer = PhotoSerializer(queryset, context=self.context, many=True,
+                                     read_only=True)
         return serializer.data

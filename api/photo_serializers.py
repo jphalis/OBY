@@ -7,20 +7,16 @@ from .comment_serializers import CommentSerializer
 
 class MyUserUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'username': obj.creator.username
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'username': obj.creator.username}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class CategoryUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'slug': obj.category.slug
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'slug': obj.category.slug}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class PhotoUrlField(serializers.HyperlinkedIdentityField):
@@ -29,8 +25,8 @@ class PhotoUrlField(serializers.HyperlinkedIdentityField):
             'cat_slug': obj.category.slug,
             'photo_slug': obj.slug
         }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -45,33 +41,17 @@ class PhotoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Photo
-        fields = [
-            'id',
-            'category_url',
-            'photo_url',
-            'slug',
-            'creator',
-            'creator_url',
-            'photo',
-            'description',
-            'like_count',
-            'likers',
-            'comment_count',
-            'comment_set',
-            'created',
-            'modified',
-        ]
+        fields = ('id', 'category_url', 'photo_url', 'slug', 'creator',
+                  'creator_url', 'photo', 'description', 'like_count',
+                  'likers', 'comment_count', 'comment_set', 'created',
+                  'modified')
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Photo
-        fields = [
-            'photo',
-            'category',
-            'description',
-        ]
+        fields = ('photo', 'category', 'description')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -81,17 +61,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = [
-            'id',
-            'border_color',
-            'category_url',
-            'slug',
-            'title',
-            'photo_set',
-        ]
+        fields = ('id', 'border_color', 'category_url', 'slug', 'title',
+                  'photo_set')
 
     def get_photo_set(self, request):
         queryset = Photo.objects.category_detail(request.pk)
-        serializer = PhotoSerializer(queryset, context=self.context,
-                                     many=True, read_only=True)
+        serializer = PhotoSerializer(queryset, context=self.context, many=True,
+                                     read_only=True)
         return serializer.data

@@ -6,20 +6,16 @@ from notifications.models import Notification
 
 class NotificationRecipientUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'username': obj.recipient.username
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'username': obj.recipient.username}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class NotificationSenderUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'username': obj.sender_object.username
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'username': obj.sender_object.username}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
@@ -33,16 +29,5 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Notification
-        fields = [
-            'id',
-            'sender',
-            'sender_url',
-            'verb',
-            'action',
-            'target_id',
-            'target_slug',
-            'recipient',
-            'read',
-            'created',
-            'modified',
-        ]
+        fields = ('id', 'sender', 'sender_url', 'verb', 'action', 'target_id',
+                  'target_slug', 'recipient', 'read', 'created', 'modified')

@@ -6,11 +6,9 @@ from donations.models import Donation
 
 class MyUserUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'username': obj.user.username
-        }
-        return reverse(view_name, kwargs=kwargs,
-                       request=request, format=format)
+        kwargs = {'username': obj.user.username}
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
 
 
 class DonationSerializer(serializers.ModelSerializer):
@@ -19,13 +17,5 @@ class DonationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Donation
-        fields = [
-            'id',
-            'user',
-            'user_url',
-            'amount',
-            'message',
-            'is_anonymous',
-            'created',
-            'modified',
-        ]
+        fields = ('id', 'user', 'user_url', 'amount', 'message',
+                  'is_anonymous', 'created', 'modified')
