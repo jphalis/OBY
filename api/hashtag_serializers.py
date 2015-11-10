@@ -7,4 +7,4 @@ class HashtagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Hashtag
-        fields = ('id', 'tag')
+        fields = ['id', 'tag']

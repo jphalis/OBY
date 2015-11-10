@@ -1,9 +1,7 @@
 from oby.settings.common import *
 
 
-############################
-# HOSTING + AUTHENTICATION #
-############################
+# HOSTING + AUTHENTICATION
 ADMINS = (
     ("JP", "halis@obystudio.com"),
 )
@@ -19,9 +17,7 @@ CORS_URLS_REGEX = r'^/hide/oby/api/.*$'
 FULL_DOMAIN_NAME = 'www.obystudio.com'
 
 
-################
-# SSL SECURITY #
-################
+# S S L  S E C U R I T Y
 SECURE_BROWSER_XSS_FILTER = False
 SECURE_CONTENT_TYPE_NOSNIFF = False
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
@@ -34,15 +30,11 @@ SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
 
-##########
-# STRIPE #
-##########
+# S T R I P E
 STRIPE_SECRET_KEY = 'sk_live_6OlOtvEapbxPwcf1CZATzOXA'
 
 
-#########
-# EMAIL #
-#########
+# E M A I L
 EMAIL_HOST = 'smtp.gmail.com'  # 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'halis@obystudio.com'  # 'sendgrid_username'
 EMAIL_HOST_PASSWORD = '. Hockey18 .'  # 'sendgrid_password'
@@ -65,9 +57,7 @@ INSTALLED_APPS += (
 )
 
 
-############
-# DATABASE #
-############
+# D A T A B A S E
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -85,9 +75,7 @@ DATABASES = {
 }
 
 
-#############
-# TEMPLATES #
-#############
+# T E M P L A T E S
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -105,9 +93,7 @@ TEMPLATES = [
 ]
 
 
-#########
-# CACHE #
-#########
+# C A C H E
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -124,9 +110,7 @@ CACHE_MIDDLEWARE_SECONDS = 8
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 
-#############
-# S3 BUCKET #
-#############
+# S 3  B U C K E T
 STATICFILES_DIRS = (
     os.path.join('oby', 'static', 'static_dirs'),
     # '/Users/jphalis/Desktop/oby/src/oby/static/static_dirs/'
@@ -164,9 +148,7 @@ AWS_HEADERS = {
 }
 
 
-###########
-# LOGGING #
-###########
+# L O G G I N G
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

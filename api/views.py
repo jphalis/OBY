@@ -125,10 +125,6 @@ class TimelineAPIView(generics.ListAPIView):
             photos = chain(photos_self, photos_suggested)
             return photos
 
-        # photos_self = Photo.objects.own(self.request.user)
-        # photos_following = Photo.objects.following(self.request.user)
-        # return (photos_self | photos_following).distinct()
-
 
 # A C C O U N T S
 class AccountCreateAPIView(generics.CreateAPIView):

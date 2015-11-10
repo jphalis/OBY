@@ -377,25 +377,3 @@ class ResetPasswordForm(forms.Form):
             self.send_mail(subject_template_name, email_template_name,
                            context, from_email, user.email,
                            html_email_template_name=html_email_template_name)
-
-
-# class ProfileChangeForm(forms.Form):
-#     radio_buttons = forms.ChoiceField(
-#         choices = (
-#             ('option_one', "Option one is this and that be sure to include why it's great"), 
-#             ('option_two', "Option two can is something else and selecting it will deselect option one")
-#         ),
-#         widget = forms.RadioSelect,
-#         initial = 'option_two',
-#     )
-
-#     checkboxes = forms.MultipleChoiceField(
-#         choices = (
-#             ('option_one', "Option one is this and that be sure to include why it's great"), 
-#             ('option_two', 'Option two can also be checked and included in form results'),
-#             ('option_three', 'Option three can yes, you guessed it also be checked and included in form results')
-#         ),
-#         initial = 'option_one',
-#         widget = forms.CheckboxSelectMultiple,
-#         help_text = "<strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.",
-#     )

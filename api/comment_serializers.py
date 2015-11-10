@@ -9,7 +9,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'username', 'parent', 'photo', 'text')
+        fields = ['id', 'user', 'username', 'parent', 'photo', 'text']
 
 
 class CommentUpdateSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class CommentUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'user_url', 'text', 'children')
+        fields = ['id', 'user', 'user_url', 'text', 'children']
 
     def get_children(self, instance):
         queryset = Comment.objects.filter(parent__pk=instance.pk)
@@ -35,7 +35,7 @@ class ChildCommentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'text')
+        fields = ['id', 'user', 'text']
 
 
 class CommentPhotoUrlField(serializers.HyperlinkedIdentityField):
@@ -60,8 +60,7 @@ class CommentPhotoUrlField(serializers.HyperlinkedIdentityField):
             }
             return api_reverse(view_name, kwargs=kwargs, request=request,
                                format=format)
-        else:
-            return None
+        return None
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
@@ -76,7 +75,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'photo', 'comment_url', 'user', 'text', 'children')
+        fields = ['id', 'photo', 'comment_url', 'user', 'text', 'children']
 
     def get_children(self, instance):
         queryset = Comment.objects.filter(parent__pk=instance.pk)

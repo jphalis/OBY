@@ -11,7 +11,7 @@ class FollowerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follower
-        fields = ('user', 'followers')
+        fields = ['user', 'followers']
 
 
 class FollowerUrlField(serializers.HyperlinkedIdentityField):
@@ -24,19 +24,18 @@ class FollowerUrlField(serializers.HyperlinkedIdentityField):
 
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
     # username = serializers.CharField(source='user.username', read_only=True)
-    # user_url = FollowerUrlField("user_account_detail_api")
     followers = FollowerUrlField("user_account_detail_api", many=True)
     following = FollowerUrlField("user_account_detail_api", many=True)
 
     class Meta:
         model = Follower
-        fields = ('followers', 'following')
+        fields = ['followers', 'following']
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('username', 'email', 'password')
+        fields = ['username', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -63,10 +62,10 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ('id', 'account_url', 'username', 'email', 'full_name', 'bio',
+        fields = ['id', 'account_url', 'username', 'email', 'full_name', 'bio',
                   'website', 'edu_email', 'gender', 'photo_set',
                   'profile_picture', 'follower', 'is_active', 'is_admin',
-                  'is_verified', 'date_joined', 'modified')
+                  'is_verified', 'date_joined', 'modified']
 
     def get_photo_set(self, request):
         queryset = Photo.objects.own(request.pk)

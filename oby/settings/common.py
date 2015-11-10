@@ -11,9 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
-########################
-# INTERNATIONALIZATION #
-########################
+# I N T E R N A T I O N A L I Z A T I O N
 LANGUAGE_CODE = 'en-us'
 LANGUAGES = [
     ('af', _('Afrikaans')),
@@ -110,9 +108,7 @@ THOUSAND_SEPARATOR = ','
 USE_TZ = False
 
 
-################
-# APPLICATIONS #
-################
+# A P P L I C A T I O N S
 INSTALLED_APPS = (
     'flat',
     'django.contrib.admin',
@@ -143,9 +139,7 @@ INSTALLED_APPS = (
 )
 
 
-##############
-# MIDDLEWARE #
-##############
+# M I D D L E W A R E
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',  # This must be first on the list
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -166,15 +160,11 @@ ROOT_URLCONF = 'oby.urls'
 WSGI_APPLICATION = 'oby.wsgi.application'
 
 
-#############
-# TEMPLATES #
-#############
+# T E M P L A T E S
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 
-############################
-# HOSTING + AUTHENTICATION #
-############################
+# HOSTING + AUTHENTICATION
 SECRET_KEY = 'nl59wul4fep=2nk_e=nfe-frid9b)kqox#7sgh2wsws!x!e&^('
 LOGIN_URL = "/signin/"
 AUTH_USER_MODEL = 'accounts.MyUser'
@@ -182,17 +172,13 @@ MIN_USERNAME_LENGTH = 3
 MIN_PASSWORD_LENGTH = 5
 
 
-############
-# SESSIONS #
-############
+# S E S S I O N S
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 4 * 6  # six months
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 
-################
-# FILE UPLOADS #
-################
+# F I L E  U P L O A D S
 FILE_UPLOAD_HANDLERS = (
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
@@ -200,9 +186,7 @@ FILE_UPLOAD_HANDLERS = (
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5 MB
 
 
-#######
-# API #
-#######
+# A P I
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',

@@ -17,5 +17,5 @@ class DonationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Donation
-        fields = ('id', 'user', 'user_url', 'amount', 'message',
-                  'is_anonymous', 'created', 'modified')
+        fields = ['id', 'user', 'user_url', 'amount', 'message',
+                  'is_anonymous', 'created', 'modified']
