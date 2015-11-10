@@ -23,6 +23,11 @@ server {
         proxy_set_header  X-Real-IP  $remote_addr;
         proxy_set_header Host $http_host;
 
+        # forces https request
+        # if ($http_x_forwarded_proto != 'https') {
+            # rewrite ^ https://$host$request_uri? permanent;
+        # } 
+
         if (!-f $request_filename) {
             proxy_pass http://app_server;
             break;
