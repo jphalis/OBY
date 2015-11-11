@@ -124,6 +124,37 @@ class Notification(TimeStampedModel):
             return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s" % context
         return "%(sender)s %(verb)s" % context
 
+    def display_thread(self):
+        try:
+            target_url = self.target_object.get_absolute_url()
+        except:
+            target_url = None
+
+        context = {
+            "action": self.action_object,
+            "sender": self.sender_object,
+            "sender_url": self.sender_object.get_profile_view(),
+            "target": self.target_object,
+            "target_url": target_url,
+            "verb": self.verb,
+        }
+
+        if self.target_object:
+            if self.action_object:
+                # New Like
+                if self.verb == "liked":
+                    return "%(sender)s %(verb)s your picture" % context
+                # New Comment
+                elif self.verb == "commented":
+                    return '%(sender)s %(verb)s: "%(action)s"' % context
+                # Other
+                else:
+                    return "%(sender)s %(verb)s %(action)s" % context
+        else:
+            # No target object
+            return "%(sender)s %(verb)s" % context
+        return "%(sender)s %(verb)s" % context
+
     def get_photo_url(self):
         try:
             target_url = self.target_object.get_absolute_url()

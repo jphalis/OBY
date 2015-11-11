@@ -225,7 +225,9 @@ class NotificationAPIView(generics.ListAPIView):
     pagination_class = NotificationPagination
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Notification.objects.all()
+
+    def get_queryset(self):
+        return Notification.objects.all_for_user(self.request.user)[:50]
 
 
 # P H O T O S
