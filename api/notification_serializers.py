@@ -25,6 +25,16 @@ class NotificationSenderProfilePicture(serializers.HyperlinkedIdentityField):
                        format=format)
 
 
+class NotificationTargetPicture(serializers.HyperlinkedIdentityField):
+    def get_url(self, obj, view_name, request, format):
+        kwargs = {
+            'cat_slug': obj.target_object.category.slug,
+            'photo_slug': obj.target_object.slug
+        }
+        return reverse(view_name, kwargs=kwargs, request=request,
+                       format=format)
+
+
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     recipient = NotificationRecipientUrlField("user_account_detail_api")
     sender = serializers.CharField(source='sender_object', read_only=True)
@@ -36,8 +46,9 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
                                       # read_only=True)
     # target_slug = serializers.CharField(
         # source='target_object', read_only=True)
+    target = NotificationTargetPicture("photo_detail_api")
 
     class Meta:
         model = Notification
         fields = ['id', 'sender', 'sender_url', 'sender_profile_picture',
-                  'display_thread', 'recipient', 'read', 'created', 'modified']
+                  'display_thread', 'target', 'recipient', 'read', 'created', 'modified']
