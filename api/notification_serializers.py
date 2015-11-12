@@ -27,15 +27,14 @@ class NotificationSenderProfilePicture(serializers.HyperlinkedIdentityField):
 
 class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        if obj.target_object.slug:
+        if obj.action_object:
             kwargs = {
                 'cat_slug': obj.target_object.category.slug,
                 'photo_slug': obj.target_object.slug
             }
             return reverse(view_name, kwargs=kwargs, request=request,
                            format=format)
-        else:
-            return None
+        return None
 
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
