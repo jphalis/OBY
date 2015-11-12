@@ -15,13 +15,13 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 class CommentUpdateSerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField(read_only=True)
     user = serializers.CharField(source='user.username', read_only=True)
-    user_url = serializers.HyperlinkedRelatedField(
-        view_name='user_account_detail_api', lookup_field='username',
-        read_only=True)
+    # user_url = serializers.HyperlinkedRelatedField(
+    #     view_name='user_account_detail_api', lookup_field='username',
+    #     read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'user_url', 'text', 'children']
+        fields = ['id', 'user', 'text', 'children']
 
     def get_children(self, instance):
         queryset = Comment.objects.filter(parent__pk=instance.pk)

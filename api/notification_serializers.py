@@ -21,10 +21,17 @@ class NotificationSenderUrlField(serializers.HyperlinkedIdentityField):
 class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
         if obj.action_object:
-            kwargs = {
-                'cat_slug': obj.target_object.category.slug,
-                'photo_slug': obj.target_object.slug
-            }
+            if obj.verb:
+                view_name = "photo_detail_api"
+                kwargs = {
+                    'cat_slug': obj.target_object.category.slug,
+                    'photo_slug': obj.target_object.slug
+                }
+            if obj.verb == "commented":
+                view_name = "comment_detail_api"
+                kwargs = {
+                    'id': obj.action_object.id
+                }
             return reverse(view_name, kwargs=kwargs, request=request,
                            format=format)
         return None
@@ -38,7 +45,7 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
         source="sender_object.default_profile_picture")
     target_photo = serializers.ReadOnlyField(
         source="target_object.get_photo_url")
-    target_url = NotificationTargetUrl("photo_detail_api")
+    target_url = NotificationTargetUrl("")
 
     class Meta:
         model = Notification

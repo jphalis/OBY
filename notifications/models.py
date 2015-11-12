@@ -146,7 +146,7 @@ class Notification(TimeStampedModel):
                     return "%(sender)s %(verb)s your picture" % context
                 # New Comment
                 elif self.verb == "commented":
-                    return '%(sender)s %(verb)s: "%(action)s"' % context
+                    return "%(sender)s %(verb)s: '%(action)s'" % context
                 # Other
                 else:
                     return "%(sender)s %(verb)s %(action)s" % context
