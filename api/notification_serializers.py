@@ -18,13 +18,6 @@ class NotificationSenderUrlField(serializers.HyperlinkedIdentityField):
                        format=format)
 
 
-class NotificationSenderProfilePicture(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        kwargs = {'profile_picture': obj.sender_object.profile_picture}
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
-
-
 class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
         if obj.action_object:
@@ -43,11 +36,6 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     sender_url = NotificationSenderUrlField("user_account_detail_api")
     sender_profile_picture = serializers.ReadOnlyField(
         source="sender_object.default_profile_picture")
-    # action = serializers.CharField(source='action_object', read_only=True)
-    # target_id = serializers.CharField(source='target_object_id',
-                                      # read_only=True)
-    # target_slug = serializers.CharField(
-        # source='target_object', read_only=True)
     target_photo = serializers.ReadOnlyField(
         source="target_object.get_photo_url")
     target_url = NotificationTargetUrl("photo_detail_api")
