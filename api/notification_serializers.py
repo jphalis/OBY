@@ -21,7 +21,7 @@ class NotificationSenderUrlField(serializers.HyperlinkedIdentityField):
 class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
         if obj.action_object:
-            if obj.verb:
+            if obj.verb == "liked":
                 view_name = "photo_detail_api"
                 kwargs = {
                     'cat_slug': obj.target_object.category.slug,
