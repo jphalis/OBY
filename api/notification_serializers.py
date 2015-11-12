@@ -25,21 +25,17 @@ class NotificationSenderProfilePicture(serializers.HyperlinkedIdentityField):
                        format=format)
 
 
-class NotificationTargetPhoto(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        kwargs = {'photo': obj.target_object.get_photo_url}
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
-
-
 class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'cat_slug': obj.target_object.category.slug,
-            'photo_slug': obj.target_object.slug
-        }
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
+        if obj.target_object.slug:
+            kwargs = {
+                'cat_slug': obj.target_object.category.slug,
+                'photo_slug': obj.target_object.slug
+            }
+            return reverse(view_name, kwargs=kwargs, request=request,
+                           format=format)
+        else:
+            return None
 
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
@@ -60,4 +56,5 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'sender', 'sender_url', 'sender_profile_picture',
-                  'display_thread', 'target_photo', 'target_url', 'recipient', 'read', 'created', 'modified']
+                  'display_thread', 'target_photo', 'target_url', 'recipient',
+                  'read', 'created', 'modified']
