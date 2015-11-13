@@ -27,13 +27,15 @@ class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
                     'cat_slug': obj.target_object.category.slug,
                     'photo_slug': obj.target_object.slug
                 }
+                return reverse(view_name, kwargs=kwargs, request=request,
+                               format=format)
             if obj.verb == "commented":
                 view_name = "comment_detail_api"
                 kwargs = {
                     'id': obj.action_object.id
                 }
-            return reverse(view_name, kwargs=kwargs, request=request,
-                           format=format)
+                return reverse(view_name, kwargs=kwargs, request=request,
+                               format=format)
         return None
 
 

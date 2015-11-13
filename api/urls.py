@@ -1,16 +1,15 @@
 from django.conf.urls import patterns, url
 
-from .views import (AccountCreateAPIView, FollowerListAPIView, HomepageAPIView,
+from .views import APIHomeView, HomepageAPIView, TimelineAPIView
+from .views import (AccountCreateAPIView, FollowerListAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
 from .views import (CommentCreateAPIView, CommentDetailAPIView,
                     CommentListAPIView)
 from .views import DonationListAPIView
 from .views import HashtagListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
-                    PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView,
-                    TimelineAPIView)
+                    PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView)
 from .views import NotificationAPIView
-from .views import APIHomeView
 
 
 urlpatterns = patterns('',
@@ -21,6 +20,8 @@ urlpatterns = patterns('',
         name='homepage_api'),
     url(r'^timeline/$', TimelineAPIView.as_view(),
         name='timeline_api'),
+    # url(r'^search/$', SearchAPIView.as_view({'get': 'list'}),
+    #     name='search_api'),
 
     # A C C O U N T S
     url(r'^accounts/create/$', AccountCreateAPIView.as_view(),

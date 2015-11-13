@@ -82,6 +82,9 @@ class APIHomeView(APIView):
                 'url': api_reverse('photo_list_api', request=request),
                 'create_url': api_reverse('photo_create_api', request=request),
             },
+            # 'search': {
+            #     'url': api_reverse('search_api', request=request),
+            # },
             'timeline': {
                 'url': api_reverse('timeline_api', request=request),
             },
@@ -124,6 +127,26 @@ class TimelineAPIView(generics.ListAPIView):
                 .exclude(creator=user)[:50]
             photos = chain(photos_self, photos_suggested)
             return photos
+
+
+# class SearchAPIView(viewsets.ViewSet):
+#     authentication_classes = [SessionAuthentication, BasicAuthentication,
+#                               JSONWebTokenAuthentication]
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     """
+#     A simple ViewSet for listing or retrieving users.
+#     """
+#     def list(self, request):
+#         queryset = MyUser.objects.all()
+#         serializer = MyUserSerializer(queryset, many=True)
+#         return RestResponse(serializer.data)
+
+#     def retrieve(self, request, pk=None):
+#         queryset = MyUser.objects.all()
+#         user = get_object_or_404(queryset, pk=pk)
+#         serializer = MyUserSerializer(user)
+#         return RestResponse(serializer.data)
 
 
 # A C C O U N T S

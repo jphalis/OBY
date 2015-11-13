@@ -15,8 +15,7 @@ class StaffRequiredMixin(object):
         if request.user.is_staff:
             return super(StaffRequiredMixin, self).dispatch(request,
                                                             *args, **kwargs)
-        else:
-            raise Http404
+        raise Http404
 
 
 class LoginRequiredMixin(object):
