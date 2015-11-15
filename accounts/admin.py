@@ -8,7 +8,6 @@ from .forms import UserChangeForm, UserCreationForm
 
 
 class MyUserAdmin(UserAdmin):
-    # The forms to add and change user instances
     form = UserChangeForm
     add_form = UserCreationForm
 
@@ -29,7 +28,6 @@ class MyUserAdmin(UserAdmin):
             {'fields': ('date_joined', 'last_login', 'modified',)}),
     )
 
-    # overrides get_fieldsets to use this attribute when creating a user
     add_fieldsets = (
         (None,
             {'classes': ('wide',),
@@ -40,6 +38,4 @@ class MyUserAdmin(UserAdmin):
     filter_horizontal = ('user_permissions',)
 
 admin.site.register(MyUser, MyUserAdmin)
-
-# unregister the Group model from admin.
 admin.site.unregister(Group)

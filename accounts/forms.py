@@ -20,8 +20,10 @@ from .models import MyUser
 # Create models here.
 
 
-# For admin interface use
 class UserCreationForm(forms.ModelForm):
+    '''
+    A form used to create users in the Admin
+    '''
     email = forms.EmailField(widget=forms.EmailInput(), max_length=80)
     password1 = forms.CharField(label='Password',
                                 widget=forms.PasswordInput)
@@ -53,9 +55,16 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 
-# For admin interface use
 class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField()
+    '''
+    A form used to change the user's information in the Admin
+    '''
+    password = ReadOnlyPasswordHashField(
+        label=("Password"),
+        help_text=("Raw passwords are not stored, so there is no way to see "
+                   "this user's password, but you can change the password "
+                   "using <a href=\"password/\">this form</a>.")
+        )
 
     class Meta:
         model = MyUser
@@ -65,51 +74,6 @@ class UserChangeForm(forms.ModelForm):
 
     def clean_password(self):
         return self.initial["password"]
-
-
-# Ready to implement
-# For admin interface use
-# class AdminPasswordChangeForm(forms.Form):
-#     required_css_class = 'required'
-#     password1 = forms.CharField(
-#         label=_("Password"),
-#         widget=forms.PasswordInput,
-#     )
-#     password2 = forms.CharField(
-#         label=_("Password confirmation"),
-#         widget=forms.PasswordInput,
-#     )
-
-#     def __init__(self, user, *args, **kwargs):
-#         self.user = user
-#         super(AdminPasswordChangeForm, self).__init__(*args, **kwargs)
-
-#     def clean_password2(self):
-#         password_length = settings.MIN_PASSWORD_LENGTH
-#         password1 = self.cleaned_data.get("password1")
-#         if len(password1) < password_length:
-#             raise forms.ValidationError(
-#                 "Password must be longer than "
-#                 "{} characters".format(password_length))
-#         password2 = self.cleaned_data.get("password2")
-#         if password1 and password2:
-#             if password1 != password2:
-#                 raise forms.ValidationError("Passwords do not match")
-#         return password2
-
-#     def save(self, commit=True):
-#         self.user.set_password(self.cleaned_data["password1"])
-#         if commit:
-#             self.user.save()
-#         return self.user
-
-#     def _get_changed_data(self):
-#         data = super(AdminPasswordChangeForm, self).changed_data
-#         for name in self.fields.keys():
-#             if name not in data:
-#                 return []
-#         return ['password']
-#     changed_data = property(_get_changed_data)
 
 
 class RegisterForm(forms.Form):
@@ -266,6 +230,9 @@ class AccountBasicsChangeForm(forms.ModelForm):
 
 
 class PasswordChangeForm(forms.Form):
+    '''
+    A form used by the user to change his/her password
+    '''
     old_password = forms.CharField(label=_("Old password"),
                                    widget=forms.PasswordInput(
                                     attrs={'placeholder': 'Old password'}))
@@ -303,6 +270,9 @@ class PasswordChangeForm(forms.Form):
 
 
 class SetPasswordForm(forms.Form):
+    '''
+    A form used by the user to create a new password if he/she forgot it
+    '''
     password1 = forms.CharField(label='New password',
                                 widget=forms.PasswordInput(
                                     attrs={'placeholder': 'New password'}))
