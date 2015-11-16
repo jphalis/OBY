@@ -3,15 +3,15 @@ from itertools import chain
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 
-from rest_framework import filters, generics, mixins, permissions
+from rest_framework import filters, generics, mixins, permissions, status
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response as RestResponse
 from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from accounts.models import Follower, MyUser
 from comments.models import Comment
@@ -19,6 +19,9 @@ from hashtags.models import Hashtag
 from notifications.models import Notification
 from photos.models import Category, Photo
 from .account_serializers import AccountCreateSerializer, MyUserSerializer
+from .auth_serializers import (PasswordResetSerializer,
+                               PasswordResetConfirmSerializer,
+                               PasswordChangeSerializer)
 from .comment_serializers import (CommentCreateSerializer, CommentSerializer,
                                   CommentUpdateSerializer)
 from .hashtag_serializers import HashtagSerializer
@@ -44,6 +47,10 @@ class APIHomeView(APIView):
         data = {
             'authentication': {
                 'login': api_reverse('auth_login_api', request=request),
+                'password_reset': api_reverse('rest_password_reset',
+                                              request=request),
+                'password_change': api_reverse('rest_password_change',
+                                               request=request)
             },
             'accounts': {
                 'count': MyUser.objects.all().count(),
@@ -172,6 +179,66 @@ class MyUserDetailAPIView(generics.RetrieveAPIView,
 #     permission_classes = [permissions.IsAuthenticated]
 #     serializer_class = FollowerSerializer
 #     queryset = Follower.objects.all()
+
+
+# A U T H E N T I C A T I O N
+class PasswordResetView(generics.GenericAPIView):
+    """
+    Calls PasswordResetForm save method
+    Accepts the following POST parameters: email
+    Returns the success/fail message
+    """
+    serializer_class = PasswordResetSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if not serializer.is_valid():
+            return RestResponse(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return RestResponse(
+            {"success": "Password reset e-mail has been sent."},
+            status=status.HTTP_200_OK)
+
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    """
+    Password reset e-mail link is confirmed, so this resets the user's password
+    Accepts the following POST parameters: new_password1, new_password2
+    Accepts the following Django URL arguments: token, uid
+    Returns the success/fail message
+    """
+    serializer_class = PasswordResetConfirmSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return RestResponse(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return RestResponse(
+            {"success": "Password has been reset."})
+
+
+class PasswordChangeView(generics.GenericAPIView):
+    """
+    Calls SetPasswordForm save method
+    Accepts the following POST parameters: new_password1, new_password2
+    Returns the success/fail message
+    """
+    serializer_class = PasswordChangeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return RestResponse(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return RestResponse({"success": "New password has been saved."})
 
 
 # C O M M E N T S
@@ -306,7 +373,7 @@ class SearchListAPIView(generics.ListAPIView):
                               JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = SearchMyUserSerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
     # '^' Starts-with search
     # '=' Exact matches
     # '@' Full-text search (Currently only supported Django's MySQL backend.)

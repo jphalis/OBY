@@ -9,6 +9,8 @@ from .views import HashtagListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView)
 from .views import NotificationAPIView, SearchListAPIView
+from .views import (PasswordChangeView, PasswordResetView,
+                    PasswordResetConfirmView)
 
 
 urlpatterns = patterns('',
@@ -31,6 +33,14 @@ urlpatterns = patterns('',
         name='user_account_detail_api'),
     # url(r'^follows/$', FollowerListAPIView.as_view(),
     #     name='follow_list_api'),
+
+    # A U T H E N T I C A T I O N
+    url(r'^password/reset/$', PasswordResetView.as_view(),
+        name='rest_password_reset'),
+    url(r'^password/reset/confirm/$', PasswordResetConfirmView.as_view(),
+        name='rest_password_reset_confirm'),
+    url(r'^password/change/$', PasswordChangeView.as_view(),
+        name='rest_password_change'),
 
     # C O M M E N T S
     url(r'^comments/$', CommentListAPIView.as_view(),
