@@ -15,15 +15,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from accounts.models import Follower, MyUser
 from comments.models import Comment
-from donations.models import Donation
 from hashtags.models import Hashtag
 from notifications.models import Notification
 from photos.models import Category, Photo
-from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
-                                  MyUserSerializer)
+from .account_serializers import AccountCreateSerializer, MyUserSerializer
 from .comment_serializers import (CommentCreateSerializer, CommentSerializer,
                                   CommentUpdateSerializer)
-from .donation_serializers import DonationSerializer
 from .hashtag_serializers import HashtagSerializer
 from .notification_serializers import NotificationSerializer
 from .pagination import (AccountPagination, CommentPagination,
@@ -33,6 +30,7 @@ from .permissions import (IsCreatorOrReadOnly, IsOwnerOrReadOnly,
                           MyUserIsOwnerOrReadOnly)
 from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
                                 PhotoSerializer)
+from .search_serializers import SearchMyUserSerializer
 
 # Create your views here.
 
@@ -85,9 +83,11 @@ class APIHomeView(APIView):
                 'url': api_reverse('photo_list_api', request=request),
                 'create_url': api_reverse('photo_create_api', request=request),
             },
-            # 'search': {
-            #     'url': api_reverse('search_api', request=request),
-            # },
+            'search': {
+                'url': api_reverse('search_api', request=request),
+                'help_text': "add '?q=searched_parameter' to the "
+                             "end of the url to display results"
+            },
             'timeline': {
                 'url': api_reverse('timeline_api', request=request),
             },
@@ -132,26 +132,6 @@ class TimelineAPIView(generics.ListAPIView):
             return photos
 
 
-# class SearchAPIView(viewsets.ViewSet):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication,
-#                               JSONWebTokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-
-#     """
-#     A simple ViewSet for listing or retrieving users.
-#     """
-#     def list(self, request):
-#         queryset = MyUser.objects.all()
-#         serializer = MyUserSerializer(queryset, many=True)
-#         return RestResponse(serializer.data)
-
-#     def retrieve(self, request, pk=None):
-#         queryset = MyUser.objects.all()
-#         user = get_object_or_404(queryset, pk=pk)
-#         serializer = MyUserSerializer(user)
-#         return RestResponse(serializer.data)
-
-
 # A C C O U N T S
 class AccountCreateAPIView(generics.CreateAPIView):
     serializer_class = AccountCreateSerializer
@@ -164,8 +144,6 @@ class MyUserListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["username"]
 
 
 class MyUserDetailAPIView(generics.RetrieveAPIView,
@@ -187,13 +165,13 @@ class MyUserDetailAPIView(generics.RetrieveAPIView,
         return self.update(request, *args, **kwargs)
 
 
-class FollowerListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    pagination_class = AccountPagination
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = FollowerSerializer
-    queryset = Follower.objects.all()
+# class FollowerListAPIView(generics.ListAPIView):
+#     authentication_classes = [SessionAuthentication, BasicAuthentication,
+#                               JSONWebTokenAuthentication]
+#     pagination_class = AccountPagination
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = FollowerSerializer
+#     queryset = Follower.objects.all()
 
 
 # C O M M E N T S
@@ -224,12 +202,12 @@ class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):
 
 
 # D O N A T I O N S
-class DonationListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = DonationSerializer
-    queryset = Donation.objects.all()
+# class DonationListAPIView(generics.ListAPIView):
+#     authentication_classes = [SessionAuthentication, BasicAuthentication,
+#                               JSONWebTokenAuthentication]
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = DonationSerializer
+#     queryset = Donation.objects.all()
 
 
 # H A S H T A G S
@@ -320,3 +298,30 @@ class CategoryDetailAPIView(generics.RetrieveAPIView):
         slug = self.kwargs["slug"]
         obj = get_object_or_404(Category, slug=slug)
         return obj
+
+
+# S E A R C H
+class SearchListAPIView(generics.ListAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication,
+                              JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = SearchMyUserSerializer
+    filter_backends = (filters.SearchFilter,)
+    # '^' Starts-with search
+    # '=' Exact matches
+    # '@' Full-text search (Currently only supported Django's MySQL backend.)
+    # '$' Regex search
+    search_fields = ['^username', '^full_name']
+
+    def get_queryset(self):
+        queryset = MyUser.objects.all()
+        username = self.request.query_params.get('username', None)
+        full_name = self.request.query_params.get('full_name', None)
+
+        if username and full_name is not None:
+            queryset = queryset.filter(username=username, full_name=full_name)
+        elif username is not None:
+            queryset = queryset.filter(username=username)
+        elif full_name is not None:
+            queryset = queryset.filter(full_name=full_name)
+        return queryset

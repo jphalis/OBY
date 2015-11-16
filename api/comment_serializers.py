@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from rest_framework.reverse import reverse as api_reverse
 
 from comments.models import Comment
+from .url_fields import CommentPhotoUrlField
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -36,31 +36,6 @@ class ChildCommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'user', 'text']
-
-
-class CommentPhotoUrlField(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        photo = None
-
-        if obj.is_child:
-            try:
-                photo = obj.parent.photo
-            except:
-                photo = None
-        else:
-            try:
-                photo = obj.photo
-            except:
-                photo = None
-
-        if photo:
-            kwargs = {
-                'cat_slug': obj.photo.category.slug,
-                'photo_slug': obj.photo.slug
-            }
-            return api_reverse(view_name, kwargs=kwargs, request=request,
-                               format=format)
-        return None
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):

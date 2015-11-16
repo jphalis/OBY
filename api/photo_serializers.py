@@ -1,39 +1,15 @@
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 from photos.models import Category, Photo
 from .comment_serializers import CommentSerializer
-
-
-class MyUserUrlField(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        kwargs = {'username': obj.creator.username}
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
-
-
-class CategoryUrlField(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        kwargs = {'slug': obj.category.slug}
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
-
-
-class PhotoUrlField(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        kwargs = {
-            'cat_slug': obj.category.slug,
-            'photo_slug': obj.slug
-        }
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
+from .url_fields import CategoryUrlField, PhotoCreatorUrlField, PhotoUrlField
 
 
 class PhotoSerializer(serializers.ModelSerializer):
     category_url = CategoryUrlField("category_detail_api")
     photo_url = PhotoUrlField("photo_detail_api")
     creator = serializers.CharField(source='creator.username', read_only=True)
-    creator_url = MyUserUrlField("user_account_detail_api")
+    creator_url = PhotoCreatorUrlField("user_account_detail_api")
     likers = serializers.HyperlinkedRelatedField(
         many=True, view_name='user_account_detail_api', read_only=True,
         lookup_field='username')
@@ -48,7 +24,6 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Photo
         fields = ['photo', 'category', 'description']

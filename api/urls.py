@@ -1,15 +1,14 @@
 from django.conf.urls import patterns, url
 
 from .views import APIHomeView, HomepageAPIView, TimelineAPIView
-from .views import (AccountCreateAPIView, FollowerListAPIView,
+from .views import (AccountCreateAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
 from .views import (CommentCreateAPIView, CommentDetailAPIView,
                     CommentListAPIView)
-from .views import DonationListAPIView
 from .views import HashtagListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView)
-from .views import NotificationAPIView
+from .views import NotificationAPIView, SearchListAPIView
 
 
 urlpatterns = patterns('',
@@ -20,8 +19,8 @@ urlpatterns = patterns('',
         name='homepage_api'),
     url(r'^timeline/$', TimelineAPIView.as_view(),
         name='timeline_api'),
-    # url(r'^search/$', SearchAPIView.as_view({'get': 'list'}),
-    #     name='search_api'),
+    url(r'^search/$', SearchListAPIView.as_view(),
+        name='search_api'),
 
     # A C C O U N T S
     url(r'^accounts/create/$', AccountCreateAPIView.as_view(),
@@ -30,8 +29,8 @@ urlpatterns = patterns('',
         name='user_account_list_api'),
     url(r'^accounts/(?P<username>[\w.@+-]+)/$', MyUserDetailAPIView.as_view(),
         name='user_account_detail_api'),
-    url(r'^follows/$', FollowerListAPIView.as_view(),
-        name='follow_list_api'),
+    # url(r'^follows/$', FollowerListAPIView.as_view(),
+    #     name='follow_list_api'),
 
     # C O M M E N T S
     url(r'^comments/$', CommentListAPIView.as_view(),
@@ -42,8 +41,8 @@ urlpatterns = patterns('',
         name='comment_detail_api'),
 
     # D O N A T I O N S
-    url(r'^donations/$', DonationListAPIView.as_view(),
-        name='donation_list_api'),
+    # url(r'^donations/$', DonationListAPIView.as_view(),
+    #     name='donation_list_api'),
 
     # H A S H T A G S
     url(r'^hashtags/$', HashtagListAPIView.as_view(),

@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 from accounts.models import Follower, MyUser
 from photos.models import Photo
 from .photo_serializers import PhotoSerializer
+from .url_fields import FollowerUrlField, MyUserUrlField
 
 
 class FollowerCreateSerializer(serializers.ModelSerializer):
@@ -12,14 +12,6 @@ class FollowerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follower
         fields = ['user', 'followers']
-
-
-class FollowerUrlField(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-
-        kwargs = {'username': obj.user.username}
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
 
 
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,13 +38,6 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-
-class MyUserUrlField(serializers.HyperlinkedIdentityField):
-    def get_url(self, obj, view_name, request, format):
-        kwargs = {'username': obj.username}
-        return reverse(view_name, kwargs=kwargs, request=request,
-                       format=format)
 
 
 class MyUserSerializer(serializers.HyperlinkedModelSerializer):
