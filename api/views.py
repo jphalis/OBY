@@ -52,9 +52,12 @@ class APIHomeView(APIView):
                 'url': api_reverse('user_account_list_api', request=request),
                 'create_url': api_reverse('account_create_api',
                                           request=request),
+                'edit_profile_url': api_reverse(
+                    'user_account_detail_api', request=request,
+                    kwargs={'username': request.user.username})
             },
             'categories': {
-                'count': Category.objects.all().count(),
+                # 'count': Category.objects.all().count(),
                 'url': api_reverse('category_list_api', request=request),
             },
             'comments': {
@@ -63,10 +66,10 @@ class APIHomeView(APIView):
                 'create_url': api_reverse('comment_create_api',
                                           request=request),
             },
-            'donations': {
-                'count': Donation.objects.all().count(),
-                'url': api_reverse('donation_list_api', request=request),
-            },
+            # 'donations': {
+            #     'count': Donation.objects.all().count(),
+            #     'url': api_reverse('donation_list_api', request=request),
+            # },
             'hashtags': {
                 'count': Hashtag.objects.all().count(),
                 'url': api_reverse('hashtag_list_api', request=request),
