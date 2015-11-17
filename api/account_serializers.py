@@ -31,6 +31,8 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        # update username validation requirements
+        # make password >= 3 characters
         user = MyUser(
             username=validated_data['username'],
             email=validated_data['email']

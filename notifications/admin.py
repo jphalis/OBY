@@ -5,4 +5,18 @@ from .models import Notification
 # Register your models here.
 
 
-admin.site.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    # use if you want to limit which category is shown
+    # form = PhotoUploadForm
+
+    list_display = ['recipient', 'sender', 'created']
+    search_fields = ['creator__username']
+    fields = ['sender', 'recipient', 'created', 'modified']
+    readonly_fields = ['created', 'modified']
+    ordering = ['-modified']
+
+    class Meta:
+        model = Notification
+
+
+admin.site.register(Notification, NotificationAdmin)
