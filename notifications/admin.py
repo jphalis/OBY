@@ -9,9 +9,9 @@ class NotificationAdmin(admin.ModelAdmin):
     # use if you want to limit which category is shown
     # form = PhotoUploadForm
 
-    list_display = ['recipient', 'sender', 'created']
+    list_display = ['recipient', 'sender_object', 'created']
     search_fields = ['creator__username']
-    fields = ['sender', 'recipient', 'created', 'modified']
+    fields = ['sender_object', 'recipient', 'created', 'modified']
     readonly_fields = ['created', 'modified']
     ordering = ['-modified']
 
