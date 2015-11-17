@@ -10,10 +10,9 @@ class NotificationAdmin(admin.ModelAdmin):
     # form = PhotoUploadForm
 
     list_display = ['recipient', 'sender_object', 'created']
-    search_fields = ['creator__username']
     fields = ['sender_object', 'recipient', 'created', 'modified']
     readonly_fields = ['created', 'modified']
-    ordering = ['-modified']
+    ordering = ['-created']
 
     class Meta:
         model = Notification

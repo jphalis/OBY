@@ -94,35 +94,36 @@ class Notification(TimeStampedModel):
         app_label = 'notifications'
 
     def __unicode__(self):
-        try:
-            target_url = self.target_object.get_absolute_url()
-        except:
-            target_url = None
+        # try:
+        #     target_url = self.target_object.get_absolute_url()
+        # except:
+        #     target_url = None
 
-        context = {
-            "action": self.action_object,
-            "sender": self.sender_object,
-            "sender_url": self.sender_object.get_profile_view(),
-            "target": self.target_object,
-            "target_url": target_url,
-            "verb": self.verb,
-        }
+        # context = {
+        #     "action": self.action_object,
+        #     "sender": self.sender_object,
+        #     "sender_url": self.sender_object.get_profile_view(),
+        #     "target": self.target_object,
+        #     "target_url": target_url,
+        #     "verb": self.verb,
+        # }
 
-        if self.target_object:
-            if self.action_object:
-                # New Like
-                if self.verb == "liked":
-                    return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s your picture" % context
-                # New Comment
-                elif self.verb == "commented":
-                    return '<a href="%(sender_url)s">%(sender)s</a> %(verb)s: "%(action)s"' % context
-                # Other
-                else:
-                    return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s %(action)s" % context
-        else:
-            # No target object
-            return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s" % context
-        return "%(sender)s %(verb)s" % context
+        # if self.target_object:
+        #     if self.action_object:
+        #         # New Like
+        #         if self.verb == "liked":
+        #             return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s your picture" % context
+        #         # New Comment
+        #         elif self.verb == "commented":
+        #             return '<a href="%(sender_url)s">%(sender)s</a> %(verb)s: "%(action)s"' % context
+        #         # Other
+        #         else:
+        #             return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s %(action)s" % context
+        # else:
+        #     # No target object
+        #     return "<a href='%(sender_url)s'>%(sender)s</a> %(verb)s" % context
+        # return "%(sender)s %(verb)s" % context
+        return "yes"
 
     def display_thread(self):
         try:
