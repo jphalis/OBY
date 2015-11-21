@@ -16,12 +16,12 @@ class FollowerCreateSerializer(serializers.ModelSerializer):
 
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
     # username = serializers.CharField(source='user.username', read_only=True)
-    followers = FollowerUrlField("user_account_detail_api", many=True)
-    following = FollowerUrlField("user_account_detail_api", many=True)
+    # followers = FollowerUrlField("user_account_detail_api", many=True)
+    # following = FollowerUrlField("user_account_detail_api", many=True)
 
     class Meta:
         model = Follower
-        fields = ['followers', 'following']
+        fields = ['get_followers_info', 'get_following_info']
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):

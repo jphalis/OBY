@@ -129,6 +129,14 @@ class Follower(TimeStampedModel):
         return map(str, self.following.all().values_list(
                    'user__username', flat=True))
 
+    def get_followers_info(self):
+        return self.followers.select_related('user').all().values(
+            'user__username', 'user__full_name', 'user__profile_picture')
+
+    def get_following_info(self):
+        return self.following.select_related('user').all().values(
+            'user__username', 'user__full_name', 'user__profile_picture')
+
     def get_followers_url(self):
         return reverse('followers_thread',
                        kwargs={'username': self.user.username})
