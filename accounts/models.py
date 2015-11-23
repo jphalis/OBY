@@ -5,6 +5,7 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import TimeStampedModel
@@ -129,10 +130,12 @@ class Follower(TimeStampedModel):
         return map(str, self.following.all().values_list(
                    'user__username', flat=True))
 
+    @cached_property
     def get_followers_info(self):
         return self.followers.select_related('user').all().values(
             'user__username', 'user__full_name', 'user__profile_picture')
 
+    @cached_property
     def get_following_info(self):
         return self.following.select_related('user').all().values(
             'user__username', 'user__full_name', 'user__profile_picture')
