@@ -3,9 +3,15 @@ from rest_framework.reverse import reverse as api_reverse
 
 
 # A C C O U N T S  /  S E A R C H
+class FollowCreateUrlField(serializers.HyperlinkedIdentityField):
+    def get_url(self, obj, view_name, request, format):
+        kwargs = {'user_pk': obj.pk}
+        return api_reverse(view_name, kwargs=kwargs, request=request,
+                           format=format)
+
+
 class FollowerUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
-
         kwargs = {'username': obj.user.username}
         return api_reverse(view_name, kwargs=kwargs, request=request,
                            format=format)
@@ -89,6 +95,13 @@ class NotificationTargetUrl(serializers.HyperlinkedIdentityField):
 
 
 # P H O T O S
+class LikeUrlField(serializers.HyperlinkedIdentityField):
+    def get_url(self, obj, view_name, request, format):
+        kwargs = {'photo_pk': obj.pk}
+        return api_reverse(view_name, kwargs=kwargs, request=request,
+                           format=format)
+
+
 class PhotoCreatorUrlField(serializers.HyperlinkedIdentityField):
     def get_url(self, obj, view_name, request, format):
         kwargs = {'username': obj.creator.username}

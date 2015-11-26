@@ -6,6 +6,7 @@ from django.utils.crypto import get_random_string
 from rest_framework import filters, generics, mixins, permissions, status
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
+from rest_framework.decorators import api_view
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response as RestResponse
 from rest_framework.reverse import reverse as api_reverse
@@ -18,7 +19,7 @@ from comments.models import Comment
 from hashtags.models import Hashtag
 from notifications.models import Notification
 from photos.models import Category, Photo
-from .account_serializers import AccountCreateSerializer, MyUserSerializer
+from .account_serializers import AccountCreateSerializer, FollowerSerializer, MyUserSerializer
 from .auth_serializers import (PasswordResetSerializer,
                                PasswordResetConfirmSerializer,
                                PasswordChangeSerializer)
@@ -140,6 +141,27 @@ class TimelineAPIView(generics.ListAPIView):
 
 
 # A C C O U N T S
+@api_view(['POST'])
+def follow_create_api(request, user_pk):
+    follower, created = Follower.objects.get_or_create(user=request.user)
+    user = get_object_or_404(MyUser, pk=user_pk)
+
+    followed, created = Follower.objects.get_or_create(user=user)
+
+    try:
+        user_followed = Follower.objects.get(user=user, followers=follower)
+    except Follower.DoesNotExist:
+        user_followed = None
+
+    if user_followed:
+        followed.followers.remove(follower)
+    else:
+        followed.followers.add(follower)
+
+    serializer = FollowerSerializer(followed, context={'request': request})
+    return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+
 class AccountCreateAPIView(generics.CreateAPIView):
     serializer_class = AccountCreateSerializer
 
@@ -302,6 +324,20 @@ class NotificationAPIView(generics.ListAPIView):
 
 
 # P H O T O S
+@api_view(['POST'])
+def like_create_api(request, photo_pk):
+    user = request.user
+    photo = get_object_or_404(Photo, pk=photo_pk)
+
+    if user in photo.likers.all():
+        photo.likers.remove(user)
+    else:
+        photo.likers.add(user)
+
+    serializer = PhotoSerializer(photo, context={'request': request})
+    return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+
 class PhotoCreateAPIView(ModelViewSet):
     queryset = Photo.objects.all()
     serializer_class = PhotoCreateSerializer

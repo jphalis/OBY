@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from photos.models import Category, Photo
 from .comment_serializers import CommentSerializer
-from .url_fields import CategoryUrlField, PhotoCreatorUrlField, PhotoUrlField
+from .url_fields import (CategoryUrlField, PhotoCreatorUrlField, PhotoUrlField,
+                         LikeUrlField)
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -14,13 +15,14 @@ class PhotoSerializer(serializers.ModelSerializer):
         many=True, view_name='user_account_detail_api', read_only=True,
         lookup_field='username')
     comment_set = CommentSerializer(many=True, read_only=True)
+    like_url = LikeUrlField("like_create_api")
 
     class Meta:
         model = Photo
         fields = ['id', 'category_url', 'photo_url', 'slug', 'creator',
-                  'creator_url', 'photo', 'description', 'like_count',
-                  'likers', 'comment_count', 'comment_set', 'created',
-                  'modified']
+                  'creator_url', 'photo', 'description', 'like_url',
+                  'like_count', 'likers', 'comment_count', 'comment_set',
+                  'created', 'modified']
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):

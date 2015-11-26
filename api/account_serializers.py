@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import Follower, MyUser
 from photos.models import Photo
 from .photo_serializers import PhotoSerializer
-from .url_fields import FollowerUrlField, MyUserUrlField
+from .url_fields import FollowCreateUrlField, FollowerUrlField, MyUserUrlField
 
 
 class FollowerCreateSerializer(serializers.ModelSerializer):
@@ -27,11 +27,12 @@ class FollowerSerializer(serializers.HyperlinkedModelSerializer):
 class AccountCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ['username', 'email', 'password']
+        fields = ['id', 'username', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         # update username validation requirements
+        # update email validation requirements
         # make password >= 3 characters
         user = MyUser(
             username=validated_data['username'],
@@ -46,12 +47,17 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
     account_url = MyUserUrlField("user_account_detail_api")
     follower = FollowerSerializer(read_only=True)
     photo_set = serializers.SerializerMethodField()
+    username = serializers.CharField(read_only=True)
+    is_active = serializers.BooleanField(read_only=True)
+    is_admin = serializers.BooleanField(read_only=True)
+    is_verified = serializers.BooleanField(read_only=True)
+    follow_url = FollowCreateUrlField("follow_create_api")
 
     class Meta:
         model = MyUser
         fields = ['id', 'account_url', 'username', 'email', 'full_name', 'bio',
                   'website', 'edu_email', 'gender', 'photo_set',
-                  'profile_picture', 'follower', 'is_active', 'is_admin',
+                  'profile_picture', 'follow_url', 'follower', 'is_active', 'is_admin',
                   'is_verified', 'date_joined', 'modified']
 
     def get_photo_set(self, request):
