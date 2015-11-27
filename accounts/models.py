@@ -56,8 +56,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
                                   unique=True, null=True, blank=True)
     GENDER_CHOICES = (
-        ('DUDE', 'Dude'),
-        ('BETTY', 'Betty'),
+        ('dude', 'Dude'),
+        ('betty', 'Betty'),
     )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               blank=True)

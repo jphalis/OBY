@@ -19,7 +19,8 @@ from comments.models import Comment
 from hashtags.models import Hashtag
 from notifications.models import Notification
 from photos.models import Category, Photo
-from .account_serializers import AccountCreateSerializer, FollowerSerializer, MyUserSerializer
+from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
+                                  MyUserSerializer)
 from .auth_serializers import (PasswordResetSerializer,
                                PasswordResetConfirmSerializer,
                                PasswordChangeSerializer)
