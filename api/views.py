@@ -65,19 +65,13 @@ class APIHomeView(APIView):
                     kwargs={'username': request.user.username})
             },
             'categories': {
-                # 'count': Category.objects.all().count(),
                 'url': api_reverse('category_list_api', request=request),
             },
             'comments': {
-                'count': Comment.objects.all().count(),
                 'url': api_reverse('comment_list_api', request=request),
                 'create_url': api_reverse('comment_create_api',
                                           request=request),
             },
-            # 'donations': {
-            #     'count': Donation.objects.all().count(),
-            #     'url': api_reverse('donation_list_api', request=request),
-            # },
             'hashtags': {
                 'count': Hashtag.objects.all().count(),
                 'url': api_reverse('hashtag_list_api', request=request),
@@ -159,7 +153,6 @@ def follow_create_api(request, user_pk):
         followed.followers.remove(follower)
     else:
         followed.followers.add(follower)
-
         notify.send(
             request.user,
             recipient=user,
@@ -200,15 +193,6 @@ class MyUserDetailAPIView(generics.RetrieveAPIView,
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
-
-
-# class FollowerListAPIView(generics.ListAPIView):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication,
-#                               JSONWebTokenAuthentication]
-#     pagination_class = AccountPagination
-#     permission_classes = [permissions.IsAuthenticated]
-#     serializer_class = FollowerSerializer
-#     queryset = Follower.objects.all()
 
 
 # A U T H E N T I C A T I O N
@@ -298,15 +282,6 @@ class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):
         return self.destroy(request, *args, **kwargs)
 
 
-# D O N A T I O N S
-# class DonationListAPIView(generics.ListAPIView):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication,
-#                               JSONWebTokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#     serializer_class = DonationSerializer
-#     queryset = Donation.objects.all()
-
-
 # H A S H T A G S
 class HashtagListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
@@ -341,7 +316,6 @@ def like_create_api(request, photo_pk):
         photo.likers.remove(user)
     else:
         photo.likers.add(user)
-
         notify.send(
             user,
             action=photo,

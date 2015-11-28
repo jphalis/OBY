@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
 from accounts.models import Follower, MyUser
+from oby.settings.approved_universities import APPROVED_UNIVERSITIES
 from photos.models import Photo
 from .photo_serializers import PhotoSerializer
-from .url_fields import FollowCreateUrlField, FollowerUrlField, MyUserUrlField
+from .url_fields import FollowCreateUrlField, MyUserUrlField
 
 
 class FollowerCreateSerializer(serializers.ModelSerializer):
@@ -15,10 +16,6 @@ class FollowerCreateSerializer(serializers.ModelSerializer):
 
 
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
-    # username = serializers.CharField(source='user.username', read_only=True)
-    # followers = FollowerUrlField("user_account_detail_api", many=True)
-    # following = FollowerUrlField("user_account_detail_api", many=True)
-
     class Meta:
         model = Follower
         fields = ['get_followers_info', 'get_following_info']
@@ -57,11 +54,28 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
         model = MyUser
         fields = ['id', 'account_url', 'username', 'email', 'full_name', 'bio',
                   'website', 'edu_email', 'gender', 'photo_set',
-                  'profile_picture', 'follow_url', 'follower', 'is_active', 'is_admin',
-                  'is_verified', 'date_joined', 'modified']
+                  'profile_picture', 'follow_url', 'follower', 'is_active',
+                  'is_admin', 'is_verified', 'date_joined', 'modified']
 
     def get_photo_set(self, request):
         queryset = Photo.objects.own(request.pk)
         serializer = PhotoSerializer(queryset, context=self.context, many=True,
                                      read_only=True)
         return serializer.data
+
+    def validate_edu_email(self, value):
+        if value:
+            value = value.lower()
+            username, domain = value.split('@')
+
+            if not domain.endswith('.edu'):
+                raise serializers.ValidationError(
+                    "Please use a valid university email.")
+
+            if domain not in APPROVED_UNIVERSITIES:
+                raise serializers.ValidationError(
+                    "Sorry, this university isn't registered with us yet. "
+                    "Email us to get it signed up! universities@obystudio.com")
+            return value
+        else:
+            pass
