@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from core.models import TimeStampedModel
+from hashtags.models import Hashtag
 from photos.models import Category, Photo
 
 
@@ -61,3 +62,32 @@ class PageView(TimeStampedModel):
 
     class Meta:
         ordering = ['-created']
+
+
+# class HashtagViewManager(models.Manager):
+#     def add_count(self, user, hashtag):
+#         obj, created = self.model.objects.get_or_create(
+#             user=user, hashtag=hashtag)
+#         obj.count += 1
+#         obj.save()
+#         return obj
+
+
+# Suggested photos to users based on hashtag views
+# class HashtagView(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+#     hashtag = models.ForeignKey(Hashtag)
+#     count = models.PositiveIntegerField(default=0)
+
+#     objects = HashtagViewManager()
+
+#     def __unicode__(self):
+#         return u"{}".format(self.hashtag.tag)
+
+
+# Put this in any view to track the hashtag count
+# if self.request.user.is_authenticated():
+#     obj = self.get_object()
+#     tags = obj.hashtag_set.all
+#     for tag in tags:
+#         new_view = HashtagView.objects.add_count(self.request.user, hashtag)

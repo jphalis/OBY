@@ -35,8 +35,8 @@ def page_view_received(sender, **kwargs):
 
     if secondary_obj:
         new_page_view.secondary_object_id = secondary_obj.id
-        new_page_view.secondary_content_type = ContentType.objects.get_for_model(
-            secondary_obj)
+        new_page_view.secondary_content_type = ContentType.objects \
+            .get_for_model(secondary_obj)
 
     new_page_view.save()
 

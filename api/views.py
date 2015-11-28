@@ -18,6 +18,7 @@ from accounts.models import Follower, MyUser
 from comments.models import Comment
 from hashtags.models import Hashtag
 from notifications.models import Notification
+from notifications.signals import notify
 from photos.models import Category, Photo
 from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
                                   MyUserSerializer)
@@ -158,6 +159,12 @@ def follow_create_api(request, user_pk):
         followed.followers.remove(follower)
     else:
         followed.followers.add(follower)
+
+        notify.send(
+            request.user,
+            recipient=user,
+            verb='is now supporting you'
+        )
 
     serializer = FollowerSerializer(followed, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -334,6 +341,14 @@ def like_create_api(request, photo_pk):
         photo.likers.remove(user)
     else:
         photo.likers.add(user)
+
+        notify.send(
+            user,
+            action=photo,
+            target=photo,
+            recipient=photo.creator,
+            verb='liked'
+        )
 
     serializer = PhotoSerializer(photo, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)

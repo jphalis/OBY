@@ -14,3 +14,5 @@ class PageViewAdmin(admin.ModelAdmin):
         model = PageView
 
 admin.site.register(PageView, PageViewAdmin)
+
+# admin.site.register(HashtagView)
