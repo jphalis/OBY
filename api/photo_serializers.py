@@ -2,8 +2,8 @@ from rest_framework import serializers
 
 from photos.models import Category, Photo
 from .comment_serializers import CommentSerializer
-from .url_fields import (CategoryUrlField, PhotoCreatorUrlField, PhotoUrlField,
-                         LikeUrlField)
+from .url_fields import (CategoryUrlField,
+                         PhotoCreatorUrlField, PhotoUrlField, LikeUrlField)
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -21,8 +21,8 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = ['id', 'category_url', 'photo_url', 'slug', 'creator',
                   'creator_url', 'photo', 'description', 'like_url',
-                  'like_count', 'likers', 'comment_count', 'comment_set',
-                  'created', 'modified']
+                  'like_count', 'likers',
+                  'comment_count', 'comment_set', 'created', 'modified']
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):

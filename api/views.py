@@ -1,6 +1,6 @@
 from itertools import chain
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, Http404
 from django.utils.crypto import get_random_string
 
 from rest_framework import filters, generics, mixins, permissions, status
@@ -259,6 +259,69 @@ class PasswordChangeView(generics.GenericAPIView):
 class CommentCreateAPIView(generics.CreateAPIView):
     serializer_class = CommentCreateSerializer
 
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        parent_id = self.request.data.get('parent')
+        photo_id = self.request.data.get('photo')
+
+        try:
+            photo = Photo.objects.get(id=photo_id)
+        except:
+            photo = None
+
+        parent_comment = None
+
+        if parent_id is not None:
+            try:
+                parent_comment = Comment.objects.get(id=parent_id)
+            except:
+                parent_comment = None
+            if parent_comment is not None and parent_comment.photo is not None:
+                photo = parent_comment.photo
+
+        if serializer.is_valid():
+            comment_text = self.request.data.get('text')
+            if parent_comment is not None:
+                # parent comments exists
+                new_child_comment = Comment.objects.create_comment(
+                    user=self.request.user,
+                    path=parent_comment.get_origin,
+                    text=comment_text,
+                    photo=photo,
+                    parent=parent_comment
+                )
+
+                affected_users = parent_comment.get_affected_users()
+
+                notify.send(
+                    self.request.user,
+                    action=new_child_comment,
+                    target=parent_comment,
+                    recipient=parent_comment.user,
+                    affected_users=affected_users,
+                    verb='replied to'
+                )
+            else:
+                new_parent_comment = Comment.objects.create_comment(
+                    user=request.user,
+                    path=request.get_full_path,
+                    text=comment_text,
+                    photo=photo
+                )
+
+                notify.send(
+                    self.request.user,
+                    action=new_parent_comment,
+                    target=new_parent_comment.photo,
+                    recipient=photo.creator,
+                    verb='commented'
+                )
+            return RestResponse(serializer.data,
+                                status=status.HTTP_201_CREATED)
+        else:
+            return RestResponse(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+
 
 class CommentListAPIView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication,
@@ -303,7 +366,15 @@ class NotificationAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.all_for_user(self.request.user)[:50]
+        notifications = Notification.objects.all_for_user(
+            self.request.user)[:50]
+        for notification in notifications:
+            if notification.recipient == self.request.user:
+                notification.read = True
+                notification.save()
+            else:
+                raise Http404
+        return notifications
 
 
 # P H O T O S
