@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Count
+from django.utils.functional import cached_property
 
 from core.models import TimeStampedModel
 from core.utils import readable_number
@@ -88,6 +89,11 @@ class Photo(HashtagMixin, TimeStampedModel):
 
     def get_likers_usernames(self):
         return map(str, self.likers.all().values_list('username', flat=True))
+
+    @cached_property
+    def get_likers_info(self):
+        return self.likers.select_related('likers').all().values(
+            'username', 'full_name', 'profile_picture')
 
     def like_count(self, short=True):
         count = self.likers.count()

@@ -11,9 +11,9 @@ class PhotoSerializer(serializers.ModelSerializer):
     photo_url = PhotoUrlField("photo_detail_api")
     creator = serializers.CharField(source='creator.username', read_only=True)
     creator_url = PhotoCreatorUrlField("user_account_detail_api")
-    likers = serializers.HyperlinkedRelatedField(
-        many=True, view_name='user_account_detail_api', read_only=True,
-        lookup_field='username')
+    # likers = serializers.HyperlinkedRelatedField(
+    #     many=True, view_name='user_account_detail_api', read_only=True,
+    #     lookup_field='username')
     comment_set = CommentSerializer(many=True, read_only=True)
     like_url = LikeUrlField("like_create_api")
 
@@ -21,8 +21,8 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = ['id', 'category_url', 'photo_url', 'slug', 'creator',
                   'creator_url', 'photo', 'description', 'like_url',
-                  'like_count', 'likers',
-                  'comment_count', 'comment_set', 'created', 'modified']
+                  'like_count', 'get_likers_info', 'comment_count',
+                  'comment_set', 'created', 'modified']
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):
