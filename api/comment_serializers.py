@@ -15,9 +15,6 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 class CommentUpdateSerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField(read_only=True)
     user = serializers.CharField(source='user.username', read_only=True)
-    # user_url = serializers.HyperlinkedRelatedField(
-    #     view_name='user_account_detail_api', lookup_field='username',
-    #     read_only=True)
 
     class Meta:
         model = Comment

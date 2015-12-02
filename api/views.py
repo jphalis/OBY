@@ -141,7 +141,6 @@ class TimelineAPIView(generics.ListAPIView):
 def follow_create_api(request, user_pk):
     follower, created = Follower.objects.get_or_create(user=request.user)
     user = get_object_or_404(MyUser, pk=user_pk)
-
     followed, created = Follower.objects.get_or_create(user=user)
 
     try:
@@ -158,7 +157,6 @@ def follow_create_api(request, user_pk):
             recipient=user,
             verb='is now supporting you'
         )
-
     serializer = FollowerSerializer(followed, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -263,13 +261,12 @@ class CommentCreateAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         parent_id = self.request.data.get('parent')
         photo_id = self.request.data.get('photo')
+        parent_comment = None
 
         try:
             photo = Photo.objects.get(id=photo_id)
         except:
             photo = None
-
-        parent_comment = None
 
         if parent_id is not None:
             try:
@@ -290,9 +287,7 @@ class CommentCreateAPIView(generics.CreateAPIView):
                     photo=photo,
                     parent=parent_comment
                 )
-
                 affected_users = parent_comment.get_affected_users()
-
                 notify.send(
                     self.request.user,
                     action=new_child_comment,
@@ -308,7 +303,6 @@ class CommentCreateAPIView(generics.CreateAPIView):
                     text=comment_text,
                     photo=photo
                 )
-
                 notify.send(
                     self.request.user,
                     action=new_parent_comment,
@@ -394,7 +388,6 @@ def like_create_api(request, photo_pk):
             recipient=photo.creator,
             verb='liked'
         )
-
     serializer = PhotoSerializer(photo, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 

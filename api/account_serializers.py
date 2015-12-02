@@ -67,11 +67,9 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
         if value:
             value = value.lower()
             username, domain = value.split('@')
-
             if not domain.endswith('.edu'):
                 raise serializers.ValidationError(
                     "Please use a valid university email.")
-
             if domain not in APPROVED_UNIVERSITIES:
                 raise serializers.ValidationError(
                     "Sorry, this university isn't registered with us yet. "
