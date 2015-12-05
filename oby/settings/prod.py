@@ -96,9 +96,11 @@ TEMPLATES = [
 # C A C H E
 CACHES = {
     'default': {
-        'BACKEND': 'oby.memcached.ElastiCache',
+        # 'BACKEND': 'oby.memcached.ElastiCache',
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
         'LOCATION': [
-            'oby-memcached.il3181.cfg.use1.cache.amazonaws.com:11211',
+            # 'oby-memcached.il3181.cfg.use1.cache.amazonaws.com:11211',
+            '52.2.52.114:11211',
         ],
         'OPTIONS': {
             'MAX_ENTRIES': 1000

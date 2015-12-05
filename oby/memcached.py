@@ -6,6 +6,8 @@ from django.utils.functional import cached_property
 
 from .cluster_utils import get_cluster_info
 
+# ImportError: No module named pylibmc
+
 
 class ElastiCache(PyLibMCCache):
     """
