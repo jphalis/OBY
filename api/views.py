@@ -44,50 +44,50 @@ class APIHomeView(DefaultsMixin, APIView):
         data = {
             'authentication': {
                 'login': api_reverse('auth_login_api', request=request),
-                'password_reset': api_reverse('api:rest_password_reset',
+                'password_reset': api_reverse('rest_password_reset',
                                               request=request),
-                'password_change': api_reverse('api:rest_password_change',
+                'password_change': api_reverse('rest_password_change',
                                                request=request)
             },
             'accounts': {
                 'count': MyUser.objects.all().count(),
-                'url': api_reverse('api:user_account_list_api', request=request),
-                'create_url': api_reverse('api:account_create_api',
+                'url': api_reverse('user_account_list_api', request=request),
+                'create_url': api_reverse('account_create_api',
                                           request=request),
                 'edit_profile_url': api_reverse(
-                    'api:user_account_detail_api', request=request,
+                    'user_account_detail_api', request=request,
                     kwargs={'username': request.user.username})
             },
             'categories': {
-                'url': api_reverse('api:category_list_api', request=request),
+                'url': api_reverse('category_list_api', request=request),
             },
             'comments': {
-                'url': api_reverse('api:comment_list_api', request=request),
-                'create_url': api_reverse('api:comment_create_api',
+                'url': api_reverse('comment_list_api', request=request),
+                'create_url': api_reverse('comment_create_api',
                                           request=request),
             },
             'hashtags': {
                 'count': Hashtag.objects.all().count(),
-                'url': api_reverse('api:hashtag_list_api', request=request),
+                'url': api_reverse('hashtag_list_api', request=request),
             },
             'homepage': {
-                'url': api_reverse('api:homepage_api', request=request),
+                'url': api_reverse('homepage_api', request=request),
             },
             'notifications': {
-                'url': api_reverse('api:notification_list_api', request=request),
+                'url': api_reverse('notification_list_api', request=request),
             },
             'photos': {
                 'count': Photo.objects.all().count(),
-                'url': api_reverse('api:photo_list_api', request=request),
-                'create_url': api_reverse('api:photo_create_api', request=request),
+                'url': api_reverse('photo_list_api', request=request),
+                'create_url': api_reverse('photo_create_api', request=request),
             },
             'search': {
-                'url': api_reverse('api:search_api', request=request),
+                'url': api_reverse('search_api', request=request),
                 'help_text': "add '?q=searched_parameter' to the "
                              "end of the url to display results"
             },
             'timeline': {
-                'url': api_reverse('api:timeline_api', request=request),
+                'url': api_reverse('timeline_api', request=request),
             },
         }
         return RestResponse(data)

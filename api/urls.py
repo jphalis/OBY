@@ -14,7 +14,7 @@ from .views import (PasswordChangeView, PasswordResetView,
                     PasswordResetConfirmView)
 
 
-app_name = 'api'
+# app_name = 'api'
 urlpatterns = [
     # G E N E R A L
     url(r'^$', APIHomeView.as_view(),
