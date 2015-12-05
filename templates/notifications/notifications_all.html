@@ -28,7 +28,7 @@
         $(window).load(function(){
             $.ajax({
                 type: "POST",
-                url: "{% url 'get_notifications_ajax' %}",
+                url: "{% url 'notifications:get_notifications_ajax' %}",
                 data: {
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                 },

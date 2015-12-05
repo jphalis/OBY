@@ -1,28 +1,32 @@
 '''
---------------------------------------------------------------------------------------
-tasks.py
---------------------------------------------------------------------------------------
 A set of tasks to manage your AWS Django deployment.
 
 Tasks include:
-    - configure_instance  : Configures a new EC2 instance (as definied in project_conf.py) and return's it's public dns
-                            This takes around 8 minutes to complete.
- 
-    - update_packages : Updates the python packages on the server to match those found in requirements/common.txt and 
-                        requirements/prod.txt
- 
-    - deploy : Pulls the latest commit from the master branch on the server, collects the static files, syncs the db and                   
-               restarts the server
- 
-    - reload_gunicorn : Pushes the gunicorn startup script to the servers and restarts the gunicorn process, use this if you 
-                        have made changes to templates/start_gunicorn.bash
- 
-    - reload_nginx : Pushes the nginx config files to the servers and restarts the nginx, use this if you 
-                     have made changes to templates/nginx-app-proxy or templates/nginx.conf
+    - configure_instance:
+        Configures a new EC2 instance (as definied in project_conf.py)
+        and return's it's public dns. This takes around 8 minutes to complete.
 
-    - reload_supervisor : Pushes the supervisor config files to the servers and restarts the supervisor, use this if you 
-                          have made changes to templates/supervisord-init or templates/supervisord.conf
+    - update_packages:
+        Updates the python packages on the server to match those found in
+        requirements/common.txt and requirements/prod.txt
 
+    - deploy:
+        Pulls the latest commit from the master branch on the server,
+        collects the static files, syncs the db and restarts the server
+
+    - reload_gunicorn:
+        Pushes the gunicorn startup script to the servers and restarts
+        the gunicorn process, use this if you have made changes to
+        templates/start_gunicorn.bash
+
+    - reload_nginx:
+        Pushes the nginx config files to the servers and restarts the nginx,
+        use this if you have made changes to templates/nginx-app-proxy or
+        templates/nginx.conf
+
+    - reload_supervisor:
+        Pushes the supervisor config files to the servers and restarts the
+        supervisor, use this if you or templates/supervisord.conf
 '''
 
 # Spawns a new EC2 instance (as definied in djangofab_conf.py) and return's

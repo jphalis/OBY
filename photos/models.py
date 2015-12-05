@@ -57,7 +57,8 @@ class Photo(HashtagMixin, TimeStampedModel):
     category = models.ForeignKey("Category")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL)
     description = models.TextField(max_length=250, blank=True)
-    hashtag_enabled_description = models.TextField(blank=True,
+    hashtag_enabled_description = models.TextField(
+        blank=True,
         help_text='Contains the description with hashtags replaced with links')
     featured = models.BooleanField(default=False)
     likers = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -78,15 +79,19 @@ class Photo(HashtagMixin, TimeStampedModel):
         return u"{}".format(self.slug)
 
     def get_comments_all(self):
-        return reverse('comments_all', kwargs={"cat_slug": self.category.slug,
-                                               "photo_slug": self.slug})
+        return reverse('comments:comments_all',
+                       kwargs={"cat_slug": self.category.slug,
+                               "photo_slug": self.slug})
 
+    @cached_property
     def get_photo_url(self):
         return "{}{}".format(settings.MEDIA_URL, self.photo)
 
+    @cached_property
     def get_delete_url(self):
-        return reverse('delete_photo', kwargs={"pk": self.pk})
+        return reverse('photos:delete_photo', kwargs={"pk": self.pk})
 
+    @cached_property
     def get_likers_usernames(self):
         return map(str, self.likers.all().values_list('username', flat=True))
 
@@ -134,4 +139,5 @@ class Category(TimeStampedModel):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("category_detail", kwargs={"cat_slug": self.slug})
+        return reverse("photos:category_detail",
+                       kwargs={"cat_slug": self.slug})

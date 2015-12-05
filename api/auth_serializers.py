@@ -14,7 +14,7 @@ from accounts.models import MyUser
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
-        fields = ['key']
+        fields = ('key',)
 
 
 class PasswordResetSerializer(serializers.Serializer):

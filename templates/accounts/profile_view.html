@@ -57,7 +57,7 @@
                 </div>
             </div>
             {% if request.user == user %}
-                <a href="{% url 'account_settings' %}" class="submit-btn go-btn">Edit Profile</a>
+                <a href="{% url 'accounts:account_settings' %}" class="submit-btn go-btn">Edit Profile</a>
             {% else %}
                 <input id="follow_btn" 
                        class="submit-btn{% if request.user.username in follow.get_followers_usernames %} following-btn{% else %} go-btn{% endif %}" 
@@ -148,7 +148,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "{% url 'like_ajax' %}",
+                url: "{% url 'photos:like_ajax' %}",
                 data: {
                     "photo_pk": $(this).attr("data-photo"),
                     csrfmiddlewaretoken: "{{ csrf_token }}",

@@ -9,5 +9,5 @@ class SearchMyUserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ['id', 'account_url', 'username', 'full_name',
-                  'profile_picture']
+        fields = ('id', 'account_url', 'username', 'full_name',
+                  'profile_picture',)

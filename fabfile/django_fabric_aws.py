@@ -1,38 +1,38 @@
 '''
---------------------------------------------------------------------------------
-django_fabric_aws.py
---------------------------------------------------------------------------------
 A set of fabric commands to manage a Django deployment on AWS
 
 Commands include:
-    - fab spawn instance  
-        - Spawns a new EC2 instance (as definied in project_conf.py) and return's it's public dns
-          This takes around 8 minutes to complete.
+    - fab spawn instance
+        - Spawns a new EC2 instance (as definied in project_conf.py) and
+          return's it's public dns. This takes around 8 minutes to complete.
 
     - fab update_packages
-        - Updates the python packages on the server to match those found in requirements/common.txt and 
-          requirements/prod.txt
+        - Updates the python packages on the server to match those found in
+          requirements/common.txt and requirements/prod.txt
 
     - fab deploy
-        - Pulls the latest commit from the master branch on the server, collects the static files, syncs the db and                   
-          restarts the server
+        - Pulls the latest commit from the master branch on the server,
+          collects the static files, syncs the db and restarts the server
 
     - fab reload_gunicorn
-        - Pushes the gunicorn startup script to the servers and restarts the gunicorn process, use this if you 
-          have made changes to templates/start_gunicorn.bash
+        - Pushes the gunicorn startup script to the servers and restarts the
+          gunicorn process, use this if you have made changes to
+          templates/start_gunicorn.bash
 
     - fab reload_nginx
-        - Pushes the nginx config files to the servers and restarts the nginx, use this if you 
-          have made changes to templates/nginx-app-proxy or templates/nginx.conf
+        - Pushes the nginx config files to the servers and restarts the nginx,
+          use this if you have made changes to templates/nginx-app-proxy or
+          templates/nginx.conf
 
     - fab reload_supervisor
-        - Pushes the supervisor config files to the servers and restarts the supervisor, use this if you 
-          have made changes to templates/supervisord-init or templates/supervisord.conf
+        - Pushes the supervisor config files to the servers and restarts the
+          supervisor, use this if you have made changes to
+          templates/supervisord-init or templates/supervisord.conf
 
     - fab manage:command="management command"
-        - Runs a python manage.py command on the server. To run this command we need to specify an argument, eg for syncdb
+        - Runs a python manage.py command on the server.
+          To run this command we need to specify an argument, eg for syncdb
           type the command -> fab manage:command="syncdb --no-input"
-
 '''
 
 from fabric.api import *
@@ -51,9 +51,9 @@ env.key_filename = fabconf['SSH_PRIVATE_KEY_PATH']
 env.hosts = fabconf['EC2_INSTANCES']
 
 
-# ---------------------------------------------------------------------------------------------
-# MAIN FABRIC TASKS - Type fab <function_name> in the command line to execute any one of these
-# ---------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# MAIN FABRIC TASKS - Type fab <function_name> in the command line to execute
+# ---------------------------------------------------------------------------
 
 
 def spawn():
@@ -97,7 +97,8 @@ def deploy():
     Pulls the latest commit from bitbucket, resyncs the database,
     collects the static files and restarts the server.
     """
-    _run_task(tasks.deploy, "Updating server to latest commit in the bitbucket repo...",
+    _run_task(tasks.deploy,
+              "Updating server to latest commit in the bitbucket repo...",
               "Finished updating the server")
 
 
@@ -122,7 +123,8 @@ def reload_supervisor():
     """
     Reloads the supervisor config files and restarts supervisord
     """
-    _run_task(tasks.reload_supervisor, "Reloading the supervisor config files...",
+    _run_task(tasks.reload_supervisor,
+              "Reloading the supervisor config files...",
               "Finished reloading supervisor")
 
 
@@ -130,7 +132,8 @@ def reload_gunicorn():
     """
     Reloads the Gunicorn startup script and restarts gunicorn
     """
-    _run_task(tasks.reload_gunicorn, "Reloading the gunicorn startup script...",
+    _run_task(tasks.reload_gunicorn,
+              "Reloading the gunicorn startup script...",
               "Finished reloading the gunicorn startup script")
 
 
@@ -161,7 +164,8 @@ def _run_task(task, start_message, finished_message):
 
     # Check if any hosts exist
     if env.hosts == []:
-        print("There are EC2 instances defined in project_conf.py, please add some instances and try again")
+        print("There are EC2 instances defined in project_conf.py,"
+              "please add some instances and try again")
         print("or run 'fab spawn_instance' to create an instance")
         return
 
@@ -185,9 +189,10 @@ def _create_ec2_instance():
     Creates EC2 Instance
     """
     print(_yellow("Creating instance"))
-    conn = boto.ec2.connect_to_region(ec2_region,
-                                      aws_access_key_id=fabconf['AWS_ACCESS_KEY'],
-                                      aws_secret_access_key=fabconf['AWS_SECRET_KEY'])
+    conn = boto.ec2.connect_to_region(
+        ec2_region,
+        aws_access_key_id=fabconf['AWS_ACCESS_KEY'],
+        aws_secret_access_key=fabconf['AWS_SECRET_KEY'])
 
     image = conn.get_all_images(ec2_amis)
 

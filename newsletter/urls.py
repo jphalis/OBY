@@ -1,7 +1,10 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+
+from . import views
 
 
-urlpatterns = patterns('newsletter.views',
-    url(r'^toggle_newsletter/$', 'toggle_newsletter',
+app_name = 'newsletter'
+urlpatterns = [
+    url(r'^toggle_newsletter/$', views.toggle_newsletter,
         name='toggle_newsletter'),
-)
+]

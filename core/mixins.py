@@ -3,6 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.utils.decorators import method_decorator
 
+from .decorators import ajax_required
+
+
+class AjaxRequiredMixin(object):
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AjaxRequiredMixin, self).dispatch(request,
+                                                       *args, **kwargs)
+
 
 class StaffRequiredMixin(object):
     @classmethod

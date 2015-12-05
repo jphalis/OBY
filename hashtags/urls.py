@@ -1,7 +1,10 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+
+from . import views
 
 
-urlpatterns = patterns('hashtags.views',
-    url(r'^(?P<tag>[\w-]+)/$', 'hashtagged_item_list',
+app_name = 'hashtags'
+urlpatterns = [
+    url(r'^(?P<tag>[\w-]+)/$', views.hashtagged_item_list,
         name='hashtagged_item_list'),
-)
+]

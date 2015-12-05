@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
+from . import views
 from .views import APIHomeView, HomepageAPIView, TimelineAPIView
 from .views import (AccountCreateAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
@@ -13,7 +14,8 @@ from .views import (PasswordChangeView, PasswordResetView,
                     PasswordResetConfirmView)
 
 
-urlpatterns = patterns('',
+app_name = 'api'
+urlpatterns = [
     # G E N E R A L
     url(r'^$', APIHomeView.as_view(),
         name='api_home'),
@@ -31,7 +33,7 @@ urlpatterns = patterns('',
         name='user_account_list_api'),
     url(r'^accounts/(?P<username>[\w.@+-]+)/$', MyUserDetailAPIView.as_view(),
         name='user_account_detail_api'),
-    url(r'^support/(?P<user_pk>\d+)/$', 'api.views.follow_create_api',
+    url(r'^support/(?P<user_pk>\d+)/$', views.follow_create_api,
         name='follow_create_api'),
     # url(r'^follows/$', FollowerListAPIView.as_view(),
     #     name='follow_list_api'),
@@ -75,6 +77,6 @@ urlpatterns = patterns('',
         name='photo_create_api'),
     url(r'^photos/(?P<cat_slug>[\w-]+)/(?P<photo_slug>[\w-]+)/$',
         PhotoDetailAPIView.as_view(), name='photo_detail_api'),
-    url(r'^like/(?P<photo_pk>\d+)/$', 'api.views.like_create_api',
+    url(r'^like/(?P<photo_pk>\d+)/$', views.like_create_api,
         name='like_create_api'),
-)
+]

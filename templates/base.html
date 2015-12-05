@@ -39,7 +39,7 @@
                     <ul class="nav navbar-nav">
                         {% url "home" as home_url %}
                         {% url "timeline" as timeline_url %}
-                        {% url "notifications_all" as notifications_url %}
+                        {% url "notifications:notifications_all" as notifications_url %}
                         {% url "donations:info" as info_donation_url %}
                         <li>
                             <a href="{{ home_url }}" {% if request.path == home_url %} class="selected" {% endif %}>Home</a>
@@ -59,7 +59,7 @@
                             <a href="{{ request.user.get_profile_view }}">{{ request.user }}</a>
                         </li>
                         <li>
-                            <a href="{% url 'photo_upload' %}" role="button" /><span class="fa fa-plus"></span></a>
+                            <a href="{% url 'photos:photo_upload' %}" role="button" /><span class="fa fa-plus"></span></a>
                         </li>
                     </ul>
                 </div>

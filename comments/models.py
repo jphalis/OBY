@@ -58,7 +58,7 @@ class Comment(HashtagMixin, TimeStampedModel):
         return self.text
 
     def get_absolute_url(self):
-        return reverse('comment_thread', kwargs={"id": self.id})
+        return reverse('comments:comment_thread', kwargs={"id": self.id})
 
     def get_affected_users(self):
         """

@@ -14,7 +14,8 @@ class Hashtag(models.Model):
         return self.tag
 
     def get_absolute_url(self):
-        return reverse('hashtag_detail', kwargs={'hashtag': str(self.tag)})
+        return reverse('hashtags:hashtag_detail',
+                       kwargs={'hashtag': str(self.tag)})
 
 
 class HashtagMixin(models.Model):

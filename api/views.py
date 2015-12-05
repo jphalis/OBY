@@ -4,15 +4,12 @@ from django.shortcuts import get_object_or_404, Http404
 from django.utils.crypto import get_random_string
 
 from rest_framework import filters, generics, mixins, permissions, status
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
 from rest_framework.decorators import api_view
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response as RestResponse
 from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from accounts.models import Follower, MyUser
 from comments.models import Comment
@@ -28,6 +25,7 @@ from .auth_serializers import (PasswordResetSerializer,
 from .comment_serializers import (CommentCreateSerializer, CommentSerializer,
                                   CommentUpdateSerializer)
 from .hashtag_serializers import HashtagSerializer
+from .mixins import DefaultsMixin
 from .notification_serializers import NotificationSerializer
 from .pagination import (AccountPagination, CommentPagination,
                          HashtagPagination, NotificationPagination,
@@ -41,78 +39,68 @@ from .search_serializers import SearchMyUserSerializer
 # Create your views here.
 
 
-class APIHomeView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
+class APIHomeView(DefaultsMixin, APIView):
     def get(self, request, format=None):
         data = {
             'authentication': {
                 'login': api_reverse('auth_login_api', request=request),
-                'password_reset': api_reverse('rest_password_reset',
+                'password_reset': api_reverse('api:rest_password_reset',
                                               request=request),
-                'password_change': api_reverse('rest_password_change',
+                'password_change': api_reverse('api:rest_password_change',
                                                request=request)
             },
             'accounts': {
                 'count': MyUser.objects.all().count(),
-                'url': api_reverse('user_account_list_api', request=request),
-                'create_url': api_reverse('account_create_api',
+                'url': api_reverse('api:user_account_list_api', request=request),
+                'create_url': api_reverse('api:account_create_api',
                                           request=request),
                 'edit_profile_url': api_reverse(
-                    'user_account_detail_api', request=request,
+                    'api:user_account_detail_api', request=request,
                     kwargs={'username': request.user.username})
             },
             'categories': {
-                'url': api_reverse('category_list_api', request=request),
+                'url': api_reverse('api:category_list_api', request=request),
             },
             'comments': {
-                'url': api_reverse('comment_list_api', request=request),
-                'create_url': api_reverse('comment_create_api',
+                'url': api_reverse('api:comment_list_api', request=request),
+                'create_url': api_reverse('api:comment_create_api',
                                           request=request),
             },
             'hashtags': {
                 'count': Hashtag.objects.all().count(),
-                'url': api_reverse('hashtag_list_api', request=request),
+                'url': api_reverse('api:hashtag_list_api', request=request),
             },
             'homepage': {
-                'url': api_reverse('homepage_api', request=request),
+                'url': api_reverse('api:homepage_api', request=request),
             },
             'notifications': {
-                'url': api_reverse('notification_list_api', request=request),
+                'url': api_reverse('api:notification_list_api', request=request),
             },
             'photos': {
                 'count': Photo.objects.all().count(),
-                'url': api_reverse('photo_list_api', request=request),
-                'create_url': api_reverse('photo_create_api', request=request),
+                'url': api_reverse('api:photo_list_api', request=request),
+                'create_url': api_reverse('api:photo_create_api', request=request),
             },
             'search': {
-                'url': api_reverse('search_api', request=request),
+                'url': api_reverse('api:search_api', request=request),
                 'help_text': "add '?q=searched_parameter' to the "
                              "end of the url to display results"
             },
             'timeline': {
-                'url': api_reverse('timeline_api', request=request),
+                'url': api_reverse('api:timeline_api', request=request),
             },
         }
         return RestResponse(data)
 
 
-class HomepageAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class HomepageAPIView(DefaultsMixin, generics.ListAPIView):
     serializer_class = PhotoSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Photo.objects.most_liked_offset()[:30]
 
 
-class TimelineAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+class TimelineAPIView(DefaultsMixin, generics.ListAPIView):
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
@@ -165,11 +153,8 @@ class AccountCreateAPIView(generics.CreateAPIView):
     serializer_class = AccountCreateSerializer
 
 
-class MyUserListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class MyUserListAPIView(DefaultsMixin, generics.ListAPIView):
     pagination_class = AccountPagination
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
 
@@ -317,11 +302,8 @@ class CommentCreateAPIView(generics.CreateAPIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class CommentListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class CommentListAPIView(DefaultsMixin, generics.ListAPIView):
     pagination_class = CommentPagination
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
 
@@ -340,11 +322,8 @@ class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):
 
 
 # H A S H T A G S
-class HashtagListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class HashtagListAPIView(DefaultsMixin, generics.ListAPIView):
     pagination_class = HashtagPagination
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = HashtagSerializer
     queryset = Hashtag.objects.all()
     filter_backends = [filters.SearchFilter]
@@ -352,12 +331,9 @@ class HashtagListAPIView(generics.ListAPIView):
 
 
 # N O T I F I C A T I O N S
-class NotificationAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class NotificationAPIView(DefaultsMixin, generics.ListAPIView):
     pagination_class = NotificationPagination
     serializer_class = NotificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         notifications = Notification.objects.all_for_user(
@@ -403,11 +379,8 @@ class PhotoCreateAPIView(ModelViewSet):
                         photo=self.request.data.get('photo'))
 
 
-class PhotoListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class PhotoListAPIView(DefaultsMixin, generics.ListAPIView):
     pagination_class = PhotoPagination
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = PhotoSerializer
     queryset = Photo.objects.all()
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -435,21 +408,15 @@ class PhotoDetailAPIView(generics.RetrieveAPIView,
         return self.update(request, *args, **kwargs)
 
 
-class CategoryListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class CategoryListAPIView(DefaultsMixin, generics.ListAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Category.objects.most_posts()
 
 
-class CategoryDetailAPIView(generics.RetrieveAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
+class CategoryDetailAPIView(DefaultsMixin, generics.RetrieveAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         slug = self.kwargs["slug"]
@@ -458,17 +425,19 @@ class CategoryDetailAPIView(generics.RetrieveAPIView):
 
 
 # S E A R C H
-class SearchListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+class SearchListAPIView(DefaultsMixin, generics.ListAPIView):
     serializer_class = SearchMyUserSerializer
-    filter_backends = (filters.SearchFilter, filters.DjangoFilterBackend,)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
     # '^' Starts-with search
     # '=' Exact matches
     # '@' Full-text search (Currently only supported Django's MySQL backend.)
     # '$' Regex search
-    search_fields = ['^username', '^full_name']
+    search_fields = ('^username', '^full_name',)
+    # ordering_fields = ('',)
 
     def get_queryset(self):
         queryset = MyUser.objects.all()

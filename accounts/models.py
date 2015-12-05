@@ -47,6 +47,15 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
+    # USER_TYPES = (
+    #     (0, _('Admin')),
+    #     (1, _('Staff')),
+    #     (2, _('Default')),
+    #     (3, _('Verified')),
+    #     (4, _('Advertiser')),
+    # )
+    # user_type = models.IntegerField(max_length=1, null=True,
+    #                                 choices=USER_TYPES)
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(verbose_name='email',
                               max_length=80, unique=True)
@@ -56,8 +65,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
                                   unique=True, null=True, blank=True)
     GENDER_CHOICES = (
-        ('dude', 'Dude'),
-        ('betty', 'Betty'),
+        ('DUDE', _('Dude')),
+        ('BETTY', _('Betty')),
     )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               blank=True)
@@ -84,9 +93,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def get_profile_view(self):
         return reverse('profile_view', kwargs={"username": self.username})
 
+    @cached_property
     def get_short_name(self):
         return "{}".format(self.full_name)
 
+    @cached_property
     def get_full_name(self):
         return "{}".format(self.full_name)
 
@@ -122,10 +133,12 @@ class Follower(TimeStampedModel):
     def __unicode__(self):
         return u'{}'.format(self.user.username)
 
+    @cached_property
     def get_followers_usernames(self):
         return map(str, self.followers.all().values_list(
                    'user__username', flat=True))
 
+    @cached_property
     def get_following_usernames(self):
         return map(str, self.following.all().values_list(
                    'user__username', flat=True))
@@ -140,10 +153,12 @@ class Follower(TimeStampedModel):
         return self.following.select_related('user').all().values(
             'user__username', 'user__full_name', 'user__profile_picture')
 
+    @cached_property
     def get_followers_url(self):
         return reverse('followers_thread',
                        kwargs={'username': self.user.username})
 
+    @cached_property
     def get_following_url(self):
         return reverse('following_thread',
                        kwargs={'username': self.user.username})
