@@ -157,10 +157,10 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.NullHandler',
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'oby.settings.handlers.ThrottledAdminEmailHandler'
-        }
+        # 'mail_admins': {
+        #     'level': 'ERROR',
+        #     'class': 'oby.settings.handlers.ThrottledAdminEmailHandler'
+        # }
     },
     'loggers': {
         'django.security.DisallowedHost': {

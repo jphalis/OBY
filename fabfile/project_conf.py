@@ -95,7 +95,6 @@ fabconf['EC2_INSTANCES'] = ["ec2-52-91-200-39.compute-1.amazonaws.com"]
 # fab spawn instance
 
 # Update git files
-# fab update_packages
 # fab deploy
 # fab update_packages
 # fab reload_nginx
