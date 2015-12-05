@@ -56,7 +56,8 @@ urlpatterns = [
         name='home'),
 
     # API
-    url(r'^hide/oby/api/', include('api.urls')),
+    url(r'^hide/oby/api/', include('api.urls',
+        namespace='api')),
     url(r'^hide/oby/api/auth/', include('rest_framework.urls',
         namespace='rest_framework')),
     url(r'^hide/oby/api/auth/token/$',
