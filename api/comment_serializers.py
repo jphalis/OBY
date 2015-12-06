@@ -53,7 +53,6 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
     def get_photo_url(self, obj):
         request = self.context['request']
         photo = None
-
         if obj.is_child:
             try:
                 photo = obj.parent.photo

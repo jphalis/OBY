@@ -134,6 +134,39 @@ def account_settings(request):
     return render(request, 'accounts/settings/account_settings.html', context)
 
 
+# @login_required
+# @cache_page(60 * 3)
+# def product_purchase_history(request):
+#     user = request.user
+#     history = Product.objects.filter(buyers=user)
+#     return render(request, "accounts/settings/product_purchase_history.html",
+#                   {"queryset": history})
+
+
+# @login_required
+# @cache_page(60 * 3)
+# def advertiser_analytics(request):
+#     user = request.user
+
+#     if user.is_advertiser:
+#         history = Product.objects.filter(owner=user)
+#         total_creations = history.aggregate(Sum("owner")).get(
+#             "owner__sum", 0)
+#         total_downloads = history.aggregate(Sum("buyers")).get(
+#             "buyers__sum", 0)
+
+#         context = {
+#             "total_creations": total_creations,
+#             "total_downloads": total_downloads,
+#             "queryset": history,
+#             "user": user
+#         }
+#         return render(request, "accounts/settings/advertiser_analytics.html",
+#                       context)
+#     else:
+#         return HttpResponseRedirect(reverse("home"))
+
+
 @sensitive_post_parameters()
 @login_required
 def password_change(request):

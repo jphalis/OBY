@@ -22,14 +22,13 @@ from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
 from .auth_serializers import (PasswordResetSerializer,
                                PasswordResetConfirmSerializer,
                                PasswordChangeSerializer)
-from .comment_serializers import (CommentCreateSerializer, CommentSerializer,
+from .comment_serializers import (CommentCreateSerializer,
                                   CommentUpdateSerializer)
 from .hashtag_serializers import HashtagSerializer
 from .mixins import DefaultsMixin
 from .notification_serializers import NotificationSerializer
-from .pagination import (AccountPagination, CommentPagination,
-                         HashtagPagination, NotificationPagination,
-                         PhotoPagination)
+from .pagination import (AccountPagination, HashtagPagination,
+                         NotificationPagination, PhotoPagination)
 from .permissions import (IsCreatorOrReadOnly, IsOwnerOrReadOnly,
                           MyUserIsOwnerOrReadOnly)
 from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
@@ -62,7 +61,6 @@ class APIHomeView(DefaultsMixin, APIView):
                 'url': api_reverse('category_list_api', request=request),
             },
             'comments': {
-                'url': api_reverse('comment_list_api', request=request),
                 'create_url': api_reverse('comment_create_api',
                                           request=request),
             },
@@ -300,12 +298,6 @@ class CommentCreateAPIView(generics.CreateAPIView):
         else:
             return RestResponse(serializer.errors,
                                 status=status.HTTP_400_BAD_REQUEST)
-
-
-class CommentListAPIView(DefaultsMixin, generics.ListAPIView):
-    pagination_class = CommentPagination
-    serializer_class = CommentSerializer
-    queryset = Comment.objects.all()
 
 
 class CommentDetailAPIView(generics.RetrieveAPIView, mixins.DestroyModelMixin):

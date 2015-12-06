@@ -4,8 +4,7 @@ from . import views
 from .views import APIHomeView, HomepageAPIView, TimelineAPIView
 from .views import (AccountCreateAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
-from .views import (CommentCreateAPIView, CommentDetailAPIView,
-                    CommentListAPIView)
+from .views import CommentCreateAPIView, CommentDetailAPIView
 from .views import HashtagListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView)
@@ -47,16 +46,10 @@ urlpatterns = [
         name='rest_password_change'),
 
     # C O M M E N T S
-    url(r'^comments/$', CommentListAPIView.as_view(),
-        name='comment_list_api'),
     url(r'^comments/create/$', CommentCreateAPIView.as_view(),
         name='comment_create_api'),
     url(r'^comments/(?P<id>\d+)/$', CommentDetailAPIView.as_view(),
         name='comment_detail_api'),
-
-    # D O N A T I O N S
-    # url(r'^donations/$', DonationListAPIView.as_view(),
-    #     name='donation_list_api'),
 
     # H A S H T A G S
     url(r'^hashtags/$', HashtagListAPIView.as_view(),

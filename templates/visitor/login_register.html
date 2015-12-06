@@ -35,7 +35,7 @@
                 {% if title == "Sign in" %}
                     <br/>
                     <p>Don't have an account? <a href="{% url 'register' %}">Sign up now!</a></p>
-                    <a href="{% url 'password_reset' %}" class="forgot-password">Forgot your password?</a>
+                    <a href="{% url 'accounts:password_reset' %}" class="forgot-password">Forgot your password?</a>
                 {% endif %}
 
                 {% if title == "Register" %}

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from core.models import TimeStampedModel
-from hashtags.models import Hashtag
+# from hashtags.models import Hashtag
 from photos.models import Category, Photo
 
 

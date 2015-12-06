@@ -12,7 +12,7 @@ def readable_number(value, short=False):
     powers = [10 ** x for x in (3, 6, 9, 12, 18)]
     human_powers = ('thousand', 'million', 'billion', 'trillion',
                     'quadrillion')
-    human_powers_short = ('K', 'M', 'B', 'T', 'QD')
+    human_powers_short = ('k', 'm', 'b', 'T', 'QD')
 
     try:
         value = int(value)
@@ -26,5 +26,5 @@ def readable_number(value, short=False):
             chopped = value / float(powers[ordinal - 1])
             chopped = format(chopped, '.1f')
             if not short:
-                return '{} {}'.format(chopped, human_powers[ordinal - 1])
+                return '{}{}'.format(chopped, human_powers[ordinal - 1])
             return '{}{}'.format(chopped, human_powers_short[ordinal - 1])

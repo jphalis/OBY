@@ -78,6 +78,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     modified = models.DateTimeField(auto_now=True)
     stripe_customer_id = models.CharField(max_length=30, editable=False,
                                           blank=True)
+    # Use when points are introduced
+    # available_points = models.IntegerField(default=0)
+    # total_points = models.IntegerField(default=0)
+    # points_at_last_check = models.IntegerField(default=0)
+    # last_point_check = models.DateTimeField()
+    # creations_allowed = models.IntegerField(default=0)
 
     objects = MyUserManager()
 

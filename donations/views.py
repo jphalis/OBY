@@ -32,13 +32,11 @@ def make(request):
 
     if request.method == 'POST' and credit_card_form.is_valid() \
             and donation_form.is_valid():
-
         # create charge at Stripe
         charge = credit_card_form.charge_customer(
             amount=donation_form.cleaned_data.get('amount'),
             description='Donation from {} to OBY'.format(request.user.email)
         )
-
         if charge:
             # persist charge ID returned from Stripe
             donation_form.charge_id = charge.id

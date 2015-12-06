@@ -8,13 +8,6 @@ class AccountPagination(LimitOffsetPagination):
     offset_query_param = "offset"
 
 
-class CommentPagination(LimitOffsetPagination):
-    default_limit = 10
-    max_limit = 50
-    limit_query_param = "limit"
-    offset_query_param = "offset"
-
-
 class HashtagPagination(LimitOffsetPagination):
     default_limit = 10
     max_limit = 100
