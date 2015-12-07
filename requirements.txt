@@ -16,7 +16,7 @@ django-htmlmin==0.8.0
 django-storages==1.1.8
 django-test-without-migrations==0.2
 django-widget-tweaks==1.4.1
-djangorestframework==3.2.3
+djangorestframework==3.3.1
 djangorestframework-jwt==1.7.2
 ecdsa==0.13
 enum34==1.0.4

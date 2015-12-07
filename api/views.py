@@ -420,7 +420,6 @@ class CategoryDetailAPIView(DefaultsMixin, generics.RetrieveAPIView):
 class SearchListAPIView(DefaultsMixin, generics.ListAPIView):
     serializer_class = SearchMyUserSerializer
     filter_backends = (
-        filters.DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
     )
@@ -429,7 +428,7 @@ class SearchListAPIView(DefaultsMixin, generics.ListAPIView):
     # '@' Full-text search (Currently only supported Django's MySQL backend.)
     # '$' Regex search
     search_fields = ('^username', '^full_name',)
-    # ordering_fields = ('',)
+    # ordering_fields = ('id', 'username', 'full_name',)
 
     def get_queryset(self):
         queryset = MyUser.objects.all()
