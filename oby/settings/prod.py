@@ -99,6 +99,11 @@ TEMPLATES = [
 ]
 
 
+# H T M L  M I N I F I C A T I O N
+KEEP_COMMENTS_ON_MINIFYING = False
+EXCLUDE_FROM_MINIFYING = ('^hide/oby/admin/',)
+
+
 # C A C H E
 CACHES = {
     'default': {
@@ -165,10 +170,10 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.NullHandler',
         },
-        # 'mail_admins': {
-        #     'level': 'ERROR',
-        #     'class': 'oby.settings.handlers.ThrottledAdminEmailHandler'
-        # }
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'oby.settings.handlers.ThrottledAdminEmailHandler'
+        }
     },
     'loggers': {
         'django.security.DisallowedHost': {

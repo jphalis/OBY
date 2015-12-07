@@ -1,6 +1,6 @@
 from django import template
 from django.conf import settings
-from django.template import Context, loader
+from django.template import loader
 
 
 register = template.Library()
@@ -10,6 +10,7 @@ def do_get_analytics(parser, token):
     contents = token.split_contents()
     tag_name = contents[0]
     template_name = 'google_analytics/{}_template.html'.format(tag_name)
+
     if len(contents) == 2:
         code = contents[1]
     elif len(contents) == 1:
@@ -45,13 +46,13 @@ class AnalyticsNode(template.Node):
             return ''
 
         if code.strip() != '':
-            t = loader.get_template(self.template_name)
-            c = Context({
+            template = loader.get_template(self.template_name)
+            context = {
                 'analytics_code': code,
                 'track_page_load_time': getattr(
                     settings, "GOOGLE_ANALYTICS_TRACK_PAGE_LOAD_TIME", True),
-            })
-            return t.render(c)
+            }
+            return template.render(context)
         else:
             return ''
 
