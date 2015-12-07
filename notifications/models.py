@@ -62,10 +62,8 @@ class Notification(TimeStampedModel):
     sender_object_id = models.PositiveIntegerField()
     sender_object = GenericForeignKey("sender_content_type",
                                       "sender_object_id")
-
     # Commented
     verb = models.CharField(max_length=255)
-
     # "What's up?""
     action_content_type = models.ForeignKey(ContentType,
                                             related_name='notify_action',
@@ -73,7 +71,6 @@ class Notification(TimeStampedModel):
     action_object_id = models.PositiveIntegerField(null=True, blank=True)
     action_object = GenericForeignKey("action_content_type",
                                       "action_object_id")
-
     # On your photo
     target_content_type = models.ForeignKey(ContentType,
                                             related_name='notify_target',
@@ -81,7 +78,6 @@ class Notification(TimeStampedModel):
     target_object_id = models.PositiveIntegerField(null=True, blank=True)
     target_object = GenericForeignKey("target_content_type",
                                       "target_object_id")
-
     # Annie
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   related_name='notifications')

@@ -19,9 +19,9 @@ class CommentManager(models.Manager):
     def create_comment(self, user=None, text=None, path=None,
                        photo=None, parent=None):
         if not path:
-            raise ValueError("Must include a path when adding a Comment")
+            raise ValueError("Must include a path when adding a comment")
         if not user:
-            raise ValueError("Must include a user when adding a Comment")
+            raise ValueError("Must include a user when adding a comment")
 
         comment = self.model(
             user=user,
@@ -44,7 +44,8 @@ class Comment(HashtagMixin, TimeStampedModel):
     path = models.CharField(max_length=350)
     photo = models.ForeignKey(Photo)
     text = models.TextField(max_length=240)
-    hashtag_enabled_text = models.TextField(blank=True,
+    hashtag_enabled_text = models.TextField(
+        blank=True,
         help_text='Contains the description with hashtags replaced with links')
     hashtag_text_field = 'text'
 

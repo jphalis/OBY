@@ -110,7 +110,6 @@ USE_TZ = False
 
 # A P P L I C A T I O N S
 INSTALLED_APPS = (
-    'flat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

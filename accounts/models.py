@@ -20,7 +20,7 @@ def upload_location(instance, filename):
 class MyUserManager(BaseUserManager):
     def create_user(self, username=None, email=None, password=None):
         if not username:
-            raise ValueError('Must include username')
+            raise ValueError('Users must have a username')
 
         if not email:
             raise ValueError('Users must have an email address')
@@ -65,8 +65,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
                                   unique=True, null=True, blank=True)
     GENDER_CHOICES = (
-        ('DUDE', _('Dude')),
-        ('BETTY', _('Betty')),
+        ('Dude', _('Dude')),
+        ('Betty', _('Betty')),
     )
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               blank=True)
@@ -78,7 +78,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     modified = models.DateTimeField(auto_now=True)
     stripe_customer_id = models.CharField(max_length=30, editable=False,
                                           blank=True)
-    # Use when points are introduced
     # available_points = models.IntegerField(default=0)
     # total_points = models.IntegerField(default=0)
     # points_at_last_check = models.IntegerField(default=0)
@@ -174,6 +173,6 @@ MyUser.profile = property(lambda u: Follower.objects.get_or_create(user=u)[0])
 
 # def new_user_receiver(sender, instance, created, *args, **kwargs):
 #     if created:
-#         new_profile, is_created = UserProfile.objects.get_or_create(user=instance)
+#         new_profile, is_created = MyUser.objects.get_or_create(user=instance)
 
 # post_save.connect(new_user_receiver, sender=MyUser)

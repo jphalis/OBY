@@ -61,8 +61,6 @@ class ElastiCache(PyLibMCCache):
         # PylibMC don't play well with the GIL.
 
         # instance to store cached version of client
-        # in Django 1.7 use self
-        # in Django < 1.7 use thread local
         container = getattr(self, '_local', self)
         client = getattr(container, '_client', None)
         if client:

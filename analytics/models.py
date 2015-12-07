@@ -40,14 +40,12 @@ class PageViewManager(models.Manager):
 class PageView(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     path = models.CharField(max_length=350)
-
     primary_content_type = models.ForeignKey(ContentType,
                                              related_name='primary_obj',
                                              null=True, blank=True)
     primary_object_id = models.PositiveIntegerField(null=True, blank=True)
     primary_object = GenericForeignKey("primary_content_type",
                                        "primary_object_id")
-
     secondary_content_type = models.ForeignKey(ContentType,
                                                related_name='secondary_obj',
                                                null=True, blank=True)

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 
 
 class Permalinkable(models.Model):
@@ -18,7 +19,6 @@ class Permalinkable(models.Model):
         return (self.url_name, (), url_kwargs)
 
     def pre_save(self, instance, add):
-        from django.utils.text import slugify
         if not instance.slug:
             instance.slug = slugify(self.slug_source)
 

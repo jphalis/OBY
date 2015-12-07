@@ -27,11 +27,11 @@ class HashtagMixin(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(HashtagMixin, self).__init__(*args, **kwargs)
-
         # some defensive coding to ensure the field defined is a
         # CharField or TextField, especially when open sourcing
         if not self.hashtag_text_field:
-            raise NotImplemented(u'You must define a source for the hashtags '
+            raise NotImplemented(
+                u'You must define a source for the hashtags '
                 u'to derive from, which needs to be a CharField or TextField.')
 
         self.hashtag_field = self._meta.get_field(self.hashtag_text_field)
@@ -53,7 +53,6 @@ class HashtagMixin(models.Model):
 
     def _set_hashtags(self):
         self._delete_hashtags()
-
         # add any hashtags derived from the hashtag_text_field
         # makes all tags lowercase
         hashtags = []

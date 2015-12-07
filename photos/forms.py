@@ -35,7 +35,6 @@ class PhotoUploadForm(forms.ModelForm):
         photo = self.cleaned_data.get('photo')
         try:
             w, h = get_image_dimensions(photo)
-
             # validate dimensions
             min_width = 80
             min_height = 80
