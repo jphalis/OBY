@@ -184,14 +184,11 @@ class PasswordResetView(generics.GenericAPIView):
     Returns the success/fail message
     """
     serializer_class = PasswordResetSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-
-        if not serializer.is_valid():
-            return RestResponse(serializer.errors,
-                                status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return RestResponse(
             {"success": "Password reset e-mail has been sent."},
@@ -206,16 +203,13 @@ class PasswordResetConfirmView(generics.GenericAPIView):
     Returns the success/fail message
     """
     serializer_class = PasswordResetConfirmSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return RestResponse(serializer.errors,
-                                status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
-        return RestResponse(
-            {"success": "Password has been reset."})
+        return RestResponse({"success": "Password has been reset."})
 
 
 class PasswordChangeView(generics.GenericAPIView):
@@ -225,13 +219,11 @@ class PasswordChangeView(generics.GenericAPIView):
     Returns the success/fail message
     """
     serializer_class = PasswordChangeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return RestResponse(serializer.errors,
-                                status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return RestResponse({"success": "New password has been saved."})
 

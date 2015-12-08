@@ -234,7 +234,8 @@ def password_reset_confirm(request, uidb64=None, token=None,
         if request.method == 'POST':
             if form.is_valid():
                 form.save()
-                return HttpResponseRedirect(reverse("login"))
+                messages.success(request, "Password reset successfully")
+                return HttpResponseRedirect(reverse("home"))
     else:
         validlink = False
         form = None

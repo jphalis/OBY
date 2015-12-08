@@ -1,7 +1,9 @@
 from django.conf import settings
-# from accounts.forms import ResetPasswordForm, SetPasswordForm
-from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
+from accounts.forms import ResetPasswordForm, SetPasswordForm
+# from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
+from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode as uid_decoder
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 
 from rest_framework import serializers
@@ -18,14 +20,19 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 class PasswordResetSerializer(serializers.Serializer):
+    """
+    Serializer for requesting a password reset e-mail.
+    """
     email = serializers.EmailField()
-    password_reset_form_class = PasswordResetForm
+    password_reset_form_class = ResetPasswordForm
 
     def validate_email(self, value):
         self.reset_form = self.password_reset_form_class(
             data=self.initial_data)
         if not self.reset_form.is_valid():
-            raise serializers.ValidationError('Error')
+            raise serializers.ValidationError(_('Error'))
+        # if not MyUser.objects.filter(email=value).exists():
+        #     raise serializers.ValidationError(_('Invalid e-mail address'))
         return value
 
     def save(self):
@@ -39,6 +46,9 @@ class PasswordResetSerializer(serializers.Serializer):
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
+    """
+    Serializer for confirming a password reset change from e-mail.
+    """
     new_password1 = serializers.CharField(max_length=128)
     new_password2 = serializers.CharField(max_length=128)
     uid = serializers.CharField(required=True)
@@ -47,13 +57,11 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         self._errors = {}
-
         try:
-            uid = uid_decoder(attrs['uid'])
+            uid = force_text(uid_decoder(attrs['uid']))
             self.user = MyUser._default_manager.get(pk=uid)
         except (TypeError, ValueError, OverflowError, MyUser.DoesNotExist):
             raise ValidationError({'uid': ['Invalid value']})
-
         self.custom_validation(attrs)
         self.set_password_form = self.set_password_form_class(
             user=self.user, data=attrs)
@@ -77,7 +85,6 @@ class PasswordChangeSerializer(serializers.Serializer):
         self.old_password_field_enabled = True
         self.logout_on_password_change = False
         super(PasswordChangeSerializer, self).__init__(*args, **kwargs)
-
         if not self.old_password_field_enabled:
             self.fields.pop('old_password')
         self.request = self.context.get('request')
@@ -89,7 +96,6 @@ class PasswordChangeSerializer(serializers.Serializer):
             self.user,
             not self.user.check_password(value)
         )
-
         if all(invalid_password_conditions):
             raise serializers.ValidationError('Incorrect old password')
         return value
@@ -97,7 +103,6 @@ class PasswordChangeSerializer(serializers.Serializer):
     def validate(self, attrs):
         self.set_password_form = self.set_password_form_class(
             user=self.user, data=attrs)
-
         if not self.set_password_form.is_valid():
             raise serializers.ValidationError(self.set_password_form.errors)
         return attrs

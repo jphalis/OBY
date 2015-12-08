@@ -15,6 +15,7 @@ static/media/
 ./fabfile/
 hosts.json
 *.sublime-*
+pip-selfcheck.json
 
 # Distribution / packaging
 .Python
