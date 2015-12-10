@@ -16,7 +16,7 @@ from django.views.decorators.http import require_http_methods
 from notifications.signals import notify
 from photos.models import Photo
 from .forms import (AccountBasicsChangeForm, LoginForm, PasswordChangeForm,
-                    RegisterForm, ResetPasswordForm, SetPasswordForm)
+                    RegisterForm, PasswordResetForm, SetPasswordForm)
 from .models import Follower, MyUser
 
 # Create your views here.
@@ -189,7 +189,7 @@ def password_reset(request,
                    template_name='accounts/settings/password_reset_form.html',
                    email_template_name='accounts/settings/password_reset_email.html',
                    subject_template_name='OBY Account Password Reset',
-                   password_reset_form=ResetPasswordForm,
+                   password_reset_form=PasswordResetForm,
                    token_generator=default_token_generator,
                    from_email='team@obystudio.com',
                    html_email_template_name=None):

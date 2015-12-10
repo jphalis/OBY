@@ -1,5 +1,5 @@
 from django.conf import settings
-from accounts.forms import ResetPasswordForm, SetPasswordForm
+from accounts.forms import PasswordResetForm, SetPasswordForm
 # from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode as uid_decoder
@@ -24,7 +24,7 @@ class PasswordResetSerializer(serializers.Serializer):
     Serializer for requesting a password reset e-mail.
     """
     email = serializers.EmailField()
-    password_reset_form_class = ResetPasswordForm
+    password_reset_form_class = PasswordResetForm
 
     def validate_email(self, value):
         self.reset_form = self.password_reset_form_class(

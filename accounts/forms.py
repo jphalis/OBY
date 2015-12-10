@@ -21,18 +21,19 @@ from .models import MyUser
 
 
 class UserCreationForm(forms.ModelForm):
-    '''
-    A form used to create users in the Admin
-    '''
+    """
+    A form that creates a user, with no privileges, from the given username and
+    password.
+    """
     email = forms.EmailField(widget=forms.EmailInput(), max_length=80)
     password1 = forms.CharField(label='Password',
                                 widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Verify',
+    password2 = forms.CharField(label='Verify Password',
                                 widget=forms.PasswordInput)
 
     class Meta:
         model = MyUser
-        fields = ('email', 'username')
+        fields = ('email', 'username',)
 
     def clean_password2(self):
         password_length = settings.MIN_PASSWORD_LENGTH
@@ -42,9 +43,8 @@ class UserCreationForm(forms.ModelForm):
                 "Password must be longer than "
                 "{} characters".format(password_length))
         password2 = self.cleaned_data.get("password2")
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError("Passwords do not match")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match")
         return password2
 
     def save(self, commit=True):
@@ -56,23 +56,29 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    '''
+    """
     A form used to change the user's information in the Admin
-    '''
+    """
     password = ReadOnlyPasswordHashField(
         label=("Password"),
         help_text=("Raw passwords are not stored, so there is no way to see "
                    "this user's password, but you can change the password "
-                   "using <a href=\"password/\">this form</a>.")
-        )
+                   "using <a href=\"../password/\">this form</a>."))
 
     class Meta:
         model = MyUser
-        fields = ['username', 'email', 'full_name', 'bio', 'website',
-                  'edu_email', 'gender', 'profile_picture', 'is_active',
-                  'is_admin', 'is_verified']
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        f = self.fields.get('user_permissions')
+        if f is not None:
+            f.queryset = f.queryset.select_related('content_type')
 
     def clean_password(self):
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
         return self.initial["password"]
 
 
@@ -129,9 +135,8 @@ class RegisterForm(forms.Form):
                 "Password must be longer than "
                 "{} characters".format(password_length))
         password2 = self.cleaned_data.get("password2")
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError("Passwords do not match")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match")
         return password2
 
 
@@ -217,7 +222,6 @@ class AccountBasicsChangeForm(forms.ModelForm):
         # Use for .edu emails
         if edu_email:
             username, domain = edu_email.split('@')
-
             if not domain.endswith('.edu'):
                 raise forms.ValidationError(
                     "Please use a valid university email.")
@@ -225,14 +229,111 @@ class AccountBasicsChangeForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "Sorry, this university isn't registered with us yet. "
                     "Email us to get it signed up! universities@obystudio.com")
-
             return edu_email
 
 
+# Need to fix the from_email to send from a set email, not jphalisnj
+class PasswordResetForm(forms.Form):
+    email = forms.EmailField(label=_("Email"), max_length=80,
+                             widget=forms.widgets.EmailInput(
+                                 attrs={'placeholder': 'Email'}))
+
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name):
+        """
+        Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
+        """
+        subject = loader.render_to_string(subject_template_name, context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+        email_message = EmailMultiAlternatives(subject, body,
+                                               from_email, [to_email])
+        if html_email_template_name is not None:
+            html_email = loader.render_to_string(html_email_template_name,
+                                                 context)
+            email_message.attach_alternative(html_email, 'text/html')
+        email_message.send()
+
+    def get_users(self, email):
+        """Given an email, return matching user(s) who should receive a reset.
+
+        This allows subclasses to more easily customize the default policies
+        that prevent inactive users and users with unusable passwords from
+        resetting their password.
+        """
+        active_users = MyUser._default_manager.filter(
+            email__iexact=email, is_active=True)
+        return (u for u in active_users if u.has_usable_password())
+
+    def save(self, subject_template_name='OBY Account Password Reset',
+             email_template_name='accounts/settings/password_reset_email.html',
+             use_https=False, token_generator=default_token_generator,
+             from_email='team@obystudio.com', request=None,
+             html_email_template_name=None, extra_email_context=None):
+        """
+        Generates a one-use only link for resetting password and sends to the
+        user.
+        """
+        email = self.cleaned_data["email"].lower()
+        for user in self.get_users(email):
+            context = {
+                'email': user.email,
+                'domain': request.get_host(),
+                'site_name': request.META['SERVER_NAME'],
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': user,
+                'token': token_generator.make_token(user),
+                'protocol': 'https' if use_https else 'http',
+            }
+            if extra_email_context is not None:
+                context.update(extra_email_context)
+            self.send_mail(subject_template_name, email_template_name,
+                           context, from_email, user.email,
+                           html_email_template_name=html_email_template_name)
+
+
+class SetPasswordForm(forms.Form):
+    """
+    A form that lets a user change set their password without entering the old
+    password
+    """
+    password1 = forms.CharField(label='New password',
+                                widget=forms.PasswordInput(
+                                    attrs={'placeholder': 'New password'}))
+    password2 = forms.CharField(label='Verify',
+                                widget=forms.PasswordInput(
+                                    attrs={'placeholder': 'Password again'}))
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(SetPasswordForm, self).__init__(*args, **kwargs)
+
+    def clean_password2(self):
+        password_length = settings.MIN_PASSWORD_LENGTH
+        password1 = self.cleaned_data.get("password1")
+        if len(password1) < password_length:
+            raise forms.ValidationError(
+                "Password must be longer than "
+                "{} characters".format(password_length))
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match")
+        return password2
+
+    def save(self, commit=True):
+        password = self.cleaned_data["password2"]
+        self.user.set_password(password)
+        if commit:
+            self.user.save()
+        return self.user
+
+
 class PasswordChangeForm(forms.Form):
-    '''
-    A form used by the user to change his/her password
-    '''
+    """
+    A form that lets a user change their password by entering their old
+    password.
+    """
     old_password = forms.CharField(label=_("Old password"),
                                    widget=forms.PasswordInput(
                                     attrs={'placeholder': 'Old password'}))
@@ -263,87 +364,6 @@ class PasswordChangeForm(forms.Form):
                 "Password must be longer than "
                 "{} characters".format(password_length))
         password2 = self.cleaned_data.get("password2")
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError("Passwords do not match")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match")
         return password2
-
-
-class SetPasswordForm(forms.Form):
-    '''
-    A form used by the user to create a new password if he/she forgot it
-    '''
-    password1 = forms.CharField(label='New password',
-                                widget=forms.PasswordInput(
-                                    attrs={'placeholder': 'New password'}))
-    password2 = forms.CharField(label='Verify',
-                                widget=forms.PasswordInput(
-                                    attrs={'placeholder': 'Password again'}))
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
-        super(SetPasswordForm, self).__init__(*args, **kwargs)
-
-    def clean_password2(self):
-        password_length = settings.MIN_PASSWORD_LENGTH
-        password1 = self.cleaned_data.get("password1")
-        if len(password1) < password_length:
-            raise forms.ValidationError(
-                "Password must be longer than "
-                "{} characters".format(password_length))
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError("Passwords do not match")
-        return password2
-
-    def save(self, commit=True):
-        self.user.set_password(self.cleaned_data['password2'])
-        if commit:
-            self.user.save()
-        return self.user
-
-
-# Need to fix the from_email to send from a set email, not jphalisnj
-class ResetPasswordForm(forms.Form):
-    email = forms.EmailField(widget=forms.widgets.EmailInput(
-                                attrs={'placeholder': 'Email'}))
-
-    def send_mail(self, subject_template_name, email_template_name,
-                  context, from_email, to_email, html_email_template_name):
-        subject = subject_template_name
-        subject = ''.join(subject.splitlines())
-        body = loader.render_to_string(email_template_name, context)
-        email_message = EmailMultiAlternatives(subject, body,
-                                               from_email, [to_email])
-        if html_email_template_name is not None:
-            html_email = loader.render_to_string(html_email_template_name,
-                                                 context)
-            email_message.attach_alternative(html_email, 'text/html')
-        email_message.send()
-
-    def get_users(self, email):
-        active_users = MyUser._default_manager.filter(
-            email__iexact=email, is_active=True)
-        return (u for u in active_users if u.has_usable_password())
-
-    def save(self, subject_template_name='OBY Account Password Reset',
-             email_template_name='accounts/settings/password_reset_email.html',
-             use_https=False, token_generator=default_token_generator,
-             from_email='team@obystudio.com', request=None,
-             html_email_template_name=None):
-        email = self.cleaned_data["email"].lower()
-        for user in self.get_users(email):
-            context = {
-                'email': user.email,
-                'domain': request.get_host(),
-                'site_name': request.META['SERVER_NAME'],
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'user': user,
-                'token': token_generator.make_token(user),
-                'protocol': 'https' if use_https else 'http',
-            }
-
-            self.send_mail(subject_template_name, email_template_name,
-                           context, from_email, user.email,
-                           html_email_template_name=html_email_template_name)
