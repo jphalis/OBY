@@ -19,7 +19,7 @@ def comments_all(request, cat_slug, photo_slug):
     category = get_object_or_404(Category, slug=cat_slug)
     photo = get_object_or_404(Photo, category=category, slug=photo_slug)
     comment_form = CommentForm()
-    comments = photo.comment_set.all()
+    comments = photo.comment_set.active()
     for c in comments:
         c.get_children()
 

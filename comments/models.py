@@ -11,10 +11,10 @@ from photos.models import Photo
 
 
 class CommentManager(models.Manager):
-    # Need to change "all" to "active"
-    def all(self):
-        return super(CommentManager, self).filter(is_active=True).filter(
-            parent=None)
+    def active(self):
+        return super(CommentManager, self) \
+            .select_related('user', 'photo') \
+            .filter(is_active=True, parent=None)
 
     def create_comment(self, user=None, text=None, path=None,
                        photo=None, parent=None):
