@@ -24,10 +24,10 @@
                                     <small>REPLY</small>
                                 </a>
                                 <div class='reply_comment'>
-                                    <form method="POST" action='{% url "comment_create" %}'>
+                                    <form method="POST" action='{% url "comments:comment_create" %}'>
                                         {% csrf_token %}
                                         <input type='hidden' name='parent_id' value='{{ comment.id }}' />
-                                        <input type='hidden' name='photo_id' value='{% url "comment_create" %}'/>
+                                        <input type='hidden' name='photo_id' value='{% url "comments:comment_create" %}'/>
                                         <input type='hidden' name='origin_path' value='{{ comment.get_origin }}'/>
                                         {% crispy comment_form comment_form.helper %}
                                     </form>
@@ -45,7 +45,7 @@
         {% endif %}
     </div>
     <div class="col-sm-4 col-sm-offset-1" style="margin-top: 19px;">
-        <form method="POST" action='{% url "comment_create" %}'>
+        <form method="POST" action='{% url "comments:comment_create" %}'>
             {% csrf_token %}
             <input type='hidden' name='photo_id' value='{{ photo.id }}'/>
             <input type='hidden' name='origin_path' value='{{ request.get_full_path }}'/>

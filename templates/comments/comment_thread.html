@@ -24,7 +24,7 @@
                 {% endfor %}
             {% endif %}
         </table>
-        <form method="POST" action='{% url "comment_create" %}'>
+        <form method="POST" action='{% url "comments:comment_create" %}'>
             {% csrf_token %}
             <input type='hidden' name='parent_id' value='{{ comment.id }}' />
             {% crispy form form.helper %}
