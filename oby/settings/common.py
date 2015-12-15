@@ -11,6 +11,37 @@ from django.utils.translation import ugettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
+# HOSTING + AUTHENTICATION
+SECRET_KEY = 'nl59wul4fep=2nk_e=nfe-frid9b)kqox#7sgh2wsws!x!e&^('
+LOGIN_URL = "/signin/"
+AUTH_USER_MODEL = 'accounts.MyUser'
+MIN_USERNAME_LENGTH = 3
+MIN_PASSWORD_LENGTH = 5
+FULL_DOMAIN_NAME = 'www.obystudio.com'
+
+
+# E M A I L
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_SSL_CERTFILE = None
+EMAIL_SSL_KEYFILE = None
+EMAIL_TIMEOUT = None
+
+# Use in Views ^
+# from django.core.mail import send_mail
+# send_mail('Subject here', 'Here is the message.', 'from@example.com',
+#           ['to@example.com'], fail_silently=False)
+
+'''
+If using gmail, you will need to
+unlock Captcha to enable Django
+to  send for you:
+https://accounts.google.com/displayunlockcaptcha
+'''
+
+
 # I N T E R N A T I O N A L I Z A T I O N
 LANGUAGE_CODE = 'en-us'
 LANGUAGES = [
@@ -164,13 +195,6 @@ WSGI_APPLICATION = 'oby.wsgi.application'
 # T E M P L A T E S
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 
-
-# HOSTING + AUTHENTICATION
-SECRET_KEY = 'nl59wul4fep=2nk_e=nfe-frid9b)kqox#7sgh2wsws!x!e&^('
-LOGIN_URL = "/signin/"
-AUTH_USER_MODEL = 'accounts.MyUser'
-MIN_USERNAME_LENGTH = 3
-MIN_PASSWORD_LENGTH = 5
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

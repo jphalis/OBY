@@ -30,7 +30,6 @@ def like_ajax(request):
     else:
         photo.likers.add(user)
         viewer_has_liked = True
-
         notify.send(
             user,
             action=photo,
@@ -54,7 +53,6 @@ def like_ajax(request):
 def category_detail(request, cat_slug):
     obj = get_object_or_404(Category, slug=cat_slug)
     categories = Category.objects.most_posts().exclude(id=obj.id)
-
     most_liked = Photo.objects.category_detail(obj)[:600]
     photos = list(most_liked)[:250]
     random.shuffle(photos)

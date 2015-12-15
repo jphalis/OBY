@@ -44,6 +44,7 @@ def timeline(request):
         # Add suggested users
         photos_suggested = Photo.objects.all() \
             .select_related("creator", "category") \
+            .prefetch_related('likers') \
             .exclude(creator=user)[:50]
         photos = chain(photos_self, photos_suggested)
 

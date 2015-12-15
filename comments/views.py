@@ -50,23 +50,23 @@ def comment_create_view(request):
     parent_id = request.POST.get('parent_id')
     photo_id = request.POST.get("photo_id")
     origin_path = request.POST.get("origin_path")
+    parent_comment = None
+    form = CommentForm(request.POST)
 
     try:
-        photo = Photo.objects.get(id=photo_id)
+        photo = (Photo.objects.select_related('creator', 'category')
+                              .get(id=photo_id))
     except:
         photo = None
 
-    parent_comment = None
-
     if parent_id is not None:
         try:
-            parent_comment = Comment.objects.get(id=parent_id)
+            parent_comment = (Comment.objects.select_related('user', 'photo')
+                                     .get(id=parent_id))
         except:
             parent_comment = None
         if parent_comment is not None and parent_comment.photo is not None:
             photo = parent_comment.photo
-
-    form = CommentForm(request.POST)
 
     if form.is_valid():
         comment_text = form.cleaned_data['comment']
@@ -79,9 +79,7 @@ def comment_create_view(request):
                 photo=photo,
                 parent=parent_comment
             )
-
             affected_users = parent_comment.get_affected_users()
-
             notify.send(
                 request.user,
                 action=new_child_comment,
@@ -98,7 +96,6 @@ def comment_create_view(request):
                 text=comment_text,
                 photo=photo
             )
-
             notify.send(
                 request.user,
                 action=new_parent_comment,
@@ -106,7 +103,6 @@ def comment_create_view(request):
                 recipient=photo.creator,
                 verb='commented'
             )
-
             messages.success(request,
                              "Thank you for the comment!",
                              extra_tags='safe')

@@ -22,6 +22,7 @@ class PhotoManager(models.Manager):
         date_from = datetime.now() - timedelta(days=150)
         return super(PhotoManager, self).get_queryset() \
             .select_related('category', 'creator') \
+            .prefetch_related('likers') \
             .annotate(the_count=(Count('likers'))) \
             .filter(is_active=True, created__gte=date_from, category=obj) \
             .order_by('-the_count')
@@ -29,6 +30,7 @@ class PhotoManager(models.Manager):
     def most_commented(self):
         return super(PhotoManager, self).get_queryset() \
             .select_related('category', 'creator') \
+            .prefetch_related('likers') \
             .annotate(the_count=(Count('comment'))) \
             .filter(is_active=True) \
             .order_by('-the_count')
@@ -36,6 +38,7 @@ class PhotoManager(models.Manager):
     def most_liked(self):
         return super(PhotoManager, self).get_queryset() \
             .select_related('category', 'creator') \
+            .prefetch_related('likers') \
             .annotate(the_count=(Count('likers'))) \
             .filter(is_active=True) \
             .order_by('-the_count')
@@ -44,6 +47,7 @@ class PhotoManager(models.Manager):
         date_from = datetime.now() - timedelta(days=150)
         return super(PhotoManager, self).get_queryset() \
             .select_related('category', 'creator') \
+            .prefetch_related('likers') \
             .annotate(the_count=(Count('likers'))) \
             .filter(is_active=True, created__gte=date_from) \
             .order_by('-the_count')
@@ -51,11 +55,13 @@ class PhotoManager(models.Manager):
     def own(self, user):
         return super(PhotoManager, self).get_queryset() \
             .select_related('category', 'creator') \
+            .prefetch_related('likers') \
             .filter(creator=user)
 
     def following(self, user):
         return super(PhotoManager, self).get_queryset() \
             .select_related('category', 'creator') \
+            .prefetch_related('likers') \
             .filter(creator__follower__in=user.follower.following.all())
 
 
@@ -104,7 +110,7 @@ class Photo(HashtagMixin, TimeStampedModel):
 
     @cached_property
     def get_likers_info(self):
-        return self.likers.select_related('likers').all().values(
+        return self.likers.all().values(
             'username', 'full_name', 'profile_picture')
 
     def like_count(self, short=True):

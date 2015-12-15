@@ -111,7 +111,9 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         photos_self = Photo.objects.own(user)
 
         try:
-            follow = Follower.objects.get(user=user)
+            follow = Follower.objects \
+                .select_related('user') \
+                .get(user=user)
         except Follower.DoesNotExist:
             follow = None
 
@@ -122,6 +124,7 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
             # Add suggested users
             photos_suggested = Photo.objects \
                 .select_related("creator", "category") \
+                .prefetch_related('likers') \
                 .exclude(creator=user)[:50]
             photos = chain(photos_self, photos_suggested)
             return photos
@@ -135,7 +138,8 @@ def follow_create_api(request, user_pk):
     followed, created = Follower.objects.get_or_create(user=user)
 
     try:
-        user_followed = Follower.objects.get(user=user, followers=follower)
+        user_followed = (Follower.objects.select_related('user')
+                                         .get(user=user, followers=follower))
     except Follower.DoesNotExist:
         user_followed = None
 
@@ -168,7 +172,10 @@ class MyUserDetailAPIView(CacheMixin,
                           mixins.DestroyModelMixin,
                           mixins.UpdateModelMixin):
     cache_timeout = 120
-    permission_classes = [permissions.IsAuthenticated, MyUserIsOwnerOrReadOnly]
+    permission_classes = (
+        permissions.IsAuthenticated,
+        MyUserIsOwnerOrReadOnly,
+    )
     serializer_class = MyUserSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
@@ -247,13 +254,15 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
         parent_comment = None
 
         try:
-            photo = Photo.objects.get(id=photo_id)
+            photo = (Photo.objects.select_related('category', 'creator')
+                                  .get(id=photo_id))
         except:
             photo = None
 
         if parent_id is not None:
             try:
-                parent_comment = Comment.objects.get(id=parent_id)
+                parent_comment = Comment.objects.select_related(
+                    'user', 'photo').get(id=parent_id)
             except:
                 parent_comment = None
             if parent_comment is not None and parent_comment.photo is not None:
@@ -305,11 +314,12 @@ class CommentDetailAPIView(CacheMixin,
                            mixins.DestroyModelMixin):
     cache_timeout = 180
     lookup_field = 'id'
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
     serializer_class = CommentUpdateSerializer
 
     def get_queryset(self, *args, **kwargs):
-        queryset = Comment.objects.filter(pk__gte=0)
+        queryset = (Comment.objects.select_related('user', 'photo')
+                                   .filter(pk__gte=0))
         return queryset
 
     def delete(self, request, *args, **kwargs):
@@ -322,7 +332,10 @@ class HashtagListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     pagination_class = HashtagPagination
     serializer_class = HashtagSerializer
     queryset = Hashtag.objects.all()
-    filter_backends = [filters.SearchFilter]
+    filter_backends = (
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
     search_fields = ["tag"]
 
 
@@ -366,7 +379,7 @@ def like_create_api(request, photo_pk):
 
 
 class PhotoCreateAPIView(ModelViewSet):
-    queryset = Photo.objects.all()
+    queryset = Photo.objects.select_related('creator').all()
     serializer_class = PhotoCreateSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
@@ -380,7 +393,9 @@ class PhotoListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     cache_timeout = 120
     pagination_class = PhotoPagination
     serializer_class = PhotoSerializer
-    queryset = Photo.objects.all()
+    queryset = (Photo.objects.select_related('creator', 'category')
+                             .prefetch_related('likers')
+                             .all())
     filter_backends = (
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -398,7 +413,7 @@ class PhotoDetailAPIView(CacheMixin,
                          mixins.DestroyModelMixin,
                          mixins.UpdateModelMixin):
     cache_timeout = 120
-    permission_classes = [permissions.IsAuthenticated, IsCreatorOrReadOnly]
+    permission_classes = (permissions.IsAuthenticated, IsCreatorOrReadOnly,)
     serializer_class = PhotoSerializer
 
     def get_object(self):
@@ -450,7 +465,8 @@ class SearchListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     # ordering_fields = ('id', 'username', 'full_name',)
 
     def get_queryset(self):
-        queryset = MyUser.objects.all()
+        queryset = MyUser.objects.all() \
+            .only('id', 'username', 'full_name', 'profile_picture')
         username = self.request.query_params.get('username', None)
         full_name = self.request.query_params.get('full_name', None)
 

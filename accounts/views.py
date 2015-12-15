@@ -30,11 +30,15 @@ def profile_view(request, username):
     if user.username == "anonymous":
         return render(request, "accounts/anonymous.html", {})
     else:
-        photos = Photo.objects.select_related(
-                'category', 'creator').filter(creator=user)[:150]
+        photos = (Photo.objects.select_related('category', 'creator')
+                               .prefetch_related('likers')
+                               .filter(creator=user)[:150])
 
         try:
-            follow = Follower.objects.get(user=user)
+            follow = Follower.objects \
+                .select_related('user') \
+                .prefetch_related('following', 'followers') \
+                .get(user=user)
         except Follower.DoesNotExist:
             follow = None
 
@@ -57,7 +61,10 @@ def followers_thread(request, username):
         user = MyUser.objects.get(username=username)
     except MyUser.DoesNotExist:
         raise Http404
-    followers_set = Follower.objects.filter(user=user.id)
+    followers_set = Follower.objects \
+        .select_related('user') \
+        .prefetch_related('followers') \
+        .filter(user=user.id)
     return render(request, "accounts/followers_thread.html",
                   {'followers_set': followers_set})
 
@@ -68,7 +75,10 @@ def following_thread(request, username):
         user = MyUser.objects.get(username=username)
     except MyUser.DoesNotExist:
         raise Http404
-    following_set = Follower.objects.filter(user=user.id)
+    following_set = Follower.objects \
+        .select_related('user') \
+        .prefetch_related('following') \
+        .filter(user=user.id)
     return render(request, "accounts/following_thread.html",
                   {"following_set": following_set})
 
@@ -83,7 +93,9 @@ def follow_ajax(request):
     followed, created = Follower.objects.get_or_create(user=user)
 
     try:
-        user_followed = Follower.objects.get(user=user, followers=follower)
+        user_followed = Follower.objects \
+            .select_related('user') \
+            .get(user=user, followers=follower)
     except Follower.DoesNotExist:
         user_followed = None
 
@@ -301,17 +313,14 @@ def auth_register(request):
             new_user.set_password(password)
             new_user.save()
             user = authenticate(username=username, password=password)
-
             if user is not None:
                 admin = MyUser.objects.get(username='oby')
                 thank_you_message = "Thank you for signing up!"
-
                 notify.send(
                     admin,
                     recipient=user,
                     verb=thank_you_message
                 )
-
                 login(request, user)
 
                 if next_url is not None:
@@ -320,7 +329,6 @@ def auth_register(request):
         action_url = reverse("register")
         title = "Register"
         submit_btn = "Create account"
-
         context = {
             "form": form,
             "action_url": action_url,

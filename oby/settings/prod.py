@@ -14,7 +14,6 @@ ALLOWED_HOSTS = [
     '52.2.52.114',  # AWS Elastic IP
 ]
 CORS_URLS_REGEX = r'^/hide/oby/api/.*$'
-FULL_DOMAIN_NAME = 'www.obystudio.com'
 
 
 # S S L  S E C U R I T Y
@@ -35,23 +34,12 @@ STRIPE_SECRET_KEY = 'sk_live_6OlOtvEapbxPwcf1CZATzOXA'
 
 
 # E M A I L
-EMAIL_HOST = 'smtp.gmail.com'  # 'smtp.sendgrid.net'
+# EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'halis@obystudio.com'  # 'sendgrid_username'
 EMAIL_HOST_PASSWORD = '. Hockey18 .'  # 'sendgrid_password'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_SSL_CERTFILE = None
-EMAIL_SSL_KEYFILE = None
-EMAIL_TIMEOUT = None
-'''
-If using gmail, you will need to
-unlock Captcha to enable Django
-to  send for you:
-https://accounts.google.com/displayunlockcaptcha
-'''
 
 
+# A P P L I C A T I O N S
 INSTALLED_APPS += (
     'storages',
 )
@@ -128,19 +116,15 @@ STATICFILES_DIRS = (
     os.path.join('oby', 'static', 'static_dirs'),
     # '/Users/jphalis/Desktop/oby/src/oby/static/static_dirs/'
 )
-
 AWS_ACCESS_KEY_ID = 'AKIAJS5O4GAHA4MJH4NA'
 AWS_SECRET_ACCESS_KEY = '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'
-
 AWS_STORAGE_BUCKET_NAME = 'oby'
-# With cloudfront
+S3DIRECT_REGION = 'us-east-1'
 AWS_CLOUDFRONT_DOMAIN = 'd2ragyhmhrkfg3.cloudfront.net'
-
 STATICFILES_STORAGE = 'oby.s3utils.StaticRootS3BotoStorage'  # static files
 STATIC_S3_PATH = 'media/'
 DEFAULT_FILE_STORAGE = 'oby.s3utils.MediaRootS3BotoStorage'  # media uploads
 DEFAULT_S3_PATH = 'static/'
-
 S3_URL = '//{}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME)
 # Without cloudfront
 # MEDIA_URL = S3_URL + STATIC_S3_PATH
@@ -150,9 +134,11 @@ STATIC_ROOT = '/home/ubuntu/obystudio.com/oby/static/static'
 # With cloudfront
 MEDIA_URL = '//{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, STATIC_S3_PATH)
 STATIC_URL = '//{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, DEFAULT_S3_PATH)
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-
-AWS_PRELOAD_METADATA = False
+# ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+AWS_FILE_EXPIRE = 200
+AWS_PRELOAD_METADATA = True
+# AWS_QUERYSTRING_AUTH = True
+AWS_S3_SECURE_URLS = False
 date_two_months_later = datetime.date.today() + datetime.timedelta(2 * 365 / 12)
 expires = date_two_months_later.strftime('%A, %d %B %Y 20:00:00 EST')
 AWS_HEADERS = {
@@ -182,3 +168,31 @@ LOGGING = {
         },
     },
 }
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose',
+#         },
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': (
+#                 '%(asctime)s [%(process)d] [%(levelname)s] ' +
+#                 'pathname=%(pathname)s lineno=%(lineno)s ' +
+#                 'funcname=%(funcName)s %(message)s'),
+#         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#         }
+#     },
+# }

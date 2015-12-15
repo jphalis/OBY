@@ -12,9 +12,8 @@ from photos.models import Photo
 
 class CommentManager(models.Manager):
     def active(self):
-        return super(CommentManager, self) \
-            .select_related('user', 'photo') \
-            .filter(is_active=True, parent=None)
+        return super(CommentManager, self).select_related(
+            'user', 'photo').filter(is_active=True, parent=None)
 
     def create_comment(self, user=None, text=None, path=None,
                        photo=None, parent=None):
@@ -70,9 +69,7 @@ class Comment(HashtagMixin, TimeStampedModel):
         if comment_children is not None:
             users = []
             for comment in comment_children:
-                if comment.user in users:
-                    pass
-                else:
+                if comment.user not in users:
                     users.append(comment.user)
                     return users
         return None

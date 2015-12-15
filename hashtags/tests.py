@@ -14,7 +14,6 @@ class TestModel(HashtagMixin):
 
 
 class HashtagMixinUnitTest(TestCase):
-
     def test_hashtags_parsed(self):
         c = TestModel(title='foo', description='some #cool #text')
         tags = c._get_hashtags()
