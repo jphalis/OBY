@@ -1,1 +1,1 @@
-# from .signals import clear_cache
+from .signals import *

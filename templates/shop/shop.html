@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block title %} / Shop{% endblock %}
+
+
+{% block content %}
+    <div class="col-sm-6 col-sm-offset-3">
+        {% if products_listed %}
+            {% for product in products_listed %}
+                <div class="product">
+                    <img src="{{ product.get_image_url }}" class="product-picture" />
+                    <h6><i style="float: right;">
+                        {{ product.list_date_end|timeuntil }} left
+                    </i></h6>
+                    <h4>
+                        <a href="{{ product.owner.get_profile_view }}" style="text-decoration: none;">
+                            <b>{{ product.title }}</b> <small>{{ product.owner }}</small>
+                        </a>
+                    </h4>
+                    <h5>{{ product.description }}</h5>
+                    {% if request.user.username in product.get_buyer_usernames %}
+                        <button class="btn btn-info" type="button" disabled>Redeemed</button>
+                    {% else %}
+                        {% if product.discount_cost and request.user.available_points >= product.discount_cost %}
+                            <input class="btn btn-success selector" product="{{ product.pk }}"
+                                   value="{{ product.discount_cost }} points" type="button"
+                                   {% if request.user.ghost %}disabled{% endif %} />
+                        {% elif request.user.available_points >= product.cost %}
+                            <input class="btn btn-success selector" product="{{ product.pk }}"
+                                   value="{{ product.cost }} points" type="button"
+                                   {% if request.user.ghost %}disabled{% endif %} />
+                        {% else %}
+                            {% if product.discount_cost %}
+                                <button class="btn btn-warning" type="button" disabled>
+                                    {{ product.discount_cost }} points
+                                </button>
+                            {% else %}
+                                <button class="btn btn-warning" type="button" disabled>
+                                    {{ product.cost }} points
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <h3>More promotional offers will be added soon!</h3>
+        {% endif %}
+    </div>
+    <div class="col-sm-3">
+        <div style="text-align: center;">
+            <h4 class="points"
+                style="color:
+                    {% if request.user.available_points == 0 %}
+                        #ed2024
+                    {% else %}
+                        #5cb85c
+                    {% endif %};">
+                <b>{{ request.user.available_points }} Points Available</b>
+            </h4>
+            {% if request.user.is_advertiser %}
+                <p>
+                    <b>{{ request.user.creations_allowed }} creations remaining</b>
+                </p>
+                {% if request.user.creations_allowed == 0 %}
+                    <!-- Create a form for companies to renew their creations -->
+                    <a href="#" class="btn btn-danger" style="float: left;" role="button">
+                        Contact Us
+                    </a>
+                {% else %}
+                    <a href="{% url 'shop:product_create' %}" class="btn btn-danger"
+                       style="float: left;" role="button">Create Promotion</a>
+                {% endif %}
+                <!-- <a href="{% url 'advertiser_analytics' %}" class="btn btn-default"
+                   style="float: right;" role="button" />Analytics</a> -->
+                <br/>
+                <br/>
+            {% endif %}
+        </div>
+        {% if request.user.is_advertiser %}
+            <h4>My Promotions <span class="small">(active)</span></h4>
+            {% for product in products_listed %}
+                {% if request.user == product.owner %}
+                    <div class="redeemed-coupon">
+                        <small><i style="float: right;">
+                            Expires in: {{ product.list_date_end|timeuntil }}
+                        </i></small>
+                        <br/>
+                        <p>
+                            {{ product.owner|capfirst }}<br/>
+                            {{ product.description }}<br/>
+                            Cost: {{ product.cost }} points<br/>
+                            {% if product.discount_cost %}
+                                Discount cost: {{ product.discount_cost }} points<br/>
+                            {% endif %}
+                            Promo code: <b>{{ product.promo_code }}</b><br/>
+                            Downloads: {{ product.buyers.count }}
+                        </p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <!-- <a href="{% url 'advertiser_analytics' %}" />See all</a> -->
+        {% endif %}
+        <h4>Redeemed Promotions <span class="small">(active)</span></h4>
+        {% for product in products_useable %}
+            <div class="redeemed-coupon">
+                <small><i style="float: right;">
+                    Expires in: {{ product.use_date_end|timeuntil }}
+                </i></small>
+                <br/>
+                <p>
+                    {{ product.owner|capfirst }}<br/>
+                    {{ product.description }}<br/>
+                    Promo code: <b>{{ product.promo_code }}</b>
+                </p>
+            </div>
+        {% endfor %}
+        <!-- <a href="{% url 'product_purchase_history' %}" />See all</a> -->
+    </div>
+{% endblock %}
+
+
+<script>
+    {% block jquery %}
+        $('.selector').click(function(e){
+            e.preventDefault();
+            var $selector = $(this);
+            var $points = $('.points');
+            $.ajax({
+                type: "POST",
+                url: "{% url 'shop:product_purchase' %}",
+                data: {
+                    "product_pk": $(this).attr("product"),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.user_has_purchased) {
+                        $selector.val("Redeemed");
+                        $selector.attr("class", "btn btn-info");
+                        $selector.attr("disabled","disabled");
+                        $points.html(data.user_remaining_points + " Points Available");
+                    } else {
+                    }
+                },
+                error: function (rs, e) {
+                    alert('Sorry, there was an error with your request. Please try again later.');
+                }
+            });
+        });
+    {% endblock %}
+</script>

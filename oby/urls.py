@@ -62,6 +62,8 @@ urlpatterns = [
     url(r'^ajaxsearch/$',
         search_views.search_ajax,
         name='search_ajax'),
+    url(r'^shop/', include('shop.urls',
+        namespace='shop')),
     url(r'^terms/$',
         views.terms_of_use,
         name='terms_of_use'),
