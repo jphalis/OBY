@@ -67,6 +67,7 @@ class Product(TimeStampedModel):
 
     class Meta:
         ordering = ('list_date_end',)
+        app_label = 'shop'
 
     def __unicode__(self):
         return u"{}".format(self.owner)
