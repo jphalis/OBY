@@ -5,57 +5,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import F
 from django.http import JsonResponse
-from django.shortcuts import (get_object_or_404,
-                              HttpResponseRedirect, render)
+from django.shortcuts import HttpResponseRedirect, render
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
-
-from rest_framework import generics, mixins, permissions
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication)
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
 
 from accounts.models import MyUser
 
 from .forms import ProductCreateForm
 from .models import Product
-from .permissions import IsAdvertiser, IsOwnerOrReadOnly
-from .serializers import ProductCreateSerializer, ProductSerializer
 from .signals import listuse_status_check
 
 # Create your views here.
-
-
-class ProductListAPIView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication,
-                              JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
-
-
-class ProductCreateAPIView(generics.CreateAPIView):
-    serializer_class = ProductCreateSerializer
-
-
-class ProductDetailAPIView(generics.RetrieveAPIView,
-                           mixins.DestroyModelMixin,
-                           mixins.UpdateModelMixin):
-    permission_classes = [IsAdvertiser, IsOwnerOrReadOnly]
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-    def get_object(self):
-        product_slug = self.kwargs["product_slug"]
-        obj = get_object_or_404(Product, slug=product_slug)
-        return obj
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
 
 @login_required
@@ -65,9 +25,9 @@ def shop(request):
     for product in products:
         listuse_status_check.send(sender=product)
 
-    products_listed = Product.objects.get_listed()
-    products_useable = Product.objects.get_useable().select_related(
-        'owner').filter(buyers=request.user)
+    products_listed = Product.objects.listed()
+    products_useable = Product.objects.useable().select_related(
+        'owner').prefetch_related('buyers').filter(buyers=request.user)
 
     context = {
         'products_listed': products_listed,
@@ -82,7 +42,6 @@ def product_purchase(request):
     user = request.user
     u = MyUser.objects.get(username=user)
     product_pk = request.POST.get('product_pk', False)
-
     purchased, created = Product.objects.get_or_create(pk=product_pk)
 
     try:
@@ -95,11 +54,13 @@ def product_purchase(request):
     else:
         if u.available_points >= purchased.cost or purchased.discount_cost:
             if purchased.discount_cost:
-                u.update(available_points=F('available_points') - purchased.discount_cost)
+                u.update(
+                    available_points=F('available_points') - purchased.discount_cost)
                 # u.available_points -= purchased.discount_cost
             else:
                 # u.available_points -= purchased.cost
-                u.update(available_points=F('available_points') - purchased.cost)
+                u.update(
+                    available_points=F('available_points') - purchased.cost)
 
             # u.save()
             purchased.buyers.add(user)
@@ -109,9 +70,7 @@ def product_purchase(request):
             messages.error(request,
                            "We're sorry, you do not have enough points \
                            to redeem this product.")
-
     user_remaining_points = float(u.available_points)
-
     data = {
         "user_has_purchased": user_has_purchased,
         "user_remaining_points": user_remaining_points

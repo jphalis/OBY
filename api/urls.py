@@ -11,10 +11,7 @@ from .views import (CategoryDetailAPIView, CategoryListAPIView,
 from .views import NotificationAPIView, SearchListAPIView
 from .views import (PasswordChangeView, PasswordResetView,
                     PasswordResetConfirmView)
-
-from django.contrib.auth import views as auth_views
-
-
+from .views import ProductCreateAPIView, ProductListAPIView
 
 
 # app_name = 'api'
@@ -77,4 +74,10 @@ urlpatterns = [
         PhotoDetailAPIView.as_view(), name='photo_detail_api'),
     url(r'^like/(?P<photo_pk>\d+)/$', views.like_create_api,
         name='like_create_api'),
+
+    # S H O P
+    url(r'^shop/$', ProductListAPIView.as_view(),
+        name='product_list_api'),
+    url(r'^shop/create/$', ProductCreateAPIView.as_view({'post': 'create'}),
+        name='product_create_api'),
 ]

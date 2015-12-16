@@ -1,4 +1,4 @@
-from rest_framework import authentication, permissions
+from rest_framework import authentication, filters, permissions
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
@@ -22,3 +22,13 @@ class DefaultsMixin(object):
     #     filters.SearchFilter,
     #     filters.OrderingFilter,
     # )
+
+
+class FiltersMixin(object):
+    """
+    Default settings for view filters.
+    """
+    filter_backends = (
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )

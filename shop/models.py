@@ -13,44 +13,39 @@ def upload_location(instance, filename):
     return "{}/products/{}".format(instance.owner.username, filename)
 
 
-class ProductQuerySet(models.query.QuerySet):
-    def featured(self):
-        return self.filter(featured=True)
-
-    def listed(self):
-        return self.filter(listed=True)
-
-    def useable(self):
-        return self.filter(useable=True)
-
-
 class ProductManager(models.Manager):
-    def get_queryset(self):
-        return ProductQuerySet(self.model, using=self._db)
+    def featured(self, obj):
+        return super(ProductManager, self).get_queryset() \
+            .select_related('owner') \
+            .prefetch_related('buyers') \
+            .filter(is_featured=True)
 
-    def get_featured(self):
-        return self.get_queryset().listed().featured()
+    def listed(self, obj):
+        return super(ProductManager, self).get_queryset() \
+            .select_related('owner') \
+            .prefetch_related('buyers') \
+            .filter(is_listed=True)
 
-    def get_listed(self):
-        return self.get_queryset().listed()
-
-    def get_useable(self):
-        return self.get_queryset().useable()
+    def useable(self, obj):
+        return super(ProductManager, self).get_queryset() \
+            .select_related('owner') \
+            .prefetch_related('buyers') \
+            .filter(is_useable=True)
 
 
 class Product(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     buyers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                     related_name='buyers', blank=True)
-    listed = models.BooleanField(default=False)
-    useable = models.BooleanField(default=True)
-    featured = models.BooleanField(default=False)
+    is_listed = models.BooleanField(default=False)
+    is_useable = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
     title = models.CharField(max_length=120, null=True)
     slug = models.SlugField(null=True, blank=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True)
     description = models.TextField(max_length=500, null=True, blank=True)
-    cost = models.DecimalField(decimal_places=0, max_digits=12, default=10)
-    discount_cost = models.DecimalField(decimal_places=0, max_digits=12,
+    cost = models.DecimalField(decimal_places=0, max_digits=10, default=10)
+    discount_cost = models.DecimalField(decimal_places=0, max_digits=8,
                                         null=True, blank=True)
     max_downloads = models.PositiveIntegerField(null=True, blank=True)
     promo_code = models.CharField(max_length=30)
@@ -81,4 +76,5 @@ class Product(TimeStampedModel):
         if self.image:
             return "{}{}".format(settings.MEDIA_URL, self.image)
         else:
+            # Change this to a product-looking image
             return settings.STATIC_URL + 'img/default_profile_picture.jpg'
