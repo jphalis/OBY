@@ -243,7 +243,7 @@ class PasswordResetForm(forms.Form):
         """
         Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
         """
-        subject = loader.render_to_string(subject_template_name, context)
+        subject = subject_template_name
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
