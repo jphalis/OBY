@@ -365,6 +365,16 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         return notifications
 
 
+class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
+    pagination_class = NotificationPagination
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        notifications = Notification.objects.all_unread(
+            self.request.user)[:1]
+        return notifications
+
+
 # P H O T O S
 @api_view(['POST'])
 def like_create_api(request, photo_pk):

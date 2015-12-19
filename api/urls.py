@@ -8,10 +8,11 @@ from .views import CommentCreateAPIView, CommentDetailAPIView
 from .views import HashtagListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView)
-from .views import NotificationAPIView, SearchListAPIView
+from .views import NotificationAPIView, NotificationAjaxAPIView
 from .views import (PasswordChangeView, PasswordResetView,
                     PasswordResetConfirmView)
 from .views import ProductCreateAPIView, ProductListAPIView
+from .views import SearchListAPIView
 
 
 # app_name = 'api'
@@ -60,6 +61,8 @@ urlpatterns = [
     # N O T I F I C A T I O N S
     url(r'^notifications/$', NotificationAPIView.as_view(),
         name='notification_list_api'),
+    url(r'^notifications/unread/$', NotificationAjaxAPIView.as_view(),
+        name='get_notifications_api'),
 
     # P H O T O S
     url(r'^categories/$', CategoryListAPIView.as_view(),
