@@ -81,7 +81,8 @@ class APIHomeView(CacheMixin, DefaultsMixin, APIView):
             },
             'notifications': {
                 'url': api_reverse('notification_list_api', request=request),
-                'unread_url': api_reverse('get_unread_notifications_api', request=request),
+                'unread_url': api_reverse('get_unread_notifications_api',
+                                          request=request),
             },
             'photos': {
                 'count': Photo.objects.all().count(),

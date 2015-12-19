@@ -89,7 +89,6 @@ def photo_upload(request):
             obj.slug = get_random_string(length=10)
             obj.save()
             messages.success(request,
-                             "Thank you! You have successfully uploaded "
-                             "your picture!")
+                             "You have successfully uploaded your picture!")
             return HttpResponseRedirect(reverse('home'))
     return render(request, 'photos/photo_upload.html', {'form': form})

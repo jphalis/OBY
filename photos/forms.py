@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.files.images import get_image_dimensions
 
-from .models import Category, Photo
+from .models import Photo
 
 
 class PhotoUploadForm(forms.ModelForm):
@@ -27,9 +27,9 @@ class PhotoUploadForm(forms.ModelForm):
         #     self.fields['category'].queryset = Category.objects.exclude(
         #         title='Scale Management')
 
-        if not self.request.user.edu_email:
-            self.fields['category'].queryset = Category.objects.exclude(
-                title='University')
+        # if not self.request.user.edu_email:
+        #     self.fields['category'].queryset = Category.objects.exclude(
+        #         title='University')
 
     def clean_photo(self):
         photo = self.cleaned_data.get('photo')
