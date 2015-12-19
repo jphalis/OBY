@@ -62,7 +62,7 @@ urlpatterns = [
     url(r'^notifications/$', NotificationAPIView.as_view(),
         name='notification_list_api'),
     url(r'^notifications/unread/$', NotificationAjaxAPIView.as_view(),
-        name='get_notifications_api'),
+        name='get_unread_notifications_api'),
 
     # P H O T O S
     url(r'^categories/$', CategoryListAPIView.as_view(),
