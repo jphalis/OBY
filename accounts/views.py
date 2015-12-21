@@ -205,28 +205,31 @@ def password_reset(request,
                    token_generator=default_token_generator,
                    from_email='team@obystudio.com',
                    html_email_template_name=None):
-    if request.method == "POST":
-        form = password_reset_form(request.POST)
-        if form.is_valid():
-            opts = {
-                'use_https': request.is_secure(),
-                'token_generator': token_generator,
-                'from_email': from_email,
-                'email_template_name': email_template_name,
-                'subject_template_name': subject_template_name,
-                'request': request,
-                'html_email_template_name': html_email_template_name,
-            }
-            form.save(**opts)
-            messages.success(request,
-                             "If that email is registered to an account, \
-                             instructions for resetting your password \
-                             will be sent soon. Please make sure to check \
-                             your junk email/spam folder if you do not \
-                             receive an email.")
+    if request.user.is_authenticated():
+        return redirect("home")
     else:
-        form = password_reset_form()
-    return render(request, template_name, {'form': form})
+        if request.method == "POST":
+            form = password_reset_form(request.POST)
+            if form.is_valid():
+                opts = {
+                    'use_https': request.is_secure(),
+                    'token_generator': token_generator,
+                    'from_email': from_email,
+                    'email_template_name': email_template_name,
+                    'subject_template_name': subject_template_name,
+                    'request': request,
+                    'html_email_template_name': html_email_template_name,
+                }
+                form.save(**opts)
+                messages.success(request,
+                                 "If that email is registered to an account, \
+                                 instructions for resetting your password \
+                                 will be sent soon. Please make sure to check \
+                                 your junk email/spam folder if you do not \
+                                 receive an email.")
+        else:
+            form = password_reset_form()
+        return render(request, template_name, {'form': form})
 
 
 @sensitive_post_parameters()
