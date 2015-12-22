@@ -3,6 +3,7 @@ import random
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import F
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, HttpResponseRedirect, render
 from django.utils.crypto import get_random_string
@@ -23,24 +24,32 @@ def like_ajax(request):
     user = request.user
     photo_pk = request.POST.get('photo_pk')
     photo = get_object_or_404(Photo, pk=photo_pk)
+    photo_creator = photo.creator
 
     if user in photo.likers.all():
         photo.likers.remove(user)
         viewer_has_liked = False
+        if not user == photo_creator:
+            user.available_points = F('available_points') - 1
+            user.total_points = F('total_points') - 1
+            user.save()
     else:
         photo.likers.add(user)
         viewer_has_liked = True
+        if not user == photo_creator:
+            user.available_points = F('available_points') + 1
+            user.total_points = F('total_points') + 1
+            user.save()
         notify.send(
             user,
             action=photo,
             target=photo,
-            recipient=photo.creator,
+            recipient=photo_creator,
             verb='liked'
         )
 
     photo.save()
     like_count = photo.likers.count()
-
     data = {
         'viewer_has_liked': viewer_has_liked,
         'like_count': like_count

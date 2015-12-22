@@ -4,6 +4,7 @@ from django.contrib.auth import (authenticate, login, logout,
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
+from django.db.models import F
 from django.http import Http404, JsonResponse
 from django.shortcuts import (get_object_or_404, HttpResponseRedirect,
                               redirect, render)
@@ -86,6 +87,7 @@ def following_thread(request, username):
 @login_required
 @require_http_methods(['POST'])
 def follow_ajax(request):
+    viewing_user = request.user
     follower, created = Follower.objects.get_or_create(user=request.user)
     user_id = request.POST.get('user_id')
     user = get_object_or_404(MyUser, id=user_id)
@@ -102,18 +104,22 @@ def follow_ajax(request):
     if user_followed:
         followed.followers.remove(follower)
         viewer_has_followed = False
+        viewing_user.available_points = F('available_points') - 1
+        viewing_user.total_points = F('total_points') - 1
     else:
         followed.followers.add(follower)
         viewer_has_followed = True
+        viewing_user.available_points = F('available_points') + 1
+        viewing_user.total_points = F('total_points') + 1
 
         notify.send(
-            request.user,
+            viewing_user,
             recipient=user,
             verb='is now supporting you'
         )
 
     followed.save()
-    user.save()
+    viewing_user.save()
 
     data = {
         "viewer_has_followed": viewer_has_followed,

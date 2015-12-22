@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 from django.shortcuts import (get_object_or_404,
                               HttpResponseRedirect, render)
 from django.views.decorators.cache import cache_page
@@ -47,17 +48,17 @@ def comment_thread(request, id):
 @login_required
 @require_http_methods(['POST'])
 def comment_create_view(request):
+    user = request.user
     parent_id = request.POST.get('parent_id')
     photo_id = request.POST.get("photo_id")
     origin_path = request.POST.get("origin_path")
     parent_comment = None
     form = CommentForm(request.POST)
 
-    try:
-        photo = (Photo.objects.select_related('creator', 'category')
-                              .get(id=photo_id))
-    except:
-        photo = None
+    photo = (Photo.objects.select_related('creator', 'category')
+                          .get(id=photo_id))
+
+    photo_creator = photo.creator
 
     if parent_id is not None:
         try:
@@ -80,6 +81,10 @@ def comment_create_view(request):
                 parent=parent_comment
             )
             affected_users = parent_comment.get_affected_users()
+            if not user == photo_creator:
+                user.available_points = F('available_points') + 1
+                user.total_points = F('total_points') + 1
+                user.save()
             notify.send(
                 request.user,
                 action=new_child_comment,
@@ -96,11 +101,15 @@ def comment_create_view(request):
                 text=comment_text,
                 photo=photo
             )
+            if not user == photo_creator:
+                user.available_points = F('available_points') + 1
+                user.total_points = F('total_points') + 1
+                user.save()
             notify.send(
                 request.user,
                 action=new_parent_comment,
                 target=new_parent_comment.photo,
-                recipient=photo.creator,
+                recipient=photo_creator,
                 verb='commented'
             )
             messages.success(request,

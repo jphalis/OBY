@@ -8,12 +8,6 @@ from django.dispatch import receiver
 # Add signals to apps.py in app folder
 # https://docs.djangoproject.com/en/1.9/ref/applications/#application-configuration
 
-
-# @receiver(post_save, sender=MyUser)
-# def clear_cache(sender, instance, created, **kwargs):
-#     cache.clear()
-
-
 @receiver(post_save)
 def clear_cache(sender, instance=None, created=False, **kwargs):
     list_of_models = ('Follower', 'MyUser')
