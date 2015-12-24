@@ -206,11 +206,11 @@ def password_change(request):
 def password_reset(request,
                    template_name='accounts/settings/password_reset_form.html',
                    email_template_name='accounts/settings/password_reset_email.html',
-                   subject_template_name='OBY Account Password Reset',
+                   subject_template_name='OBY Reset Account Password',
                    password_reset_form=PasswordResetForm,
                    token_generator=default_token_generator,
                    from_email='team@obystudio.com',
-                   html_email_template_name=None):
+                   html_email_template_name='accounts/settings/password_reset_email.html'):
     if request.user.is_authenticated():
         return redirect("home")
     else:

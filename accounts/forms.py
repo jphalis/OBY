@@ -266,11 +266,12 @@ class PasswordResetForm(forms.Form):
             email__iexact=email, is_active=True)
         return (u for u in active_users if u.has_usable_password())
 
-    def save(self, subject_template_name='OBY Account Password Reset',
-             email_template_name='accounts/settings/password_reset_email.html',
+    def save(self, subject_template_name='OBY Reset Account Password',
+             email_template_name=None,
              use_https=False, token_generator=default_token_generator,
              from_email='team@obystudio.com', request=None,
-             html_email_template_name=None, extra_email_context=None):
+             html_email_template_name='accounts/settings/password_reset_email.html',
+             extra_email_context=None):
         """
         Generates a one-use only link for resetting password and sends to the
         user.
