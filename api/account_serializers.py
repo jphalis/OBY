@@ -31,7 +31,7 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         # update username validation requirements
         # update email validation requirements
         # make password >= 3 characters
-        user = MyUser(
+        user = MyUser.objects.create(
             username=validated_data['username'],
             email=validated_data['email']
         )

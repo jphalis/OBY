@@ -178,6 +178,7 @@ def follow_create_api(request, user_pk):
 
 class AccountCreateAPIView(generics.CreateAPIView):
     serializer_class = AccountCreateSerializer
+    permission_classes = (permissions.AllowAny,)
 
 
 class MyUserListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):

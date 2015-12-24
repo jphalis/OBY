@@ -28,16 +28,14 @@ urlpatterns = [
         name='search_api'),
 
     # A C C O U N T S
-    url(r'^accounts/create/$', AccountCreateAPIView.as_view(),
-        name='account_create_api'),
     url(r'^accounts/$', MyUserListAPIView.as_view(),
         name='user_account_list_api'),
+    url(r'^accounts/create/$', AccountCreateAPIView.as_view(),
+        name='account_create_api'),
     url(r'^accounts/(?P<username>[\w.@+-]+)/$', MyUserDetailAPIView.as_view(),
         name='user_account_detail_api'),
     url(r'^support/(?P<user_pk>\d+)/$', views.follow_create_api,
         name='follow_create_api'),
-    # url(r'^follows/$', FollowerListAPIView.as_view(),
-    #     name='follow_list_api'),
 
     # A U T H E N T I C A T I O N
     url(r'^password/reset/$', PasswordResetView.as_view(),
