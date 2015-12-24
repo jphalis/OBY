@@ -22,6 +22,7 @@
                 {% csrf_token %}
                 {{ form|crispy }}
                 <br/>
+                <input type="hidden" name="next" value="/" />
                 <input class="submit-btn signin-btn btn-block" type="submit" value="{{ submit_btn }}" />
             </form>
             {% if title == "Register" %}

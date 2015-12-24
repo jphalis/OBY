@@ -252,3 +252,7 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
     'JWT_SECRET_KEY': '%-23_#=hru4rl2m(lqax3viqz755qwnld+$sq1ddxpcdnt^5_g',
 }
+
+
+# R E W A R D S
+DESERVES_REWARD_AMOUNT = 12

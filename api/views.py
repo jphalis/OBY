@@ -1,5 +1,7 @@
 from itertools import chain
 
+from django.conf import settings
+from django.db.models import F
 from django.shortcuts import get_object_or_404, Http404
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
@@ -146,6 +148,7 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 # A C C O U N T S
 @api_view(['POST'])
 def follow_create_api(request, user_pk):
+    viewing_user = request.user
     follower, created = Follower.objects.get_or_create(user=request.user)
     user = get_object_or_404(MyUser, pk=user_pk)
     followed, created = Follower.objects.get_or_create(user=user)
@@ -158,8 +161,12 @@ def follow_create_api(request, user_pk):
 
     if user_followed:
         followed.followers.remove(follower)
+        viewing_user.available_points = F('available_points') - 1
+        viewing_user.total_points = F('total_points') - 1
     else:
         followed.followers.add(follower)
+        viewing_user.available_points = F('available_points') + 1
+        viewing_user.total_points = F('total_points') + 1
         notify.send(
             request.user,
             recipient=user,
@@ -261,16 +268,14 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
     serializer_class = CommentCreateSerializer
 
     def post(self, request):
+        user = self.request.user
         serializer = self.get_serializer(data=request.data)
         parent_id = self.request.data.get('parent')
         photo_id = self.request.data.get('photo')
         parent_comment = None
-
-        try:
-            photo = (Photo.objects.select_related('category', 'creator')
-                                  .get(id=photo_id))
-        except:
-            photo = None
+        photo = (Photo.objects.select_related('category', 'creator')
+                              .get(id=photo_id))
+        photo_creator = photo.creator
 
         if parent_id is not None:
             try:
@@ -286,7 +291,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
             if parent_comment is not None:
                 # parent comments exists
                 new_child_comment = Comment.objects.create_comment(
-                    user=self.request.user,
+                    user=user,
                     path=parent_comment.get_origin,
                     text=comment_text,
                     photo=photo,
@@ -294,7 +299,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                 )
                 affected_users = parent_comment.get_affected_users()
                 notify.send(
-                    self.request.user,
+                    user,
                     action=new_child_comment,
                     target=parent_comment,
                     recipient=parent_comment.user,
@@ -303,18 +308,22 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                 )
             else:
                 new_parent_comment = Comment.objects.create_comment(
-                    user=request.user,
+                    user=user,
                     path=request.get_full_path,
                     text=comment_text,
                     photo=photo
                 )
                 notify.send(
-                    self.request.user,
+                    user,
                     action=new_parent_comment,
                     target=new_parent_comment.photo,
-                    recipient=photo.creator,
+                    recipient=photo_creator,
                     verb='commented'
                 )
+            if not user == photo_creator:
+                user.available_points = F('available_points') + 1
+                user.total_points = F('total_points') + 1
+                user.save()
             return RestResponse(serializer.data,
                                 status=status.HTTP_201_CREATED)
         else:
@@ -382,16 +391,25 @@ class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 def like_create_api(request, photo_pk):
     user = request.user
     photo = get_object_or_404(Photo, pk=photo_pk)
+    photo_creator = photo.creator
 
     if user in photo.likers.all():
         photo.likers.remove(user)
+        if not user == photo_creator:
+            user.available_points = F('available_points') - 1
+            user.total_points = F('total_points') - 1
+            user.save()
     else:
         photo.likers.add(user)
+        if not user == photo_creator:
+            user.available_points = F('available_points') + 1
+            user.total_points = F('total_points') + 1
+            user.save()
         notify.send(
             user,
             action=photo,
             target=photo,
-            recipient=photo.creator,
+            recipient=photo_creator,
             verb='liked'
         )
     serializer = PhotoSerializer(photo, context={'request': request})
@@ -489,6 +507,23 @@ class SearchListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
 
 
 # S H O P
+@api_view(['GET'])
+def reward_check_view(request):
+    context = {
+        'deserves_reward':
+            request.user.available_points >= settings.DESERVES_REWARD_AMOUNT,
+    }
+    return RestResponse(context)
+
+
+@api_view(['GET'])
+def reward_redeemed_view(request):
+    user = request.user
+    user.available_points = F('available_points') - settings.DESERVES_REWARD_AMOUNT
+    user.save()
+    return RestResponse(status=status.HTTP_202_ACCEPTED)
+
+
 # Need to fix the list_use_date_start
 class ProductCreateAPIView(ModelViewSet):
     queryset = Product.objects.select_related('owner').all()

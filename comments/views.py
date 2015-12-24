@@ -54,10 +54,8 @@ def comment_create_view(request):
     origin_path = request.POST.get("origin_path")
     parent_comment = None
     form = CommentForm(request.POST)
-
     photo = (Photo.objects.select_related('creator', 'category')
                           .get(id=photo_id))
-
     photo_creator = photo.creator
 
     if parent_id is not None:

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
 
 from accounts.models import Follower, MyUser
-from oby.settings.approved_universities import APPROVED_UNIVERSITIES
+# from oby.settings.approved_universities import APPROVED_UNIVERSITIES
 from photos.models import Photo
 from .photo_serializers import PhotoSerializer
 
