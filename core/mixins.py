@@ -14,16 +14,16 @@ class AjaxRequiredMixin(object):
                                                        *args, **kwargs)
 
 
-class StaffRequiredMixin(object):
+class AdminRequiredMixin(object):
     @classmethod
     def as_view(self, *args, **kwargs):
-        view = super(StaffRequiredMixin, self).as_view(*args, **kwargs)
+        view = super(AdminRequiredMixin, self).as_view(*args, **kwargs)
         return staff_member_required(view)
 
     @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_staff:
-            return super(StaffRequiredMixin, self).dispatch(request,
+        if request.user.is_admin:
+            return super(AdminRequiredMixin, self).dispatch(request,
                                                             *args, **kwargs)
         raise Http404
 
