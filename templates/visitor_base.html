@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load analytics %}
+<!-- {% load analytics %} -->
 {% load staticfiles %}
 <html lang="en">
     <head>
@@ -79,7 +79,7 @@
         <script src="{% static 'js/jquery.min.js' %}" type="text/javascript" defer></script>
         <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" defer></script>
         {% block js %}{% endblock js %}
-        {% analytics_async 'UA-66160514-1' %}
+        <!-- {% analytics_async 'UA-66160514-1' %} -->
         {% endspaceless %}
     </body>
 </html>
