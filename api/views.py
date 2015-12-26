@@ -366,6 +366,7 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
+        # Show 50, but delete all objects after the 50
         notifications = Notification.objects.all_for_user(
             self.request.user)[:50]
         for notification in notifications:

@@ -10,9 +10,8 @@ from photos.models import Category, Photo
 # Create views here.
 
 
-@cache_page(60 * 2)
+@cache_page(60 * 6)
 def home(request):
-    # Need to remove this once the "simple" templates are put into effect
     if request.user.is_authenticated():
         categories = Category.objects.most_posts()
         photos = Photo.objects.most_liked_offset()[:30]
