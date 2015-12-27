@@ -5,7 +5,7 @@ from .views import APIHomeView, HomepageAPIView, TimelineAPIView
 from .views import (AccountCreateAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
 from .views import CommentCreateAPIView, CommentDetailAPIView
-from .views import HashtagListAPIView
+from .views import HashtagPhotoListAPIView, HashtagTrendingListAPIView
 from .views import (CategoryDetailAPIView, CategoryListAPIView,
                     PhotoListAPIView, PhotoCreateAPIView, PhotoDetailAPIView)
 from .views import NotificationAPIView, NotificationAjaxAPIView
@@ -53,8 +53,10 @@ urlpatterns = [
         name='comment_detail_api'),
 
     # H A S H T A G S
-    url(r'^hashtags/$', HashtagListAPIView.as_view(),
-        name='hashtag_list_api'),
+    url(r'^hashtags/$', HashtagPhotoListAPIView.as_view(),
+        name='hashtag_photo_list_api'),
+    url(r'^hashtags/trending/$', HashtagTrendingListAPIView.as_view(),
+        name='hashtag_trending_list_api'),
 
     # N O T I F I C A T I O N S
     url(r'^notifications/$', NotificationAPIView.as_view(),

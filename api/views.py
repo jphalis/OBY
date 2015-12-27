@@ -1,7 +1,7 @@
 from itertools import chain
 
 from django.conf import settings
-from django.db.models import F
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404, Http404
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
@@ -75,8 +75,10 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
                                           request=request),
             },
             'hashtags': {
-                'count': Hashtag.objects.all().count(),
-                'url': api_reverse('hashtag_list_api', request=request),
+                'display_photos': api_reverse('hashtag_photo_list_api',
+                                              request=request),
+                'trending_tags': api_reverse('hashtag_trending_list_api',
+                                             request=request),
             },
             'homepage': {
                 'url': api_reverse('homepage_api', request=request),
@@ -350,13 +352,34 @@ class CommentDetailAPIView(CacheMixin,
 
 
 # H A S H T A G S
-class HashtagListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
-                         generics.ListAPIView):
-    cache_timeout = 60 * 4
-    pagination_class = HashtagPagination
+class HashtagTrendingListAPIView(CacheMixin, DefaultsMixin,
+                                 generics.ListAPIView):
+    cache_timeout = 60 * 5
     serializer_class = HashtagSerializer
     queryset = Hashtag.objects.all()
-    search_fields = ["tag"]
+
+
+class HashtagPhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
+                              generics.ListAPIView):
+    cache_timeout = 60 * 5
+    serializer_class = PhotoSerializer
+    # '^' Starts-with search
+    # '=' Exact matches
+    # '@' Full-text search (Currently only supported Django's MySQL backend.)
+    # '$' Regex search
+    search_fields = ('=hashtags__tag',)
+
+    def get_queryset(self):
+        queryset = Photo.objects \
+            .select_related('creator', 'category') \
+            .prefetch_related('likers') \
+            .all()
+        tag = self.request.query_params.get('tag', None)
+
+        if tag is not None:
+            queryset = queryset.filter(
+                Q(description__iexact='#{}'.format(tag)))
+        return queryset
 
 
 # N O T I F I C A T I O N S
