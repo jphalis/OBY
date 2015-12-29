@@ -9,6 +9,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import TimeStampedModel
+from core.utils import readable_number
 
 # Create models here.
 
@@ -63,7 +64,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     bio = models.TextField(max_length=200, blank=True)
     website = models.CharField(max_length=90, blank=True)
     edu_email = models.EmailField(verbose_name='.edu email', max_length=80,
-                                  unique=True, null=True, blank=True)
+                                  null=True, blank=True)
     GENDER_CHOICES = (
         ('Dude', _('Dude')),
         ('Betty', _('Betty')),
@@ -140,22 +141,22 @@ class Follower(TimeStampedModel):
 
     @cached_property
     def get_followers_usernames(self):
-        return map(str, self.followers.all().values_list(
+        return map(str, self.followers.values_list(
                    'user__username', flat=True))
 
     @cached_property
     def get_following_usernames(self):
-        return map(str, self.following.all().values_list(
+        return map(str, self.following.values_list(
                    'user__username', flat=True))
 
     @cached_property
     def get_followers_info(self):
-        return self.followers.select_related('user').all().values(
+        return self.followers.select_related('user').values(
             'user__username', 'user__full_name', 'user__profile_picture')
 
     @cached_property
     def get_following_info(self):
-        return self.following.select_related('user').all().values(
+        return self.following.select_related('user').values(
             'user__username', 'user__full_name', 'user__profile_picture')
 
     @cached_property
@@ -167,6 +168,14 @@ class Follower(TimeStampedModel):
     def get_following_url(self):
         return reverse('following_thread',
                        kwargs={'username': self.user.username})
+
+    def get_followers_count(self, short=True):
+        count = self.get_followers_info.count()
+        return readable_number(count, short=short)
+
+    def get_following_count(self, short=True):
+        count = self.get_following_info.count()
+        return readable_number(count, short=short)
 
 MyUser.profile = property(lambda u: Follower.objects.get_or_create(user=u)[0])
 

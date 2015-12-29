@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
@@ -22,6 +22,7 @@ def info(request):
         'total_amount': total_amount
     }
     return render(request, 'donations/info.html', context)
+    # raise Http404
 
 
 @login_required
@@ -57,3 +58,4 @@ def make(request):
         'donation_form': donation_form
     }
     return render(request, 'donations/make.html', context)
+    # raise Http404

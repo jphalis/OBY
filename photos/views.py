@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import F
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, HttpResponseRedirect, render
 from django.utils.crypto import get_random_string
 from django.views.decorators.cache import cache_page
@@ -77,12 +77,20 @@ def category_detail(request, cat_slug):
         return HttpResponseRedirect('{}?next={}'.format(
             (reverse('login'), next_url)))
     return render(request, 'photos/category_detail.html', context)
+    # raise Http404
 
 
 class PhotoDelete(DeleteView):
     model = Photo
     success_url = reverse_lazy('home')
     template_name = 'photos/photo_delete.html'
+
+    def get_object(self):
+        photo_pk = self.kwargs['pk']
+        photo = Photo.objects.get(pk=photo_pk)
+        if self.request.user == photo.creator:
+            return photo
+        raise Http404
 
 
 @login_required
@@ -101,3 +109,4 @@ def photo_upload(request):
                              "You have successfully uploaded your picture!")
             return HttpResponseRedirect(reverse('home'))
     return render(request, 'photos/photo_upload.html', {'form': form})
+    # raise Http404

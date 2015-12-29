@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import F
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import HttpResponseRedirect, render
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
@@ -34,6 +34,7 @@ def shop(request):
         'products_useable': products_useable
     }
     return render(request, 'shop/shop.html', context)
+    # raise Http404
 
 
 @login_required
@@ -111,6 +112,7 @@ def product_create(request):
         return render(request, "shop/product_create.html", context)
     else:
         return HttpResponseRedirect(reverse("home"))
+    # raise Http404
 
 
 # def single(request, slug):

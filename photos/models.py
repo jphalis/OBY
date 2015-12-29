@@ -18,6 +18,12 @@ def upload_location(instance, filename):
 
 
 class PhotoManager(models.Manager):
+    def active(self):
+        return super(PhotoManager, self).get_queryset() \
+            .select_related('category', 'creator') \
+            .prefetch_related('likers') \
+            .filter(is_active=True)
+
     def category_detail(self, obj):
         date_from = datetime.now() - timedelta(days=150)
         return super(PhotoManager, self).get_queryset() \
@@ -26,6 +32,12 @@ class PhotoManager(models.Manager):
             .annotate(the_count=(Count('likers'))) \
             .filter(is_active=True, created__gte=date_from, category=obj) \
             .order_by('-the_count')
+
+    def following(self, user):
+        return super(PhotoManager, self).get_queryset() \
+            .select_related('category', 'creator') \
+            .prefetch_related('likers') \
+            .filter(creator__follower__in=user.follower.following.all())
 
     def most_commented(self):
         return super(PhotoManager, self).get_queryset() \
@@ -57,12 +69,6 @@ class PhotoManager(models.Manager):
             .select_related('category', 'creator') \
             .prefetch_related('likers') \
             .filter(creator=user)
-
-    def following(self, user):
-        return super(PhotoManager, self).get_queryset() \
-            .select_related('category', 'creator') \
-            .prefetch_related('likers') \
-            .filter(creator__follower__in=user.follower.following.all())
 
 
 class Photo(HashtagMixin, TimeStampedModel):
@@ -106,11 +112,11 @@ class Photo(HashtagMixin, TimeStampedModel):
 
     @cached_property
     def get_likers_usernames(self):
-        return map(str, self.likers.all().values_list('username', flat=True))
+        return map(str, self.likers.values_list('username', flat=True))
 
     @cached_property
     def get_likers_info(self):
-        return self.likers.all().values(
+        return self.likers.values(
             'username', 'full_name', 'profile_picture')
 
     def like_count(self, short=True):

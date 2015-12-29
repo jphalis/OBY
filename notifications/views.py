@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.shortcuts import Http404, render
+from django.http import Http404, JsonResponse
+from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
@@ -24,6 +24,7 @@ def all(request):
         "notifications": notifications
     }
     return render(request, "notifications/notifications_all.html", context)
+    # raise Http404
 
 
 @login_required

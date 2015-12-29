@@ -1,7 +1,8 @@
+# from collections import Counter
 from itertools import chain
 
 from django.conf import settings
-from django.db.models import F, Q
+from django.db.models import F
 from django.shortcuts import get_object_or_404, Http404
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
@@ -47,7 +48,7 @@ from .shop_serializers import ProductCreateSerializer, ProductSerializer
 
 
 class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
-    cache_timeout = 120
+    cache_timeout = 60 * 7
 
     def get(self, request, format=None):
         data = {
@@ -77,8 +78,8 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
             'hashtags': {
                 'display_photos': api_reverse('hashtag_photo_list_api',
                                               request=request),
-                'trending_tags': api_reverse('hashtag_trending_list_api',
-                                             request=request),
+                # 'trending_tags': api_reverse('hashtag_trending_list_api',
+                #                              request=request),
             },
             'homepage': {
                 'url': api_reverse('homepage_api', request=request),
@@ -112,7 +113,7 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
 
 
 class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 5
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
@@ -120,7 +121,7 @@ class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 
 
 class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 5
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
@@ -184,7 +185,7 @@ class AccountCreateAPIView(generics.CreateAPIView):
 
 
 class MyUserListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 7
     pagination_class = AccountPagination
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
@@ -194,7 +195,7 @@ class MyUserDetailAPIView(CacheMixin,
                           generics.RetrieveAPIView,
                           mixins.DestroyModelMixin,
                           mixins.UpdateModelMixin):
-    cache_timeout = 60 * 3
+    cache_timeout = 60 * 6
     permission_classes = (
         permissions.IsAuthenticated,
         MyUserIsOwnerOrReadOnly,
@@ -337,7 +338,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
 class CommentDetailAPIView(CacheMixin,
                            generics.RetrieveAPIView,
                            mixins.DestroyModelMixin):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 5
     lookup_field = 'id'
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
     serializer_class = CommentUpdateSerializer
@@ -354,46 +355,51 @@ class CommentDetailAPIView(CacheMixin,
 # H A S H T A G S
 class HashtagTrendingListAPIView(CacheMixin, DefaultsMixin,
                                  generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     serializer_class = HashtagSerializer
     queryset = Hashtag.objects.all()
+
+    # def get_queryset(self):
+    #     hashtags = [u'#{}'.format(tag) for tag in Hashtag.objects.values_list(
+    #         'tag', flat=True)]
+    #     for description in Photo.objects.values_list('description', flat=True):
+    #         description_words = description.split(' ')
+    #         hashtag_counts = Counter(
+    #             [word for word in description_words if word in hashtags]) \
+    #             .most_common()
+    #     return hashtag_counts
 
 
 class HashtagPhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                               generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     serializer_class = PhotoSerializer
-    # '^' Starts-with search
-    # '=' Exact matches
-    # '@' Full-text search (Currently only supported Django's MySQL backend.)
-    # '$' Regex search
-    search_fields = ('=hashtags__tag',)
+    pagination_class = HashtagPagination
 
     def get_queryset(self):
         queryset = Photo.objects \
             .select_related('creator', 'category') \
-            .prefetch_related('likers') \
-            .all()
-        tag = self.request.query_params.get('tag', None)
+            .prefetch_related('likers').all()
+        tag = self.request.query_params.get('q', None)
 
         if tag is not None:
             queryset = queryset.filter(
-                Q(description__iexact='#{}'.format(tag)))
+                description__icontains='#{}'.format(tag))
         return queryset
 
 
 # N O T I F I C A T I O N S
 class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 5
     pagination_class = NotificationPagination
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
+        user = self.request.user
         # Show 50, but delete all objects after the 50
-        notifications = Notification.objects.all_for_user(
-            self.request.user)[:50]
+        notifications = Notification.objects.all_for_user(user)
         for notification in notifications:
-            if notification.recipient == self.request.user:
+            if notification.recipient == user:
                 notification.read = True
                 notification.save()
             else:
@@ -454,7 +460,7 @@ class PhotoCreateAPIView(ModelViewSet):
 
 class PhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                        generics.ListAPIView):
-    cache_timeout = 60 * 3
+    cache_timeout = 60 * 5
     pagination_class = PhotoPagination
     serializer_class = PhotoSerializer
     queryset = (Photo.objects.select_related('creator', 'category')
@@ -468,7 +474,7 @@ class PhotoDetailAPIView(CacheMixin,
                          generics.RetrieveAPIView,
                          mixins.DestroyModelMixin,
                          mixins.UpdateModelMixin):
-    cache_timeout = 60 * 3
+    cache_timeout = 60 * 7
     permission_classes = (permissions.IsAuthenticated, IsCreatorOrReadOnly,)
     serializer_class = PhotoSerializer
 
@@ -487,7 +493,7 @@ class PhotoDetailAPIView(CacheMixin,
 
 
 class CategoryListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 6
     serializer_class = CategorySerializer
 
     def get_queryset(self):
@@ -496,7 +502,7 @@ class CategoryListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 
 class CategoryDetailAPIView(CacheMixin, DefaultsMixin,
                             generics.RetrieveAPIView):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 5
     serializer_class = CategorySerializer
 
     def get_object(self):
@@ -509,26 +515,12 @@ class CategoryDetailAPIView(CacheMixin, DefaultsMixin,
 class SearchListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                         generics.ListAPIView):
     serializer_class = SearchMyUserSerializer
+    queryset = MyUser.objects.only('id', 'username', 'full_name',
+                                   'profile_picture')
     # '^' Starts-with search
     # '=' Exact matches
-    # '@' Full-text search (Currently only supported Django's MySQL backend.)
     # '$' Regex search
     search_fields = ('^username', '^full_name',)
-    # ordering_fields = ('id', 'username', 'full_name',)
-
-    def get_queryset(self):
-        queryset = MyUser.objects.all() \
-            .only('id', 'username', 'full_name', 'profile_picture')
-        username = self.request.query_params.get('username', None)
-        full_name = self.request.query_params.get('full_name', None)
-
-        if username and full_name is not None:
-            queryset = queryset.filter(username=username, full_name=full_name)
-        elif username is not None:
-            queryset = queryset.filter(username=username)
-        elif full_name is not None:
-            queryset = queryset.filter(full_name=full_name)
-        return queryset
 
 
 # S H O P
@@ -563,7 +555,7 @@ class ProductCreateAPIView(ModelViewSet):
 
 class ProductListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                          generics.ListAPIView):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 5
     pagination_class = ShopPagination
     serializer_class = ProductSerializer
     search_fields = ('title', 'owner',)
@@ -583,7 +575,7 @@ class ProductDetailAPIView(CacheMixin, DefaultsMixin,
                            generics.RetrieveAPIView,
                            mixins.DestroyModelMixin,
                            mixins.UpdateModelMixin):
-    cache_timeout = 60 * 4
+    cache_timeout = 60 * 7
     permission_classes = (IsAdvertiser, IsOwnerOrReadOnly,)
     queryset = (Product.objects.select_related('owner')
                                .prefetch_related('buyers')

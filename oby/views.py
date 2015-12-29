@@ -1,6 +1,7 @@
 from itertools import chain
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
@@ -52,6 +53,7 @@ def timeline(request):
         'photos': photos
     }
     return render(request, 'accounts/timeline.html', context)
+    # raise Http404
 
 
 @cache_page(60 * 15)

@@ -54,6 +54,7 @@ def profile_view(request, username):
             'user': user
         }
         return render(request, "accounts/profile_view.html", context)
+    # raise Http404
 
 
 @cache_page(60 * 4)
@@ -68,6 +69,7 @@ def followers_thread(request, username):
         .filter(user=user.id)
     return render(request, "accounts/followers_thread.html",
                   {'followers_set': followers_set})
+    # raise Http404
 
 
 @cache_page(60 * 4)
@@ -82,6 +84,7 @@ def following_thread(request, username):
         .filter(user=user.id)
     return render(request, "accounts/following_thread.html",
                   {"following_set": following_set})
+    # raise Http404
 
 
 @login_required
@@ -150,6 +153,7 @@ def account_settings(request):
         'account_change_form': account_change_form
     }
     return render(request, 'accounts/settings/account_settings.html', context)
+    # raise Http404
 
 
 # @login_required
@@ -303,6 +307,7 @@ def auth_login(request):
             "submit_btn": submit_btn
         }
         return render(request, "visitor/login_register.html", context)
+    # raise Http404
 
 
 def auth_register(request):
@@ -345,3 +350,4 @@ def auth_register(request):
             "submit_btn": submit_btn
         }
         return render(request, "visitor/login_register.html", context)
+    # raise Http404

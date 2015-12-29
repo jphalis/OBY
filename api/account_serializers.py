@@ -18,7 +18,8 @@ class FollowerCreateSerializer(serializers.ModelSerializer):
 class FollowerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Follower
-        fields = ('get_followers_info', 'get_following_info',)
+        fields = ('get_followers_count', 'get_following_count',
+                  'get_followers_info', 'get_following_info',)
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):

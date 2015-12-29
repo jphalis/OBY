@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
+from django.http import Http404
 from django.shortcuts import (get_object_or_404,
                               HttpResponseRedirect, render)
 from django.views.decorators.cache import cache_page
@@ -30,6 +31,7 @@ def comments_all(request, cat_slug, photo_slug):
         "photo": photo
     }
     return render(request, "comments/comments_all.html", context)
+    # raise Http404
 
 
 @login_required
@@ -43,6 +45,7 @@ def comment_thread(request, id):
         "form": form
     }
     return render(request, "comments/comment_thread.html", context)
+    # raise Http404
 
 
 @login_required
@@ -117,3 +120,4 @@ def comment_create_view(request):
     else:
         messages.error(request, "There was an error with your comment.")
         return HttpResponseRedirect(origin_path)
+    # raise Http404

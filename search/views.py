@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.list import ListView
 
@@ -34,6 +34,7 @@ class SearchListView(LoginRequiredMixin, ListView):
             #     )
             # Add a separate tab for searching hashtags
         return user_qs
+    # raise Http404
 
 
 @login_required
