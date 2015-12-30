@@ -448,12 +448,17 @@ def like_create_api(request, photo_pk):
 
 
 class PhotoCreateAPIView(ModelViewSet):
+    # Need to add earning of points
     queryset = Photo.objects.select_related('creator').all()
     serializer_class = PhotoCreateSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user,
+        user = self.request.user
+        user.available_points = F('available_points') + 1
+        user.total_points = F('total_points') + 1
+        user.save()
+        serializer.save(creator=user,
                         slug=get_random_string(length=10),
                         photo=self.request.data.get('photo'))
 
