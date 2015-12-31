@@ -2,12 +2,14 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import HttpResponseRedirect, render
+from django.views.decorators.cache import cache_page
 
 from .forms import BusinessContactForm
 
 # Create your views here.
 
 
+@cache_page(60 * 12)
 def business_inquiry(request):
     form = BusinessContactForm(request.POST or None)
 

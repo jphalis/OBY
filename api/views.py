@@ -48,7 +48,7 @@ from .shop_serializers import ProductCreateSerializer, ProductSerializer
 
 
 class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
-    cache_timeout = 60 * 7
+    cache_timeout = 60 * 60 * 24 * 30
 
     def get(self, request, format=None):
         data = {
@@ -113,7 +113,7 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
 
 
 class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
@@ -121,7 +121,7 @@ class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 
 
 class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
@@ -185,7 +185,7 @@ class AccountCreateAPIView(generics.CreateAPIView):
 
 
 class MyUserListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 7
+    cache_timeout = 60 * 60 * 24
     pagination_class = AccountPagination
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
@@ -195,7 +195,7 @@ class MyUserDetailAPIView(CacheMixin,
                           generics.RetrieveAPIView,
                           mixins.DestroyModelMixin,
                           mixins.UpdateModelMixin):
-    cache_timeout = 60 * 6
+    cache_timeout = 60 * 7
     permission_classes = (
         permissions.IsAuthenticated,
         MyUserIsOwnerOrReadOnly,
@@ -338,7 +338,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
 class CommentDetailAPIView(CacheMixin,
                            generics.RetrieveAPIView,
                            mixins.DestroyModelMixin):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     lookup_field = 'id'
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
     serializer_class = CommentUpdateSerializer
@@ -390,7 +390,7 @@ class HashtagPhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
 
 # N O T I F I C A T I O N S
 class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     pagination_class = NotificationPagination
     serializer_class = NotificationSerializer
 
@@ -465,7 +465,7 @@ class PhotoCreateAPIView(ModelViewSet):
 
 class PhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                        generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 60 * 24
     pagination_class = PhotoPagination
     serializer_class = PhotoSerializer
     queryset = (Photo.objects.select_related('creator', 'category')
@@ -498,7 +498,7 @@ class PhotoDetailAPIView(CacheMixin,
 
 
 class CategoryListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 6
+    cache_timeout = 60 * 7
     serializer_class = CategorySerializer
 
     def get_queryset(self):
@@ -507,7 +507,7 @@ class CategoryListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 
 class CategoryDetailAPIView(CacheMixin, DefaultsMixin,
                             generics.RetrieveAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 7
     serializer_class = CategorySerializer
 
     def get_object(self):
@@ -560,7 +560,7 @@ class ProductCreateAPIView(ModelViewSet):
 
 class ProductListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                          generics.ListAPIView):
-    cache_timeout = 60 * 5
+    cache_timeout = 60 * 60 * 24
     pagination_class = ShopPagination
     serializer_class = ProductSerializer
     search_fields = ('title', 'owner',)
@@ -580,7 +580,7 @@ class ProductDetailAPIView(CacheMixin, DefaultsMixin,
                            generics.RetrieveAPIView,
                            mixins.DestroyModelMixin,
                            mixins.UpdateModelMixin):
-    cache_timeout = 60 * 7
+    cache_timeout = 60 * 60 * 24
     permission_classes = (IsAdvertiser, IsOwnerOrReadOnly,)
     queryset = (Product.objects.select_related('owner')
                                .prefetch_related('buyers')

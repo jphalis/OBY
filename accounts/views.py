@@ -24,7 +24,7 @@ from .models import Follower, MyUser
 
 
 @login_required
-@cache_page(60 * 2)
+@cache_page(60 * 5)
 def profile_view(request, username):
     user = get_object_or_404(MyUser, username=username)
 

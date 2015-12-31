@@ -60,17 +60,17 @@ def timeline(request):
     raise Http404
 
 
-@cache_page(60 * 30)
+@cache_page(60 * 60 * 24 * 300)
 def about(request):
     return render(request, 'company/about.html', {})
 
 
-@cache_page(60 * 30)
+@cache_page(60 * 60 * 24 * 300)
 def privacy_policy(request):
     return render(request, 'company/privacy_policy.html', {})
 
 
-@cache_page(60 * 30)
+@cache_page(60 * 60 * 24 * 300)
 def terms_of_use(request):
     return render(request, 'company/terms_of_use.html', {})
 

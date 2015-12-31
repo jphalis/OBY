@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.http import Http404, JsonResponse
+# from django.db.models import Q
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.list import ListView
 
@@ -24,9 +24,7 @@ class SearchListView(LoginRequiredMixin, ListView):
         query = self.request.GET.get('q')
 
         if query:
-            user_qs = self.model.objects.filter(
-                Q(username__icontains=query)
-                )
+            user_qs = self.model.objects.filter(username__icontains=query)
             # adds multiple filters to the queryset
             # user_qs = self.model.objects.filter(
             #     Q(username__icontains=query) |
@@ -34,7 +32,6 @@ class SearchListView(LoginRequiredMixin, ListView):
             #     )
             # Add a separate tab for searching hashtags
         return user_qs
-    # raise Http404
 
 
 @login_required
