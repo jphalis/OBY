@@ -67,7 +67,7 @@ DATABASES = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join('templates')],
+        'DIRS': [os.path.join('templates_simple')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,7 +113,7 @@ CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 # S 3  B U C K E T
 STATICFILES_DIRS = (
-    os.path.join('oby', 'static', 'static_dirs'),
+    os.path.join('oby', 'static_simple', 'static_dirs'),
     # '/Users/jphalis/Desktop/oby/src/oby/static/static_dirs/'
 )
 AWS_ACCESS_KEY_ID = 'AKIAJS5O4GAHA4MJH4NA'
@@ -129,8 +129,8 @@ S3_URL = '//{}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME)
 # Without cloudfront
 # MEDIA_URL = S3_URL + STATIC_S3_PATH
 # STATIC_URL = S3_URL + DEFAULT_S3_PATH
-MEDIA_ROOT = '/home/ubuntu/obystudio.com/oby/static/media'
-STATIC_ROOT = '/home/ubuntu/obystudio.com/oby/static/static'
+MEDIA_ROOT = '/home/ubuntu/obystudio.com/oby/static_simple/media'
+STATIC_ROOT = '/home/ubuntu/obystudio.com/oby/static_simple/static'
 # With cloudfront
 MEDIA_URL = '//{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, STATIC_S3_PATH)
 STATIC_URL = '//{}/{}'.format(AWS_CLOUDFRONT_DOMAIN, DEFAULT_S3_PATH)
