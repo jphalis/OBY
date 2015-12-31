@@ -174,36 +174,36 @@ class AccountBasicsChangeForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ['username', 'profile_picture', 'full_name', 'email',
-                  'edu_email', 'gender', 'bio', 'website']
+        fields = ('profile_picture', 'full_name', 'email',
+                  'edu_email', 'website', 'gender', 'bio',)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super(AccountBasicsChangeForm, self).__init__(*args, **kwargs)
 
-    def clean_username(self):
-        username = self.cleaned_data["username"].lower()
-        username_length = settings.MIN_USERNAME_LENGTH
-        if username in RESERVED_USERNAMES:
-            raise forms.ValidationError("Please email us to acquire this "
-                                        "username: team@obystudio.com")
-        elif username in FORBIDDEN_USERNAMES:
-            raise forms.ValidationError("This username is not allowed. "
-                                        "Please try a different one.")
-        else:
-            if len(username) < username_length:
-                raise forms.ValidationError(
-                    "Username must be longer than "
-                    "{} characters".format(username_length))
-            if MyUser.objects.filter(
-                    Q(username=username) & ~Q(id=self.user.id)).exists():
-                raise forms.ValidationError("This username is already taken. "
-                                            "Please try a different one.")
-            if not re.match(r'^[A-Za-z0-9_]+$', username):
-                raise forms.ValidationError("Sorry, but you can only have "
-                                            "alphanumeric characters or _ in "
-                                            "your username")
-            return username
+    # def clean_username(self):
+    #     username = self.cleaned_data["username"].lower()
+    #     username_length = settings.MIN_USERNAME_LENGTH
+    #     if username in RESERVED_USERNAMES:
+    #         raise forms.ValidationError("Please email us to acquire this "
+    #                                     "username: team@obystudio.com")
+    #     elif username in FORBIDDEN_USERNAMES:
+    #         raise forms.ValidationError("This username is not allowed. "
+    #                                     "Please try a different one.")
+    #     else:
+    #         if len(username) < username_length:
+    #             raise forms.ValidationError(
+    #                 "Username must be longer than "
+    #                 "{} characters".format(username_length))
+    #         if MyUser.objects.filter(
+    #                 Q(username=username) & ~Q(id=self.user.id)).exists():
+    #             raise forms.ValidationError("This username is already taken. "
+    #                                         "Please try a different one.")
+    #         if not re.match(r'^[A-Za-z0-9_]+$', username):
+    #             raise forms.ValidationError("Sorry, but you can only have "
+    #                                         "alphanumeric characters or _ in "
+    #                                         "your username")
+    #         return username
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
@@ -215,10 +215,10 @@ class AccountBasicsChangeForm(forms.ModelForm):
 
     def clean_edu_email(self):
         edu_email = self.cleaned_data.get('edu_email').lower()
-        if MyUser.objects.filter(
-                Q(edu_email=edu_email) & ~Q(id=self.user.id)).exists():
-            raise forms.ValidationError("This email is already taken. \
-                                        Please try a different one.")
+        # if MyUser.objects.filter(
+        #         Q(edu_email=edu_email) & ~Q(id=self.user.id)).exists():
+        #     raise forms.ValidationError("This email is already taken. \
+        #                                 Please try a different one.")
         # Use for .edu emails
         if edu_email:
             username, domain = edu_email.split('@')

@@ -126,7 +126,7 @@ def follow_ajax(request):
 
     data = {
         "viewer_has_followed": viewer_has_followed,
-        "followers_count": followed.followers.count()
+        "followers_count": followed.get_followers_count()
     }
     return JsonResponse(data)
 
