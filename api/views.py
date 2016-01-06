@@ -22,6 +22,7 @@ from hashtags.models import Hashtag
 from notifications.models import Notification
 from notifications.signals import notify
 from photos.models import Category, Photo
+from push_notifications.models import APNSDevice
 from shop.models import Product
 from shop.signals import listuse_status_check
 from .account_serializers import (AccountCreateSerializer, FollowerSerializer,
@@ -53,6 +54,7 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
     def get(self, request, format=None):
         data = {
             'authentication': {
+                'apns': api_reverse('create_apns_device', request=request),
                 'login': api_reverse('auth_login_api', request=request),
                 'password_reset': api_reverse('rest_password_reset',
                                               request=request),
@@ -443,12 +445,25 @@ def like_create_api(request, photo_pk):
             recipient=photo_creator,
             verb='liked'
         )
+
+
+
+        # # Push notifications
+        # device = APNSDevice.objects.get(registration_id=apns_token)
+        # # Alert message may only be sent as text.
+        # device.send_message("You've got mail")
+        # # No alerts but with badge.
+        # device.send_message(None, badge=5)
+        # # Silent message with badge and added custom data.
+        # device.send_message(None, badge=1, extra={"foo": "bar"})
+
+
+
     serializer = PhotoSerializer(photo, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class PhotoCreateAPIView(ModelViewSet):
-    # Need to add earning of points
     queryset = Photo.objects.select_related('creator').all()
     serializer_class = PhotoCreateSerializer
     parser_classes = (MultiPartParser, FormParser,)

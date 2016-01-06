@@ -38,6 +38,15 @@ class MyUserAdmin(UserAdmin):
     search_fields = ('email', 'username', 'full_name',)
     ordering = ('username',)
     filter_horizontal = ('user_permissions',)
+    actions = ('disable', 'verified',)
+
+    def disable(self, request, queryset):
+        queryset.update(is_active=False)
+    disable.short_description = _("Disable selected users")
+
+    def verified(self, request, queryset):
+        queryset.update(is_verified=True)
+    verified.short_description = _("Verify selected users")
 
 admin.site.register(MyUser, MyUserAdmin)
 admin.site.unregister(Group)

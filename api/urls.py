@@ -1,5 +1,7 @@
 from django.conf.urls import url
 
+from push_notifications.api.views import APNSDeviceAuthorizedViewSet
+
 from . import views
 from .views import APIHomeView, HomepageAPIView, TimelineAPIView
 from .views import (AccountCreateAPIView,
@@ -26,6 +28,9 @@ urlpatterns = [
         name='timeline_api'),
     url(r'^search/$', SearchListAPIView.as_view(),
         name='search_api'),
+    url(r'^device/apns/$',
+        APNSDeviceAuthorizedViewSet.as_view({'post': 'create'}),
+        name='create_apns_device'),
 
     # A C C O U N T S
     url(r'^accounts/$', MyUserListAPIView.as_view(),

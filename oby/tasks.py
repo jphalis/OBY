@@ -26,17 +26,5 @@ def add(x, y):
 # useage:
 # add.delay(7, 8)
 
-
 # @shared_task
-# def mul(x, y):
-#     return x * y
-
-
-# @shared_task
-# def xsum(numbers):
-#     return sum(numbers)
-
-
 # @app.task
-# def hello_world():
-#     print ("Hello world")
