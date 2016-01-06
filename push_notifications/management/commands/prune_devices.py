@@ -11,6 +11,6 @@ class Command(BaseCommand):
         devices = APNSDevice.objects.filter(registration_id__in=expired)
         for d in devices:
             self.stdout.write('deactivating [%s]' % d.registration_id)
-            d.active = False
+            d.is_active = False
             d.save()
         self.stdout.write('deactivated %d devices' % len(devices))

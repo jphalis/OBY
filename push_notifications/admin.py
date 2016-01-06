@@ -1,19 +1,13 @@
 from django.contrib import admin, messages
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from .gcm import GCMError
 from .models import APNSDevice, GCMDevice, get_expired_tokens
 
 
-User = get_user_model()
-
-
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ("user", "device_id", "device_type", "active",
-                    "date_created",)
-    search_fields = ("device_type", "device_id",
-                     "user__%s" % (User.USERNAME_FIELD),)
-    list_filter = ("active",)
+    list_display = ("user", "device_type", "is_active", "date_created",)
+    search_fields = ("device_type", "device_id", "user__username",)
+    list_filter = ("is_active",)
     actions = ("send_message", "send_bulk_message", "prune_devices",
                "enable", "disable",)
 
@@ -41,8 +35,11 @@ class DeviceAdmin(admin.ModelAdmin):
                 break
 
         if errors:
-            self.message_user(request, _(
-                "Some messages could not be processed: %r" % (", ".join(errors))), level=messages.ERROR)
+            self.message_user(
+                request,
+                _("Some messages could not be "
+                  "processed: %r" % (", ".join(errors))),
+                level=messages.ERROR)
         if ret:
             if not bulk:
                 ret = ", ".join(ret)
@@ -61,11 +58,11 @@ class DeviceAdmin(admin.ModelAdmin):
     send_bulk_message.short_description = _("Send test message in bulk")
 
     def enable(self, request, queryset):
-        queryset.update(active=True)
+        queryset.update(is_active=True)
     enable.short_description = _("Enable selected devices")
 
     def disable(self, request, queryset):
-        queryset.update(active=False)
+        queryset.update(is_active=False)
     disable.short_description = _("Disable selected devices")
 
     def prune_devices(self, request, queryset):
@@ -78,7 +75,7 @@ class DeviceAdmin(admin.ModelAdmin):
         expired = get_expired_tokens()
         devices = queryset.filter(registration_id__in=expired)
         for d in devices:
-            d.active = False
+            d.is_active = False
             d.save()
 
 

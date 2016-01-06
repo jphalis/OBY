@@ -10,13 +10,13 @@ from .fields import HexIntegerField
 
 @python_2_unicode_compatible
 class Device(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     device_type = models.CharField(max_length=255, verbose_name=_("Device"),
                                    blank=True, null=True)
-    active = models.BooleanField(verbose_name=_("Is active"), default=True,
-        help_text=_("Inactive devices will not be sent notifications"))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     date_created = models.DateTimeField(verbose_name=_("Creation date"),
                                         auto_now_add=True, null=True)
+    is_active = models.BooleanField(verbose_name=_("Is active"), default=True,
+        help_text=_("Inactive devices will not be sent notifications"))
 
     class Meta:
         abstract = True
@@ -37,7 +37,7 @@ class APNSDeviceQuerySet(models.query.QuerySet):
     def send_message(self, message, **kwargs):
         if self:
             from .apns import apns_send_bulk_message
-            reg_ids = list(self.filter(active=True).values_list(
+            reg_ids = list(self.filter(is_active=True).values_list(
                 'registration_id', flat=True))
             return apns_send_bulk_message(registration_ids=reg_ids,
                                           alert=message, **kwargs)
@@ -45,8 +45,7 @@ class APNSDeviceQuerySet(models.query.QuerySet):
 
 class APNSDevice(Device):
     device_id = models.UUIDField(
-        verbose_name=_("Device ID"), blank=True,
-        null=True, db_index=True,
+        verbose_name=_("Device ID"), blank=True, null=True, db_index=True,
         help_text="UDID / UIDevice.identifierForVendor()")
     registration_id = models.CharField(verbose_name=_("Registration ID"),
                                        max_length=64, unique=True)
@@ -83,7 +82,7 @@ class GCMDeviceQuerySet(models.query.QuerySet):
             if message is not None:
                 data["message"] = message
 
-            reg_ids = list(self.filter(active=True).values_list(
+            reg_ids = list(self.filter(is_active=True).values_list(
                 'registration_id', flat=True))
             return gcm_send_bulk_message(registration_ids=reg_ids, data=data,
                                          **kwargs)
@@ -94,8 +93,7 @@ class GCMDevice(Device):
     # different devices can make it turn out to be null and such:
     # http://android-developers.blogspot.co.uk/2011/03/identifying-app-installations.html
     device_id = HexIntegerField(
-        verbose_name=_("Device ID"), blank=True,
-        null=True, db_index=True,
+        verbose_name=_("Device ID"), blank=True, null=True, db_index=True,
         help_text=_("ANDROID_ID / TelephonyManager.getDeviceId() (always as hex)"))
     registration_id = models.TextField(verbose_name=_("Registration ID"))
 

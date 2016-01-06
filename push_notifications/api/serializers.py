@@ -29,10 +29,10 @@ class HexIntegerField(IntegerField):
 
 class DeviceSerializerMixin(ModelSerializer):
     class Meta:
-        fields = ("user", "name", "registration_id", "device_id",
+        fields = ("user", "device_type", "registration_id", "device_id",
                   "date_created",)
         read_only_fields = ("user", "date_created",)
-        extra_kwargs = {"active": {"default": True}}
+        extra_kwargs = {"is_active": {"default": True}}
 
 
 class APNSDeviceSerializer(ModelSerializer):

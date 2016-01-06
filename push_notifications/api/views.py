@@ -15,7 +15,7 @@ class APNSDeviceViewSet(DeviceViewSetMixin, ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(
             user=self.request.user,
-            name=self.request.data.get('name'),
+            device_type=self.request.data.get('device_type'),
             registration_id=self.request.data.get('registration_id'),
             device_id=self.request.data.get('device_id'))
 

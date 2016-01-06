@@ -93,7 +93,7 @@ def _gcm_send_plain(registration_id, data, **kwargs):
             # Deactivate the problematic device
             device = GCMDevice.objects.filter(
                 registration_id=values["registration_id"])
-            device.update(active=0)
+            device.update(is_active=0)
             return result
 
         raise GCMError(result)
@@ -149,7 +149,7 @@ def _gcm_send_json(registration_ids, data, **kwargs):
         if ids_to_remove:
             removed = GCMDevice.objects.filter(
                 registration_id__in=ids_to_remove)
-            removed.update(active=0)
+            removed.update(is_active=0)
 
         for old_id, new_id in old_new_ids:
             _gcm_handle_canonical_id(new_id, old_id)
@@ -164,9 +164,9 @@ def _gcm_handle_canonical_id(canonical_id, current_id):
     Handle situation when GCM server response contains canonical ID
     """
     if GCMDevice.objects.filter(
-            registration_id=canonical_id, active=True).exists():
+            registration_id=canonical_id, is_active=True).exists():
         GCMDevice.objects.filter(
-            registration_id=current_id).update(active=False)
+            registration_id=current_id).update(is_active=False)
     else:
         GCMDevice.objects.filter(
             registration_id=current_id).update(registration_id=canonical_id)
