@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (authenticate, login, logout,
                                  update_session_auth_hash)
@@ -207,13 +208,12 @@ def password_change(request):
                   {'form': form})
 
 
-def password_reset(request,
+def password_reset(request, from_email=settings.EMAIL_FROM,
                    template_name='accounts/settings/password_reset_form.html',
                    email_template_name='accounts/settings/password_reset_email.html',
                    subject_template_name='OBY Reset Account Password',
                    password_reset_form=PasswordResetForm,
                    token_generator=default_token_generator,
-                   from_email='team@obystudio.com',
                    html_email_template_name='accounts/settings/password_reset_email.html'):
     if request.user.is_authenticated():
         return redirect("home")
@@ -307,7 +307,6 @@ def auth_login(request):
             "submit_btn": submit_btn
         }
         return render(request, "visitor/login_register.html", context)
-    # raise Http404
 
 
 def auth_register(request):
@@ -350,4 +349,3 @@ def auth_register(request):
             "submit_btn": submit_btn
         }
         return render(request, "visitor/login_register.html", context)
-    # raise Http404

@@ -34,9 +34,9 @@ STRIPE_SECRET_KEY = 'sk_live_6OlOtvEapbxPwcf1CZATzOXA'
 
 
 # E M A I L
-# EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'halis@obystudio.com'  # 'sendgrid_username'
-EMAIL_HOST_PASSWORD = '. Hockey18 .'  # 'sendgrid_password'
+# Gmail
+# EMAIL_HOST_USER = 'halis@obystudio.com'
+# EMAIL_HOST_PASSWORD = '. Hockey18 .'
 
 
 # P U S H  N O T I F I C A T I O N S

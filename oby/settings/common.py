@@ -21,25 +21,35 @@ FULL_DOMAIN_NAME = 'www.obystudio.com'
 
 
 # E M A I L
-EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.com'
+EMAIL_HOST_USER = 'obyinc'
+EMAIL_FROM = 'team@obystudio.com'
+EMAIL_HOST_PASSWORD = '. Hockey18 .'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_SSL_CERTFILE = None
 EMAIL_SSL_KEYFILE = None
 EMAIL_TIMEOUT = None
+"""
+Testing:
+python manage.py shell
+exit()
 
-# Use in Views ^
-# from django.core.mail import send_mail
-# send_mail('Subject here', 'Here is the message.', 'from@example.com',
-#           ['to@example.com'], fail_silently=False)
+Views:
+from django.conf import settings
+from django.core.mail import send_mail
 
-'''
+send_mail('Subject', 'Message', 'from@example.com',
+          ['to@example.com'], fail_silently=False)
+"""
+"""
 If using gmail, you will need to
 unlock Captcha to enable Django
 to  send for you:
 https://accounts.google.com/displayunlockcaptcha
-'''
+"""
 
 
 # I N T E R N A T I O N A L I Z A T I O N

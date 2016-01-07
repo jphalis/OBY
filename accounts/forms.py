@@ -269,7 +269,7 @@ class PasswordResetForm(forms.Form):
     def save(self, subject_template_name='OBY Reset Account Password',
              email_template_name='accounts/settings/password_reset_email.html',
              use_https=False, token_generator=default_token_generator,
-             from_email='team@obystudio.com', request=None,
+             from_email=settings.EMAIL_FROM, request=None,
              html_email_template_name='accounts/settings/password_reset_email.html',
              extra_email_context=None):
         """
