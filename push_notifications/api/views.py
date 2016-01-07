@@ -13,6 +13,10 @@ class APNSDeviceViewSet(DeviceViewSetMixin, ModelViewSet):
     serializer_class = APNSDeviceSerializer
 
     def perform_create(self, serializer):
+        queryset = APNSDevice.objects.filter(user=self.request.user)
+        if queryset.exists():
+            for obj in queryset:
+                obj.delete()
         serializer.save(
             user=self.request.user,
             device_type=self.request.data.get('device_type'),
