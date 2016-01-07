@@ -164,6 +164,7 @@ INSTALLED_APPS = (
     'newsletter',
     'notifications',
     'photos',
+    'push_notifications',
     'search',
     'widget_tweaks',
 )

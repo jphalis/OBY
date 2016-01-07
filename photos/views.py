@@ -15,6 +15,9 @@ from notifications.signals import notify
 from .forms import PhotoUploadForm
 from .models import Category, Photo
 
+
+from push_notifications.models import APNSDevice
+
 # Create your views here.
 
 

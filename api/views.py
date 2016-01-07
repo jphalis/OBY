@@ -177,6 +177,17 @@ def follow_create_api(request, user_pk):
             recipient=user,
             verb='is now supporting you'
         )
+
+        # Push notifications
+        device = APNSDevice.objects.get(user=user)
+        if device:
+            # Alert message may only be sent as text.
+            device.send_message(
+                "{} is now supporting you".format(request.user))
+            # No alerts but with badge.
+            # device.send_message(None, badge=1)
+            # Silent message with badge and added custom data.
+            # device.send_message(None, badge=1, extra={"foo": "bar"})
     serializer = FollowerSerializer(followed, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -326,6 +337,18 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                     recipient=photo_creator,
                     verb='commented'
                 )
+
+                # Push notifications
+                if not user == photo_creator:
+                    device = APNSDevice.objects.get(user=photo_creator)
+                    if device:
+                        # Alert message may only be sent as text.
+                        device.send_message(
+                            "{} commented on your photo".format(user))
+                        # No alerts but with badge.
+                        # device.send_message(None, badge=1)
+                        # Silent message with badge and added custom data.
+                        # device.send_message(None, badge=1, extra={"foo": "bar"})
             if not user == photo_creator:
                 user.available_points = F('available_points') + 1
                 user.total_points = F('total_points') + 1
@@ -446,18 +469,16 @@ def like_create_api(request, photo_pk):
             verb='liked'
         )
 
-
-
-        # # Push notifications
-        # device = APNSDevice.objects.get(registration_id=apns_token)
-        # # Alert message may only be sent as text.
-        # device.send_message("You've got mail")
-        # # No alerts but with badge.
-        # device.send_message(None, badge=5)
-        # # Silent message with badge and added custom data.
-        # device.send_message(None, badge=1, extra={"foo": "bar"})
-
-
+        # Push notifications
+        if not user == photo_creator:
+            device = APNSDevice.objects.get(user=user)
+            if device:
+                # Alert message may only be sent as text.
+                device.send_message("{} liked your photo".format(user))
+                # No alerts but with badge.
+                # device.send_message(None, badge=1)
+                # Silent message with badge and added custom data.
+                # device.send_message(None, badge=1, extra={"foo": "bar"})
 
     serializer = PhotoSerializer(photo, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)

@@ -54,7 +54,6 @@ def _apns_create_socket(address_tuple):
     sock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1,
                            certfile=certfile, ca_certs=ca_certs)
     sock.connect(address_tuple)
-
     return sock
 
 
