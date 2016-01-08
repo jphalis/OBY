@@ -19,11 +19,11 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'is_listed', 'is_featured', 'owner', 'owner_url', 'title',
-                  'slug', 'image', 'description', 'cost', 'discount_cost',
-                  'promo_code', 'buyers', 'is_useable', 'max_downloads',
-                  'list_date_start', 'list_date_end', 'use_date_start',
-                  'use_date_end',)
+        fields = ('id', 'is_listed', 'is_featured', 'owner', 'owner_url',
+                  'title', 'slug', 'image', 'description', 'cost',
+                  'discount_cost', 'promo_code', 'buyers', 'is_useable',
+                  'max_downloads', 'list_date_start', 'list_date_end',
+                  'use_date_start', 'use_date_end',)
 
     def get_owner_url(self, obj):
         request = self.context['request']

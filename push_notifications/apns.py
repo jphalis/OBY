@@ -46,7 +46,8 @@ def _apns_create_socket(address_tuple):
             f.read()
     except Exception as e:
         raise ImproperlyConfigured(
-            "The APNS certificate file at %r is not readable: %s" % (certfile, e))
+            "The APNS certificate file at %r is not "
+            "readable: %s" % (certfile, e))
 
     ca_certs = SETTINGS.get("APNS_CA_CERTIFICATES")
 
@@ -214,7 +215,6 @@ def apns_send_message(registration_id, alert, **kwargs):
     it won't be included in the notification. You will need to pass None
     to this for silent notifications.
     """
-
     _apns_send(registration_id, alert, **kwargs)
 
 

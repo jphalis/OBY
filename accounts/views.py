@@ -32,15 +32,15 @@ def profile_view(request, username):
     if user.username == "anonymous":
         return render(request, "accounts/anonymous.html", {})
     else:
-        photos = (Photo.objects.select_related('category', 'creator')
-                               .prefetch_related('likers')
-                               .filter(creator=user)[:150])
+        photos = (Photo.objects.filter(creator=user)
+                               .select_related('category', 'creator')
+                               .prefetch_related('likers')[:150])
 
         try:
-            follow = Follower.objects \
-                .select_related('user') \
-                .prefetch_related('following', 'followers') \
-                .get(user=user)
+            follow = (Follower.objects.select_related('user')
+                                      .prefetch_related(
+                                            'following', 'followers')
+                                      .get(user=user))
         except Follower.DoesNotExist:
             follow = None
 
@@ -64,10 +64,9 @@ def followers_thread(request, username):
         user = MyUser.objects.get(username=username)
     except MyUser.DoesNotExist:
         raise Http404
-    followers_set = Follower.objects \
-        .select_related('user') \
-        .prefetch_related('followers') \
-        .filter(user=user.id)
+    followers_set = (Follower.objects.filter(user=user.id)
+                                     .select_related('user')
+                                     .prefetch_related('followers'))
     return render(request, "accounts/followers_thread.html",
                   {'followers_set': followers_set})
     # raise Http404
@@ -79,10 +78,9 @@ def following_thread(request, username):
         user = MyUser.objects.get(username=username)
     except MyUser.DoesNotExist:
         raise Http404
-    following_set = Follower.objects \
-        .select_related('user') \
-        .prefetch_related('following') \
-        .filter(user=user.id)
+    following_set = (Follower.objects.filter(user=user.id)
+                                     .select_related('user')
+                                     .prefetch_related('following'))
     return render(request, "accounts/following_thread.html",
                   {"following_set": following_set})
     # raise Http404
@@ -99,9 +97,8 @@ def follow_ajax(request):
     followed, created = Follower.objects.get_or_create(user=user)
 
     try:
-        user_followed = Follower.objects \
-            .select_related('user') \
-            .get(user=user, followers=follower)
+        user_followed = (Follower.objects.select_related('user')
+                                         .get(user=user, followers=follower))
     except Follower.DoesNotExist:
         user_followed = None
 

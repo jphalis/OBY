@@ -14,15 +14,15 @@ class NotificationQuerySet(models.query.QuerySet):
         return self.filter(recipient=recipient)
 
     def mark_all_read(self, recipient):
-        qs = self.unread().get_user(recipient)
+        qs = self.get_user(recipient).unread()
         qs.update(read=True)
 
     def mark_all_unread(self, recipient):
-        qs = self.read().get_user(recipient)
+        qs = self.get_user(recipient).read()
         qs.update(read=False)
 
     def mark_targetless(self, recipient):
-        qs = self.unread().get_user(recipient)
+        qs = self.get_user(recipient).unread()
         qs_no_target = qs.filter(target_object_id=None)
         if qs_no_target:
             qs_no_target.update(read=True)

@@ -131,9 +131,7 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         photos_self = Photo.objects.own(user)
 
         try:
-            follow = Follower.objects \
-                .select_related('user') \
-                .get(user=user)
+            follow = Follower.objects.select_related('user').get(user=user)
         except Follower.DoesNotExist:
             follow = None
 
@@ -143,9 +141,9 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         else:
             # Add suggested users
             photos_suggested = Photo.objects \
+                .exclude(creator=user) \
                 .select_related("creator", "category") \
-                .prefetch_related('likers') \
-                .exclude(creator=user)[:50]
+                .prefetch_related('likers')[:50]
             photos = chain(photos_self, photos_suggested)
             return photos
 
@@ -402,9 +400,8 @@ class HashtagPhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
     pagination_class = HashtagPagination
 
     def get_queryset(self):
-        queryset = Photo.objects \
-            .select_related('creator', 'category') \
-            .prefetch_related('likers').all()
+        queryset = (Photo.objects.select_related('creator', 'category')
+                                 .prefetch_related('likers'))
         tag = self.request.query_params.get('q', None)
 
         if tag is not None:
@@ -505,8 +502,7 @@ class PhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
     pagination_class = PhotoPagination
     serializer_class = PhotoSerializer
     queryset = (Photo.objects.select_related('creator', 'category')
-                             .prefetch_related('likers')
-                             .all())
+                             .prefetch_related('likers'))
     search_fields = ('description',)
     ordering_fields = ('created', 'modified',)
 
@@ -584,7 +580,7 @@ def reward_redeemed_view(request):
 
 # Need to fix the list_use_date_start
 class ProductCreateAPIView(ModelViewSet):
-    queryset = Product.objects.select_related('owner').all()
+    queryset = Product.objects.select_related('owner')
     serializer_class = ProductCreateSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
@@ -604,8 +600,7 @@ class ProductListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
 
     def get_queryset(self):
         products = (Product.objects.select_related('owner')
-                                   .prefetch_related('buyers')
-                                   .all())
+                                   .prefetch_related('buyers'))
         for product in products:
             listuse_status_check.send(sender=product)
         queryset = products.filter(is_listed=True)
@@ -619,8 +614,7 @@ class ProductDetailAPIView(CacheMixin, DefaultsMixin,
     cache_timeout = 60 * 60 * 24
     permission_classes = (IsAdvertiser, IsOwnerOrReadOnly,)
     queryset = (Product.objects.select_related('owner')
-                               .prefetch_related('buyers')
-                               .all())
+                               .prefetch_related('buyers'))
     serializer_class = ProductSerializer
 
     def get_object(self):

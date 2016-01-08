@@ -15,7 +15,8 @@ class Device(models.Model):
                                    blank=True, null=True)
     date_created = models.DateTimeField(verbose_name=_("Creation date"),
                                         auto_now_add=True, null=True)
-    is_active = models.BooleanField(verbose_name=_("Is active"), default=True,
+    is_active = models.BooleanField(
+        verbose_name=_("Is active"), default=True,
         help_text=_("Inactive devices will not be sent notifications"))
 
     class Meta:
@@ -24,7 +25,8 @@ class Device(models.Model):
     def __str__(self):
         return self.device_type or \
             str(self.device_id or "") or \
-            "%s for %s" % (self.__class__.__name__, self.user or "unknown user")
+            "%s for %s" % (self.__class__.__name__,
+                           self.user or "unknown user")
 
 
 # I P H O N E
@@ -94,7 +96,7 @@ class GCMDevice(Device):
     # http://android-developers.blogspot.co.uk/2011/03/identifying-app-installations.html
     device_id = HexIntegerField(
         verbose_name=_("Device ID"), blank=True, null=True, db_index=True,
-        help_text=_("ANDROID_ID / TelephonyManager.getDeviceId() (always as hex)"))
+        help_text=_("ANDROID_ID / TelephonyManager.getDeviceId()"))
     registration_id = models.TextField(verbose_name=_("Registration ID"))
 
     objects = GCMDeviceManager()

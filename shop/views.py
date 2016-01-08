@@ -26,8 +26,10 @@ def shop(request):
         listuse_status_check.send(sender=product)
 
     products_listed = Product.objects.listed()
-    products_useable = Product.objects.useable().select_related(
-        'owner').prefetch_related('buyers').filter(buyers=request.user)
+    products_useable = (Product.objects.filter(buyers=request.user)
+                                       .useable()
+                                       .select_related('owner')
+                                       .prefetch_related('buyers'))
 
     context = {
         'products_listed': products_listed,

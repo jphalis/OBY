@@ -16,21 +16,21 @@ def upload_location(instance, filename):
 class ProductManager(models.Manager):
     def featured(self, obj):
         return super(ProductManager, self).get_queryset() \
+            .filter(is_featured=True) \
             .select_related('owner') \
-            .prefetch_related('buyers') \
-            .filter(is_featured=True)
+            .prefetch_related('buyers')
 
     def listed(self, obj):
         return super(ProductManager, self).get_queryset() \
+            .filter(is_listed=True) \
             .select_related('owner') \
-            .prefetch_related('buyers') \
-            .filter(is_listed=True)
+            .prefetch_related('buyers')
 
     def useable(self, obj):
         return super(ProductManager, self).get_queryset() \
+            .filter(is_useable=True) \
             .select_related('owner') \
-            .prefetch_related('buyers') \
-            .filter(is_useable=True)
+            .prefetch_related('buyers')
 
 
 class Product(TimeStampedModel):

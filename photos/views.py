@@ -1,22 +1,20 @@
 import random
 
-from django.contrib import messages
+# from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import F
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, HttpResponseRedirect, render
-from django.utils.crypto import get_random_string
+# from django.utils.crypto import get_random_string
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 from django.views.generic.edit import DeleteView
 
 from notifications.signals import notify
-from .forms import PhotoUploadForm
+# from .forms import PhotoUploadForm
 from .models import Category, Photo
 
-
-from push_notifications.models import APNSDevice
 
 # Create your views here.
 
@@ -64,7 +62,7 @@ def like_ajax(request):
 @cache_page(60 * 2)
 def category_detail(request, cat_slug):
     obj = get_object_or_404(Category, slug=cat_slug)
-    categories = Category.objects.most_posts().exclude(id=obj.id)
+    categories = Category.objects.exclude(id=obj.id).most_posts()
     most_liked = Photo.objects.category_detail(obj)[:600]
     photos = list(most_liked)[:250]
     random.shuffle(photos)
@@ -98,18 +96,18 @@ class PhotoDelete(DeleteView):
 
 @login_required
 def photo_upload(request):
-    form = PhotoUploadForm(request.POST or None,
-                           request.FILES or None,
-                           request=request)
+    # form = PhotoUploadForm(request.POST or None,
+    #                        request.FILES or None,
+    #                        request=request)
 
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.creator = request.user
-            obj.slug = get_random_string(length=10)
-            obj.save()
-            messages.success(request,
-                             "You have successfully uploaded your picture!")
-            return HttpResponseRedirect(reverse('home'))
-    return render(request, 'photos/photo_upload.html', {'form': form})
-    # raise Http404
+    # if request.method == 'POST':
+    #     if form.is_valid():
+    #         obj = form.save(commit=False)
+    #         obj.creator = request.user
+    #         obj.slug = get_random_string(length=10)
+    #         obj.save()
+    #         messages.success(request,
+    #                          "You have successfully uploaded your picture!")
+    #         return HttpResponseRedirect(reverse('home'))
+    # return render(request, 'photos/photo_upload.html', {'form': form})
+    raise Http404

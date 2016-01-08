@@ -31,7 +31,8 @@ def make(request):
                                             user=request.user)
     donation_form = DonationForm(request.POST or None, user=request.user)
 
-    if request.method == 'POST' and credit_card_form.is_valid() \
+    if request.method == 'POST' \
+            and credit_card_form.is_valid() \
             and donation_form.is_valid():
         # create charge at Stripe
         charge = credit_card_form.charge_customer(

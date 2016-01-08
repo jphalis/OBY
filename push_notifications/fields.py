@@ -57,7 +57,7 @@ class HexadecimalField(forms.CharField):
         # converts bigint from db to hex before it is displayed in admin
         if value and not isinstance(value, six.string_types) \
             and connection.vendor in ("mysql", "sqlite"):
-            value = _unsigned_integer_to_hex_string(value)
+                value = _unsigned_integer_to_hex_string(value)
         return super(forms.CharField, self).prepare_value(value)
 
 

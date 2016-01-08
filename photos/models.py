@@ -20,55 +20,55 @@ def upload_location(instance, filename):
 class PhotoManager(models.Manager):
     def active(self):
         return super(PhotoManager, self).get_queryset() \
+            .filter(is_active=True) \
             .select_related('category', 'creator') \
-            .prefetch_related('likers') \
-            .filter(is_active=True)
+            .prefetch_related('likers')
 
     def category_detail(self, obj):
         date_from = datetime.now() - timedelta(days=150)
         return super(PhotoManager, self).get_queryset() \
+            .filter(is_active=True, created__gte=date_from, category=obj) \
             .select_related('category', 'creator') \
             .prefetch_related('likers') \
             .annotate(the_count=(Count('likers'))) \
-            .filter(is_active=True, created__gte=date_from, category=obj) \
             .order_by('-the_count')
 
     def following(self, user):
         return super(PhotoManager, self).get_queryset() \
+            .filter(creator__follower__in=user.follower.following.all()) \
             .select_related('category', 'creator') \
-            .prefetch_related('likers') \
-            .filter(creator__follower__in=user.follower.following.all())
+            .prefetch_related('likers')
 
     def most_commented(self):
         return super(PhotoManager, self).get_queryset() \
+            .filter(is_active=True) \
             .select_related('category', 'creator') \
             .prefetch_related('likers') \
             .annotate(the_count=(Count('comment'))) \
-            .filter(is_active=True) \
             .order_by('-the_count')
 
     def most_liked(self):
         return super(PhotoManager, self).get_queryset() \
+            .filter(is_active=True) \
             .select_related('category', 'creator') \
             .prefetch_related('likers') \
             .annotate(the_count=(Count('likers'))) \
-            .filter(is_active=True) \
             .order_by('-the_count')
 
     def most_liked_offset(self):
         date_from = datetime.now() - timedelta(days=150)
         return super(PhotoManager, self).get_queryset() \
+            .filter(is_active=True, created__gte=date_from) \
             .select_related('category', 'creator') \
             .prefetch_related('likers') \
             .annotate(the_count=(Count('likers'))) \
-            .filter(is_active=True, created__gte=date_from) \
             .order_by('-the_count')
 
     def own(self, user):
         return super(PhotoManager, self).get_queryset() \
+            .filter(creator=user) \
             .select_related('category', 'creator') \
-            .prefetch_related('likers') \
-            .filter(creator=user)
+            .prefetch_related('likers')
 
 
 class Photo(HashtagMixin, TimeStampedModel):
@@ -136,9 +136,10 @@ class CategoryManager(models.Manager):
         return self.get_queryset().filter(is_active=True, featured=True)
 
     def most_posts(self):
-        return super(CategoryManager, self).get_queryset().annotate(
-            the_count=(Count('photo'))).filter(
-                is_active=True).order_by('-the_count')
+        return super(CategoryManager, self).get_queryset() \
+            .filter(is_active=True) \
+            .annotate(the_count=(Count('photo'))) \
+            .order_by('-the_count')
 
 
 class Category(TimeStampedModel):

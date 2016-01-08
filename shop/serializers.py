@@ -22,18 +22,9 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = [
-            'owner',
-            'title',
-            'slug',
-            'image',
-            'description',
-            'cost',
-            'discount_cost',
-            'max_downloads',
-            'promo_code',
-            'list_date_start',
-        ]
+        fields = ('owner', 'title', 'slug', 'image', 'description', 'cost',
+                  'discount_cost', 'max_downloads', 'promo_code',
+                  'list_date_start',)
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,27 +35,11 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Product
-        fields = [
-            'id',
-            'listed',
-            'featured',
-            'owner',
-            'owner_url',
-            'title',
-            'slug',
-            'image',
-            'description',
-            'cost',
-            'discount_cost',
-            'promo_code',
-            'buyers',
-            'useable',
-            'max_downloads',
-            'list_date_start',
-            'list_date_end',
-            'use_date_start',
-            'use_date_end',
-        ]
+        fields = ('id', 'listed', 'featured', 'owner', 'owner_url', 'title',
+                  'slug', 'image', 'description', 'cost', 'discount_cost',
+                  'promo_code', 'buyers', 'useable', 'max_downloads',
+                  'list_date_start', 'list_date_end',
+                  'use_date_start', 'use_date_end',)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
