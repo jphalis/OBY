@@ -181,7 +181,7 @@ def follow_create_api(request, user_pk):
         if device:
             # Alert message may only be sent as text.
             device.send_message(
-                "{} is now supporting you".format(request.user))
+                "{} is now supporting you.".format(request.user))
             # No alerts but with badge.
             # device.send_message(None, badge=1)
             # Silent message with badge and added custom data.
@@ -342,7 +342,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                     if device:
                         # Alert message may only be sent as text.
                         device.send_message(
-                            "{} commented on your photo".format(user))
+                            "{} commented on your photo.".format(user))
                         # No alerts but with badge.
                         # device.send_message(None, badge=1)
                         # Silent message with badge and added custom data.
@@ -471,7 +471,7 @@ def like_create_api(request, photo_pk):
             device = APNSDevice.objects.get(user=user)
             if device:
                 # Alert message may only be sent as text.
-                device.send_message("{} liked your photo".format(user))
+                device.send_message("{} liked your photo.".format(user))
                 # No alerts but with badge.
                 # device.send_message(None, badge=1)
                 # Silent message with badge and added custom data.
