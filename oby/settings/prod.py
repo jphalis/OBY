@@ -153,11 +153,11 @@ AWS_FILE_EXPIRE = 200
 AWS_PRELOAD_METADATA = True
 # AWS_QUERYSTRING_AUTH = True
 AWS_S3_SECURE_URLS = True
-date_two_months_later = datetime.date.today() + datetime.timedelta(2 * 365 / 12)
-expires = date_two_months_later.strftime('%A, %d %B %Y 20:00:00 EST')
+date_three_months_later = datetime.date.today() + datetime.timedelta(3 * 365 / 12)
+expires = date_three_months_later.strftime('%A, %d %B %Y 20:00:00 EST')
 AWS_HEADERS = {
     'Expires': expires,
-    'Cache-Control': 'max-age=86400',
+    'Cache-Control': 'max-age=31536000',  # 365 days
 }
 
 
