@@ -16,10 +16,10 @@ server {
     client_header_buffer_size 1k;
     root %(PROJECT_PATH)s;
 
-    # location /static/ {
-    #     root %(PROJECT_PATH)s/static/;
-    #     expires 3h;
-    # }
+    location /static/ {
+        root %(PROJECT_PATH)s/static/;
+        expires 3h;
+    }
 
     location / {
         proxy_redirect off;
