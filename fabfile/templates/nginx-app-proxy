@@ -17,7 +17,7 @@ server {
     root %(PROJECT_PATH)s;
 
     location /static/ {
-        alias /home/ubuntu/obystudio.com/oby/static/;
+        alias /home/ubuntu/obystudio.com/oby/static/static/;
         expires 3h;
         autoindex off;
     }
