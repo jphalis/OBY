@@ -1,6 +1,10 @@
+import StringIO
+
 from datetime import datetime, timedelta
+from PIL import Image
 
 from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Count
@@ -96,6 +100,22 @@ class Photo(HashtagMixin, TimeStampedModel):
 
     def __unicode__(self):
         return u"{}".format(self.slug)
+
+    def save(self, *args, **kwargs):
+        if self.photo:
+            img = Image.open(StringIO.StringIO(self.photo.read()))
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            # img.thumbnail(
+            #     (self.photo.width/1.5, self.photo.height/1.5), Image.ANTIALIAS)
+            output = StringIO.StringIO()
+            img.save(output, format='JPEG', quality=70)
+            output.seek(0)
+            self.photo = InMemoryUploadedFile(
+                output, 'ImageField',
+                '{}.jpg'.format(self.photo.name.split('.')[0]),
+                'image/jpeg', output.len, None)
+        super(Photo, self).save(*args, **kwargs)
 
     def get_comments_all(self):
         return reverse('comments:comments_all',

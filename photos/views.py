@@ -1,6 +1,6 @@
 import random
 
-# from django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import F
@@ -84,6 +84,7 @@ def category_detail(request, cat_slug):
 class PhotoDelete(DeleteView):
     model = Photo
     success_url = reverse_lazy('home')
+    success_message = "Your photo was deleted"
     template_name = 'photos/photo_delete.html'
 
     def get_object(self):
