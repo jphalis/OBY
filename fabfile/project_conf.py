@@ -87,7 +87,6 @@ ec2_secgroups = ['ObySecurityGroup']
 ec2_instancetype = 't2.micro'
 
 # Existing instances - add the public dns of your instances here
-# when you have spawned them
 # If you are using an Elastic IP, add that instead
 fabconf['EC2_INSTANCES'] = ["ec2-54-86-53-126.compute-1.amazonaws.com"]
 
