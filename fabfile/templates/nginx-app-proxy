@@ -16,11 +16,11 @@ server {
     client_header_buffer_size 1k;
     root %(PROJECT_PATH)s;
 
-    location /static/ {
-        alias /home/ubuntu/obystudio.com/oby/static/static/;
-        expires 3h;
-        autoindex off;
-    }
+    #location /static/ {
+    #    alias /home/ubuntu/obystudio.com/oby/static/static/;
+    #    expires 3h;
+    #    autoindex off;
+    #}
 
     location / {
         proxy_redirect off;
@@ -29,8 +29,8 @@ server {
         proxy_set_header  X-Real-IP  $remote_addr;
         proxy_set_header Host $http_host;
 
-        proxy_buffers 8 24k;
-        proxy_buffer_size 2k;
+        #proxy_buffers 8 24k;
+        #proxy_buffer_size 2k;
 
         # forces https request
         # if ($http_x_forwarded_proto != 'https') {
