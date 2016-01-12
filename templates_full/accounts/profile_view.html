@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user }}{% endblock title %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("img.lazy").lazyload({threshold: 150});
+        });
+    </script>
+{% endblock js %}
+
+{% block photo_adjustment %}
+    <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
+{% endblock photo_adjustment %}
+
+{% block content %}
+    <!-- PROFILE INFORMATION -->
+    <div class="col-sm-12 account-home-profile">
+        <div class="col-sm-12">
+            <img class="account-home-profile-pic" src="{{ user.default_profile_picture }}" />
+        </div>
+        <div class="col-sm-6 col-sm-offset-3">
+            <h2 class="account-home-profile-name">
+                {{ user.full_name }} <small>{{ user.username }}</small>
+            </h2>
+            <h5 class="account-home-profile-description">{{ user.bio }}</h5>
+            <h5 class="account-home-profile-description">
+                <a href="http://{{ user.website }}">{{ user.website }}</a>
+            </h5>
+            <div class="account-home-stats">
+                <div class="account-home-stat">
+                    Supporters: 
+                        <span id="followers_count"><b>
+                            {% if follow %}
+                                <a href="{{ follow.get_followers_url }}">{{ follow.followers.count }}</a>
+                            {% else %}
+                                0
+                            {% endif %}
+                        </b></span>
+                </div>
+                <div class="account-home-stat">
+                    Supporting: 
+                        <b>
+                            {% if follow %}
+                                <a href="{{ follow.get_following_url }}">{{ follow.following.count }}</a>
+                            {% else %}
+                                0
+                            {% endif %}
+                        </b>
+                </div>
+                <div class="account-home-stat">
+                    Posts: <b>{{ photos.count }}</b>
+                </div>
+            </div>
+            {% if request.user == user %}
+                <a href="{% url 'accounts:account_settings' %}" class="submit-btn go-btn">Edit Profile</a>
+            {% else %}
+                <input id="follow_btn" 
+                       class="submit-btn{% if request.user.username in follow.get_followers_usernames %} following-btn{% else %} go-btn{% endif %}" 
+                       name="{{ user.id }}" 
+                       value="{% if request.user.username in follow.get_followers_usernames %}Supporting{% else %}Support{% endif %}" 
+                       type="button" />
+            {% endif %}
+        </div>
+    </div>
+    <!-- UPLOADED PICTURES -->
+    <div class="ponder-items">
+        {% for photo in photos %}
+            <div class="ponder-item">
+                {% if request.user == photo.creator %}
+                    <button type="button" class="close">
+                        <span aria-hidden="true">
+                            <a href="{{ photo.get_delete_url }}" style="text-decoration: none;">&times;</a>
+                        </span>
+                    </button>
+                {% endif %}
+                <img src="{{ photo.get_photo_url }}" class='lazy img-responsive'>
+                <div class="photo-item-interactions">
+                    <div class="photo-item-interaction">
+                        <label class="like_count" style="cursor: default;">
+                            {% if photo.likers %}{{ photo.like_count }}{% else %}0{% endif %} likes
+                        </label>
+                        <label style="cursor: default;">
+                            {% if photo.comment_set %}{{ photo.comment_set.count }}{% else %}0{% endif %} comments
+                        </label>
+                    </div>
+                </div>
+                <div class="photo-item-interactions">
+                    <div class="photo-item-interaction">
+                        <input class="like_btn{% if request.user.username in photo.get_likers_usernames %} liked{% endif %}"
+                            data-photo="{{ photo.pk }}"
+                            value="{% if request.user.username in photo.get_likers_usernames %}Liked{% else %}Like{% endif %}"
+                            type="button" />
+                        <input type="button" value="Comment" onclick="window.location='{{ photo.get_comments_all }}'" style="margin-left: 15px;" />
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+<script>
+    {% block jquery %}
+        $('#follow_btn').click(function(e){
+            e.preventDefault();
+            var $follow_btn = $(this);
+            if ($follow_btn.attr("class") == "submit-btn following-btn"){
+                $follow_btn.val("Support");
+                $follow_btn.removeClass("following-btn").addClass("go-btn");
+            } else{
+                $follow_btn.val("Supporting");
+                $follow_btn.removeClass("go-btn").addClass("following-btn");
+            }
+            $.ajax({
+                type: "POST",
+                url: "{% url 'follow_ajax' %}",
+                data: {
+                    "user_id": $(this).attr("name"),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.viewer_has_followed) {
+                        $('#followers_count').html(data.followers_count);
+                    } else {
+                        $('#followers_count').html(data.followers_count);
+                    }
+                },
+                error: function (rs, e) {
+                    alert('Sorry, there was an error with your request. Please try again later.');
+                }
+            });
+        });
+        $('.like_btn').click(function(e){
+            e.preventDefault();
+            var $like_btn = $(this);
+            var $target = $(e.target);
+            if ($like_btn.attr("class") == "like_btn liked"){
+                $like_btn.val("Like");
+                $like_btn.removeClass("liked");
+            } else{
+                $like_btn.val("Liked");
+                $like_btn.addClass("liked");
+            }
+            $.ajax({
+                type: "POST",
+                url: "{% url 'photos:like_ajax' %}",
+                data: {
+                    "photo_pk": $(this).attr("data-photo"),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.viewer_has_liked) {
+                        $target.parents('.ponder-item:first').find('.like_count').html(data.like_count + ' likes');
+                    } else {
+                        $target.parents('.ponder-item:first').find('.like_count').html(data.like_count + ' likes');
+                    }
+                },
+                error: function (rs, e) {
+                    alert('Sorry, there was an error with your request. Please try again later.');
+                }
+            });
+        });
+    {% endblock jquery %}
+</script>

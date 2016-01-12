@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "simple_base.html" %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
@@ -11,14 +11,40 @@
             $("img.lazy").lazyload({threshold: 150});
         });
     </script>
+    <script src="{% static 'js/typeahead.bundle.min.js' %}" type="text/javascript"></script>
 {% endblock js %}
+
+<style>
+    {% block style %}
+        body{
+            background: #24282f;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+    {% endblock style%}
+</style>
 
 {% block photo_adjustment %}
     <script type="text/javascript" src="{% static 'js/photo-auto-adjustment.min.js' %}"></script>
 {% endblock photo_adjustment %}
 
 {% block content %}
-    <!-- PROFILE INFORMATION -->
+    <!-- SEARCH -->
+    <div class="search-container">
+        <form role="search" action="/search/">
+            <div class="custom-search-input">
+                <div id="remote" class="input-group col-md-12 twitter-typeahead">
+                    <input type="text" class="form-control input-lg typeahead tt-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-lg" type="submit">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- PROFILE INFO -->
     <div class="col-sm-12 account-home-profile">
         <div class="col-sm-12">
             <img class="account-home-profile-pic" src="{{ user.default_profile_picture }}" />
@@ -27,37 +53,54 @@
             <h2 class="account-home-profile-name">
                 {{ user.full_name }} <small>{{ user.username }}</small>
             </h2>
+        </div>
+        <div class="col-sm-8 col-sm-offset-2">
             <h5 class="account-home-profile-description">{{ user.bio }}</h5>
             <h5 class="account-home-profile-description">
                 <a href="http://{{ user.website }}">{{ user.website }}</a>
             </h5>
+        </div>
+        <div class="col-sm-6 col-sm-offset-3">
             <div class="account-home-stats">
                 <div class="account-home-stat">
-                    Supporters: 
-                        <span id="followers_count"><b>
-                            {% if follow %}
-                                <a href="{{ follow.get_followers_url }}">{{ follow.followers.count }}</a>
-                            {% else %}
-                                0
-                            {% endif %}
-                        </b></span>
+                    <b>
+                        {% if follow %}
+                            {{ follow.get_following_count }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </b>
                 </div>
                 <div class="account-home-stat">
-                    Supporting: 
-                        <b>
-                            {% if follow %}
-                                <a href="{{ follow.get_following_url }}">{{ follow.following.count }}</a>
-                            {% else %}
-                                0
-                            {% endif %}
-                        </b>
+                    <b>
+                        {% if follow %}
+                            {{ follow.get_followers_count }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </b>
                 </div>
                 <div class="account-home-stat">
-                    Posts: <b>{{ photos.count }}</b>
+                    <b>
+                        {{ photos.count }}
+                    </b>
                 </div>
             </div>
+
+            <div class="account-home-stats" style="margin-top: -45px;">
+                <div class="account-home-stat">
+                    Supporting
+                </div>
+                <div class="account-home-stat">
+                    Supporters
+                </div>
+                <div class="account-home-stat">
+                    Creations
+                </div>
+            </div>
+
             {% if request.user == user %}
-                <a href="{% url 'accounts:account_settings' %}" class="submit-btn go-btn">Edit Profile</a>
+                <a href="{% url 'accounts:account_settings' %}" class="submit-btn special-btn">Edit Profile</a>
             {% else %}
                 <input id="follow_btn" 
                        class="submit-btn{% if request.user.username in follow.get_followers_usernames %} following-btn{% else %} go-btn{% endif %}" 
@@ -67,7 +110,7 @@
             {% endif %}
         </div>
     </div>
-    <!-- UPLOADED PICTURES -->
+    <!-- PICTURES -->
     <div class="ponder-items">
         {% for photo in photos %}
             <div class="ponder-item">
@@ -78,24 +121,16 @@
                         </span>
                     </button>
                 {% endif %}
+                <small>{{ photo.description }}</small>
                 <img src="{{ photo.get_photo_url }}" class='lazy img-responsive'>
                 <div class="photo-item-interactions">
                     <div class="photo-item-interaction">
                         <label class="like_count" style="cursor: default;">
-                            {% if photo.likers %}{{ photo.like_count }}{% else %}0{% endif %} likes
+                            {{ photo.like_count }} likes
                         </label>
                         <label style="cursor: default;">
-                            {% if photo.comment_set %}{{ photo.comment_set.count }}{% else %}0{% endif %} comments
+                            {{ photo.comment_count }} comments
                         </label>
-                    </div>
-                </div>
-                <div class="photo-item-interactions">
-                    <div class="photo-item-interaction">
-                        <input class="like_btn{% if request.user.username in photo.get_likers_usernames %} liked{% endif %}"
-                            data-photo="{{ photo.pk }}"
-                            value="{% if request.user.username in photo.get_likers_usernames %}Liked{% else %}Like{% endif %}"
-                            type="button" />
-                        <input type="button" value="Comment" onclick="window.location='{{ photo.get_comments_all }}'" style="margin-left: 15px;" />
                     </div>
                 </div>
             </div>
@@ -105,6 +140,24 @@
 
 <script>
     {% block jquery %}
+        var usersDisplay = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: 6,
+            remote: {
+                url: "{% url 'search_ajax' %}",
+                replace: function(url, query) {
+                    return url + "?q=" + query;
+                }
+            }
+        });
+        $('#remote .typeahead').typeahead({
+            minLength: 1,
+            highlight: true},
+            {name: 'users-display',
+            display: 'username',
+            source: usersDisplay,
+        });
         $('#follow_btn').click(function(e){
             e.preventDefault();
             var $follow_btn = $(this);
@@ -128,37 +181,6 @@
                         $('#followers_count').html(data.followers_count);
                     } else {
                         $('#followers_count').html(data.followers_count);
-                    }
-                },
-                error: function (rs, e) {
-                    alert('Sorry, there was an error with your request. Please try again later.');
-                }
-            });
-        });
-        $('.like_btn').click(function(e){
-            e.preventDefault();
-            var $like_btn = $(this);
-            var $target = $(e.target);
-            if ($like_btn.attr("class") == "like_btn liked"){
-                $like_btn.val("Like");
-                $like_btn.removeClass("liked");
-            } else{
-                $like_btn.val("Liked");
-                $like_btn.addClass("liked");
-            }
-            $.ajax({
-                type: "POST",
-                url: "{% url 'photos:like_ajax' %}",
-                data: {
-                    "photo_pk": $(this).attr("data-photo"),
-                    csrfmiddlewaretoken: "{{ csrf_token }}",
-                },
-                dataType: "json",
-                success: function(data) {
-                    if (data.viewer_has_liked) {
-                        $target.parents('.ponder-item:first').find('.like_count').html(data.like_count + ' likes');
-                    } else {
-                        $target.parents('.ponder-item:first').find('.like_count').html(data.like_count + ' likes');
                     }
                 },
                 error: function (rs, e) {

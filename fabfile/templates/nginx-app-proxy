@@ -36,6 +36,6 @@ server {
 
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root %(PROJECT_PATH)s/templates_simple/;
+        root %(PROJECT_PATH)s/templates/;
     }
 }

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}OBY / Search{% endblock title %}
+
+{% block js %}
+    <script src="{% static 'js/typeahead.bundle.min.js' %}" type="text/javascript"></script>
+{% endblock js %}
+
+{% block content %}
+    <div class="search-container">
+        <form role="search" action="/search/">
+            <div class="custom-search-input">
+                <div id="remote" class="input-group col-md-12 twitter-typeahead">
+                    <input type="text" class="form-control input-lg typeahead tt-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-lg" type="submit">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <h3 style="margin: 60px 0 30px 0;">Searched for: {{ query }}</h3>
+    <table class="table">
+        {% if object_list %}
+            <tbody>
+                {% for object in object_list %}
+                    <tr>
+                        <td>
+                            <a href="{{ object.get_profile_view }}">
+                                <img src='{{ object.default_profile_picture }}' class="img-rounded" style='height: 32px; width: 32px; margin-right: 10px;'>
+                                <b>{{ object.get_full_name }} </b>
+                                <small>{{ object.username }}</small>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <h5 style="margin-top: 30px;">We couldn't find what you are looking for. Please try something else! (:</h5>
+        {% endif %}
+    </table>
+{% endblock content %}
+
+<script>
+    {% block jquery %}
+        var usersDisplay = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: 6,
+            remote: {
+                url: "{% url 'search_ajax' %}",
+                replace: function(url, query) {
+                    return url + "?q=" + query;
+                }
+            }
+        });
+        $('#remote .typeahead').typeahead({
+            minLength: 1,
+            highlight: true},
+            {name: 'users-display',
+            display: 'username',
+            source: usersDisplay,
+        });
+    {% endblock jquery %}
+</script>

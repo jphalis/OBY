@@ -149,10 +149,7 @@ def manage(command):
     _virtualenv("python %(PROJECT_PATH)s/manage.py " + command)
 
 
-# -----------------------------------------------------------------------------
-# SUPPORT FUNCTIONS
-# -----------------------------------------------------------------------------
-
+# S U P P O R T  F U N C T I O N S
 def _run_task(task, start_message, finished_message):
     """
     Tasks a task from tasks.py and runs through the commands on the server

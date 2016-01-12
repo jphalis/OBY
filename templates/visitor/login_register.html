@@ -1,4 +1,4 @@
-{% extends "visitor_base.html" %}
+{% extends "simple_base.html" %}
 {% load crispy_forms_tags %}
 
 {% block title %}OBY / Authenticate{% endblock title %}
@@ -6,7 +6,11 @@
 <style>
     {% block style %}
         body{
-            background: #F9615B;
+            background: #F9615B; /* For browsers that do not support gradients */
+            background: -webkit-linear-gradient(#87080c, #b44d3e); /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(#87080c, #b44d3e); /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient(#87080c, #b44d3e); /* For Firefox 3.6 to 15 */
+            background: linear-gradient(#87080c, #b44d3e); /* Standard syntax */
         }
     {% endblock style %}
 </style>
@@ -57,7 +61,7 @@
             {% if title == "Register" %}
                 <a href="{% url 'login' %}" class="visitor-footer-item">Sign in</a>
             {% endif %}
-            <p class="visitor-footer-item">&copy; 2015 OBY Studio</p>
+            <p class="visitor-footer-item">&copy; 2016 OBY</p>
         </div>
     </div>
 {% endblock content %}

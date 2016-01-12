@@ -11,7 +11,7 @@ __pycache__/
 dev.py
 sensitive_data.py
 static/media/
-static_simple/media/
+static_full/media/
 .DS_Store
 ./fabfile/
 hosts.json
