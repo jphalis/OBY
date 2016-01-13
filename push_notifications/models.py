@@ -50,7 +50,7 @@ class APNSDevice(Device):
         verbose_name=_("Device ID"), blank=True, null=True, db_index=True,
         help_text="UDID / UIDevice.identifierForVendor()")
     registration_id = models.CharField(verbose_name=_("Registration ID"),
-                                       max_length=64, unique=True)
+                                       max_length=200, unique=True)
 
     objects = APNSDeviceManager()
 
