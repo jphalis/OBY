@@ -1,5 +1,5 @@
 '''
-A set of tasks to manage your AWS Django deployment.
+A set of tasks to manage AWS Django deployment.
 
 Tasks include:
     - configure_instance:
@@ -29,8 +29,8 @@ Tasks include:
         supervisor, use this if you or templates/supervisord.conf
 '''
 
-# Spawns a new EC2 instance (as definied in djangofab_conf.py) and return's
-# it's public dns. This takes around 8 minutes to complete.
+# Spawns a new EC2 instance (as definied in djangofab_conf.py)
+# and return's it's public dns.
 configure_instance = [
 
   # First command as regular user
@@ -167,7 +167,6 @@ configure_instance = [
   {"action": "virtualenv",
    "params": "python %(PROJECT_PATH)s/manage.py migrate"},
 
-
   # Setup supervisor
   {"action": "run",
    "params": "echo_supervisord_conf > /home/%(SERVER_USERNAME)s/supervisord.conf",
@@ -188,7 +187,15 @@ configure_instance = [
   {"action": "sudo",
    "params": "mv /home/%(SERVER_USERNAME)s/supervisord-init /etc/init.d/supervisord"},
   {"action": "sudo", "params": "chmod +x /etc/init.d/supervisord"},
-  {"action": "sudo", "params": "update-rc.d supervisord defaults"}
+  {"action": "sudo", "params": "update-rc.d supervisord defaults"},
+
+  # sudo apt-get update
+  {"action": "sudo", "params": "apt-get update",
+   "message": "Updating apt-get"},
+
+   # sudo apt-get upgrade
+  {"action": "sudo", "params": "apt-get upgrade",
+   "message": "Upgrading apt-get"},
 ]
 
 # Updates the python packages on the server to match those found in
@@ -209,9 +216,11 @@ deploy = [
   # Pull the latest version from the bitbucket repo
   {"action": "run", "params": "cd %(PROJECT_PATH)s && git pull"},
 
-  # Update the database
+  # Update staticfiles
   {"action": "virtualenv",
    "params": "python %(PROJECT_PATH)s/manage.py collectstatic --noinput"},
+
+  # Update the database
   {"action": "virtualenv",
    "params": "python %(PROJECT_PATH)s/manage.py makemigrations"},
   {"action": "virtualenv",
@@ -237,8 +246,8 @@ reload_gunicorn = [
 ]
 
 # Pushes the nginx config files to the servers and restarts the nginx,
-# use this if you have made changes to templates/nginx-app-proxy or
-# templates/nginx.conf
+# use this if you have made changes to
+# templates/nginx-app-proxy or templates/nginx.conf
 reload_nginx = [
 
   # stop old nginx process
