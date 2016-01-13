@@ -213,7 +213,7 @@ def password_reset(request, from_email=settings.EMAIL_FROM,
                    token_generator=default_token_generator,
                    html_email_template_name='accounts/settings/password_reset_email.html'):
     if request.user.is_authenticated():
-        return redirect("home")
+        return redirect('home')
     else:
         if request.method == "POST":
             form = password_reset_form(request.POST)

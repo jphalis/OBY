@@ -30,14 +30,14 @@ def like_ajax(request):
     if user in photo.likers.all():
         photo.likers.remove(user)
         viewer_has_liked = False
-        if not user == photo_creator:
+        if user != photo_creator:
             user.available_points = F('available_points') - 1
             user.total_points = F('total_points') - 1
             user.save()
     else:
         photo.likers.add(user)
         viewer_has_liked = True
-        if not user == photo_creator:
+        if user != photo_creator:
             user.available_points = F('available_points') + 1
             user.total_points = F('total_points') + 1
             user.save()

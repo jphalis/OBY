@@ -1,7 +1,8 @@
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage, send_mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import HttpResponseRedirect, render
+from django.utils.html import escape
 from django.views.decorators.cache import cache_page
 
 from .forms import BusinessContactForm
@@ -14,11 +15,12 @@ def business_inquiry(request):
     form = BusinessContactForm(request.POST or None)
 
     if form.is_valid():
-        form_name = form.cleaned_data['name']
-        form_organization = form.cleaned_data['organization']
-        form_email = form.cleaned_data['email']
-        form_coupons = form.cleaned_data['coupons']
-        form_expectations = form.cleaned_data['expectations']
+        form_name = escape(form.cleaned_data['name'])
+        form_organization = escape(form.cleaned_data['organization'])
+        form_email = escape(form.cleaned_data['email'])
+        form_coupons = escape(form.cleaned_data['coupons'])
+        form_expectations = escape(form.cleaned_data['expectations'])
+
         subject = 'Business Inquiry Form'
         from_email = 'partnerships@obystudio.com'
         to_email = ['partnerships@obystudio.com']
@@ -42,3 +44,16 @@ def business_inquiry(request):
                          We have received it, and will be in touch soon!")
         return HttpResponseRedirect(reverse("home"))
     return render(request, 'company/business_inquiry.html', {'form': form})
+
+
+#         email = EmailMessage(
+#             subject,
+#             contact_message,
+#             from_email,
+#             to_email,
+#             headers={'Reply-To': form_email}
+#         )
+#         email = EmailMessage('Hello', 'Body goes here', 'from@example.com',
+#             ['to1@example.com', 'to2@example.com'], ['bcc@example.com'],
+#             reply_to=['another@example.com'], headers={'Message-ID': 'foo'})
+#         email.send()

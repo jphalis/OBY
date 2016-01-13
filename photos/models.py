@@ -104,12 +104,17 @@ class Photo(HashtagMixin, TimeStampedModel):
     def save(self, *args, **kwargs):
         if self.photo:
             img = Image.open(StringIO.StringIO(self.photo.read()))
+
             if img.mode != 'RGB':
                 img = img.convert('RGB')
-            # img.thumbnail(
-            #     (self.photo.width/1.5, self.photo.height/1.5), Image.ANTIALIAS)
+
+            img_width, img_height = img.size
+            max_size = (2732, 2048)
+            if img_width > 2048:
+                img.thumbnail(max_size, Image.ANTIALIAS)
+
             output = StringIO.StringIO()
-            img.save(output, format='JPEG', quality=70)
+            img.save(output, format='JPEG', quality=69)
             output.seek(0)
             self.photo = InMemoryUploadedFile(
                 output, 'ImageField',

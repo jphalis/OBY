@@ -337,7 +337,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                 )
 
                 # Push notifications
-                if not user == photo_creator:
+                if user != photo_creator:
                     device = APNSDevice.objects.get(user=photo_creator)
                     if device:
                         # Alert message may only be sent as text.
@@ -347,7 +347,7 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                         # device.send_message(None, badge=1)
                         # Silent message with badge and added custom data.
                         # device.send_message(None, badge=1, extra={"foo": "bar"})
-            if not user == photo_creator:
+            if user != photo_creator:
                 user.available_points = F('available_points') + 1
                 user.total_points = F('total_points') + 1
                 user.save()
@@ -448,13 +448,13 @@ def like_create_api(request, photo_pk):
 
     if user in photo.likers.all():
         photo.likers.remove(user)
-        if not user == photo_creator:
+        if user != photo_creator:
             user.available_points = F('available_points') - 1
             user.total_points = F('total_points') - 1
             user.save()
     else:
         photo.likers.add(user)
-        if not user == photo_creator:
+        if user != photo_creator:
             user.available_points = F('available_points') + 1
             user.total_points = F('total_points') + 1
             user.save()
@@ -467,7 +467,7 @@ def like_create_api(request, photo_pk):
         )
 
         # Push notifications
-        if not user == photo_creator:
+        if user != photo_creator:
             device = APNSDevice.objects.get(user=user)
             if device:
                 # Alert message may only be sent as text.
