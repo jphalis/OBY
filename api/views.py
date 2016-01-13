@@ -9,6 +9,7 @@ from django.utils.text import slugify
 
 from rest_framework import generics, mixins, permissions, status
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response as RestResponse
 from rest_framework.reverse import reverse as api_reverse
@@ -523,7 +524,14 @@ class PhotoDetailAPIView(CacheMixin,
         return obj
 
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        cat_slug = self.kwargs["cat_slug"]
+        photo_slug = self.kwargs["photo_slug"]
+        category = get_object_or_404(Category, slug=cat_slug)
+        obj = get_object_or_404(Photo, category=category, slug=photo_slug)
+        if request.user == obj.creator:
+            return self.destroy(request, *args, **kwargs)
+        raise PermissionDenied(
+            {"message": "You don't have permission to access this"})
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
