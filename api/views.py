@@ -2,6 +2,7 @@
 from itertools import chain
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db.models import F
 from django.shortcuts import get_object_or_404, Http404
 from django.utils.crypto import get_random_string
@@ -19,6 +20,7 @@ from rest_framework.viewsets import ModelViewSet
 from accounts.models import Follower, MyUser
 from comments.models import Comment
 from core.mixins import AdminRequiredMixin, CacheMixin
+from flag.models import Flag
 from hashtags.models import Hashtag
 from notifications.models import Notification
 from notifications.signals import notify
@@ -141,10 +143,7 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
             return (photos_self | photos_following).distinct()[:250]
         else:
             # Add suggested users
-            photos_suggested = Photo.objects \
-                .exclude(creator=user) \
-                .select_related("creator", "category") \
-                .prefetch_related('likers')[:50]
+            photos_suggested = Photo.objects.suggested(user)[:50]
             photos = chain(photos_self, photos_suggested)
             return photos
 
@@ -153,7 +152,7 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 @api_view(['POST'])
 def follow_create_api(request, user_pk):
     viewing_user = request.user
-    follower, created = Follower.objects.get_or_create(user=request.user)
+    follower, created = Follower.objects.get_or_create(user=viewing_user)
     user = get_object_or_404(MyUser, pk=user_pk)
     followed, created = Follower.objects.get_or_create(user=user)
 
@@ -182,11 +181,55 @@ def follow_create_api(request, user_pk):
         if device:
             # Alert message may only be sent as text.
             device.send_message(
-                "{} is now supporting you.".format(request.user))
+                "{} is now supporting you.".format(viewing_user))
             # No alerts but with badge.
             # device.send_message(None, badge=1)
             # Silent message with badge and added custom data.
             # device.send_message(None, badge=1, extra={"foo": "bar"})
+
+        if user in viewing_user.blocking.all():
+            viewing_user.blocking.remove(user)
+    serializer = FollowerSerializer(followed, context={'request': request})
+    return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def block_user_api(request, user_pk):
+    viewing_user = request.user
+    user_to_block = get_object_or_404(MyUser, pk=user_pk)
+    follower, created = Follower.objects.get_or_create(user=viewing_user)
+    followed, created = Follower.objects.get_or_create(user=user_to_block)
+
+    # Does the viewing_user follow the user_to_block?
+    # If so, remove them
+    try:
+        user_to_block_followed = (Follower.objects.select_related('user')
+                                          .get(user=user_to_block,
+                                               followers=follower))
+    except Follower.DoesNotExist:
+        user_to_block_followed = None
+
+    if user_to_block_followed:
+        followed.followers.remove(follower)
+
+    # Does the user_to_block follow the viewing_user?
+    # If so, remove them
+    try:
+        viewer_followed = (Follower.objects.select_related('user')
+                                           .get(user=viewing_user,
+                                                followers=followed))
+    except Follower.DoesNotExist:
+        viewer_followed = None
+
+    if viewer_followed:
+        follower.followers.remove(followed)
+
+    # Is the user_to_block already in blocked users?
+    if user_to_block in viewing_user.blocking.all():
+        viewing_user.blocking.remove(user_to_block)
+    else:
+        viewing_user.blocking.add(user_to_block)
+
     serializer = FollowerSerializer(followed, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -207,7 +250,7 @@ class MyUserDetailAPIView(CacheMixin,
                           generics.RetrieveAPIView,
                           mixins.DestroyModelMixin,
                           mixins.UpdateModelMixin):
-    cache_timeout = 60 * 7
+    cache_timeout = 60 * 5
     permission_classes = (
         permissions.IsAuthenticated,
         MyUserIsOwnerOrReadOnly,
@@ -218,6 +261,9 @@ class MyUserDetailAPIView(CacheMixin,
     def get_object(self):
         username = self.kwargs["username"]
         obj = get_object_or_404(MyUser, username=username)
+        if self.request.user in obj.blocking.all():
+            raise PermissionDenied(
+                "You do not have permission to view that profile.")
         return obj
 
     def delete(self, request, *args, **kwargs):
@@ -374,6 +420,28 @@ class CommentDetailAPIView(CacheMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+# F L A G S
+@api_view(['POST'])
+def flag_create_api(request, photo_pk):
+    photo = get_object_or_404(Photo, pk=photo_pk)
+    photo_creator = photo.creator
+
+    flagged, created = Flag.objects.get_or_create(photo=photo,
+                                                  creator=request.user)
+    flagged.flag_count = F('flag_count') + 1
+    flagged.save()
+
+    photo_creator.times_flagged = F('times_flagged') + 1
+    photo_creator.save()
+
+    send_mail('FLAGGED ITEM',
+              'There is a new flagged item with the id: {}'.format(flagged.id),
+              settings.EMAIL_FROM, ['team@obystudio.com'], fail_silently=False)
+
+    serializer = PhotoSerializer(photo, context={'request': request})
+    return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # H A S H T A G S

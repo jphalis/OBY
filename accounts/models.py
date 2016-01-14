@@ -77,6 +77,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(_('verified'), default=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    times_flagged = models.PositiveIntegerField(default=0)
     stripe_customer_id = models.CharField(max_length=30, editable=False,
                                           blank=True)
     available_points = models.IntegerField(default=0)
@@ -84,6 +85,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     # points_at_last_check = models.IntegerField(default=0)
     # last_point_check = models.DateTimeField()
     # creations_allowed = models.IntegerField(default=0)
+    blocking = models.ManyToManyField('self', related_name='blocked_by',
+                                      symmetrical=False)
 
     objects = MyUserManager()
 

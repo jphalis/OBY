@@ -41,6 +41,8 @@ urlpatterns = [
         name='user_account_detail_api'),
     url(r'^support/(?P<user_pk>\d+)/$', views.follow_create_api,
         name='follow_create_api'),
+    url(r'^block/(?P<user_pk>\d+)/$', views.block_user_api,
+        name='block_user_api'),
 
     # A U T H E N T I C A T I O N
     url(r'^password/reset/$', PasswordResetView.as_view(),
@@ -56,6 +58,10 @@ urlpatterns = [
         name='comment_create_api'),
     url(r'^comments/(?P<id>\d+)/$', CommentDetailAPIView.as_view(),
         name='comment_detail_api'),
+
+    # F L A G S
+    url(r'^flag/create/(?P<photo_pk>\d+)/$', views.flag_create_api,
+        name='flag_create_api'),
 
     # H A S H T A G S
     url(r'^hashtags/$', HashtagPhotoListAPIView.as_view(),

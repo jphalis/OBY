@@ -170,6 +170,7 @@ INSTALLED_APPS = (
     'core',
     'donations',
     'ecomm',
+    'flag',
     'hashtags',
     'newsletter',
     'notifications',

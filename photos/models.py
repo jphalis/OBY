@@ -74,6 +74,13 @@ class PhotoManager(models.Manager):
             .select_related('category', 'creator') \
             .prefetch_related('likers')
 
+    def suggested(self, user):
+        print user.blocking.all()
+        return super(PhotoManager, self).get_queryset() \
+            .exclude(creator=user) \
+            .select_related("creator", "category") \
+            .prefetch_related('likers')
+
 
 class Photo(HashtagMixin, TimeStampedModel):
     is_active = models.BooleanField(default=True)

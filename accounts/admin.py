@@ -12,9 +12,10 @@ class MyUserAdmin(UserAdmin):
     add_form = UserCreationForm
 
     list_display = ('username', 'is_superuser', 'is_admin', 'is_verified',
-                    'date_joined')
+                    'date_joined', 'times_flagged')
     list_filter = ('is_active', 'is_admin', 'is_verified')
-    readonly_fields = ['date_joined', 'last_login', 'modified']
+    readonly_fields = ['date_joined', 'last_login', 'modified',
+                       'times_flagged']
     fieldsets = (
         (None,
             {'fields': ('username', 'email', 'password',)}),
@@ -28,6 +29,8 @@ class MyUserAdmin(UserAdmin):
                         'is_verified', 'user_permissions')}),
         (_('Dates'),
             {'fields': ('date_joined', 'last_login', 'modified',)}),
+        (_('Flags'),
+            {'fields': ('times_flagged',)}),
     )
 
     add_fieldsets = (

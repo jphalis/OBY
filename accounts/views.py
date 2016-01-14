@@ -4,6 +4,7 @@ from django.contrib.auth import (authenticate, login, logout,
                                  update_session_auth_hash)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import F
 from django.http import Http404, JsonResponse
@@ -31,6 +32,8 @@ def profile_view(request, username):
 
     if user.username == "anonymous":
         return render(request, "accounts/anonymous.html", {})
+    elif request.user in user.blocking.all():
+        raise PermissionDenied
     else:
         photos = (Photo.objects.filter(creator=user)
                                .select_related('category', 'creator')
@@ -118,6 +121,8 @@ def follow_ajax(request):
             recipient=user,
             verb='is now supporting you'
         )
+        if user in viewing_user.blocking.all():
+            viewing_user.blocking.remove(user)
 
     followed.save()
     viewing_user.save()
