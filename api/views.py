@@ -225,9 +225,7 @@ def block_user_api(request, user_pk):
         follower.followers.remove(followed)
 
     # Is the user_to_block already in blocked users?
-    if user_to_block in viewing_user.blocking.all():
-        viewing_user.blocking.remove(user_to_block)
-    else:
+    if user_to_block not in viewing_user.blocking.all():
         viewing_user.blocking.add(user_to_block)
 
     serializer = FollowerSerializer(followed, context={'request': request})
