@@ -143,11 +143,13 @@ def account_settings(request):
 
     if request.method == 'POST':
         if account_change_form.is_valid():
-            username = account_change_form.cleaned_data['username']
+            # username = account_change_form.cleaned_data['username']
             email = account_change_form.cleaned_data['email']
+            edu_email = account_change_form.cleaned_data['edu_email']
 
-            account_change_form.username = username
+            # account_change_form.username = username
             account_change_form.email = email
+            account_change_form.edu_email = edu_email
             account_change_form.save()
             messages.success(request,
                              "You have successfully updated your profile.")

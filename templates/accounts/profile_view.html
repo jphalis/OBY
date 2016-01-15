@@ -28,6 +28,11 @@
 {% endblock photo_adjustment %}
 
 {% block content %}
+    {% if request.user != user %}
+        <div class="col-md-2" style="margin-top: 43px;">
+            <a href="{% url 'home' %}" class="submit-btn signin-btn" >my profile</a>
+        </div>
+    {% endif %}
     <!-- SEARCH -->
     <div class="search-container">
         <form role="search" action="/search/">

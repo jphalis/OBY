@@ -9,7 +9,6 @@ from django.db.models import Q
 from django.forms.widgets import ClearableFileInput
 from django.template import loader
 from django.utils.encoding import force_bytes
-from django.utils.html import escape
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext_lazy as _
 
@@ -225,15 +224,12 @@ class AccountBasicsChangeForm(forms.ModelForm):
             username, domain = edu_email.split('@')
             if not domain.endswith('.edu'):
                 raise forms.ValidationError(
-                    "Please use a valid university email.")
+                    "Please use a valid university email ending with '.edu'.")
             if domain not in APPROVED_UNIVERSITIES:
                 raise forms.ValidationError(
                     "Sorry, this university isn't registered with us yet. "
                     "Email us to get it signed up! universities@obystudio.com")
             return edu_email
-
-    def clean_bio(self):
-        return escape(self.cleaned_data.get('bio'))
 
 
 # Need to fix the from_email to send from a set email, not jphalisnj

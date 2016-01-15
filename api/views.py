@@ -1,5 +1,5 @@
 # from collections import Counter
-from itertools import chain
+# from itertools import chain
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -139,13 +139,16 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
             follow = None
 
         if follow:
-            photos_following = Photo.objects.following(user)
-            return (photos_self | photos_following).distinct()[:250]
+            if follow.following.count() == 0:
+                photos_suggested = Photo.objects.suggested(user)[:50]
+                return photos_suggested
+            else:
+                photos_following = Photo.objects.following(user)
+                return (photos_self | photos_following).distinct()[:250]
         else:
             # Add suggested users
             photos_suggested = Photo.objects.suggested(user)[:50]
-            photos = chain(photos_self, photos_suggested)
-            return photos
+            return photos_suggested
 
 
 # A C C O U N T S
