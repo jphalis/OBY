@@ -34,6 +34,8 @@ def profile_view(request, username):
         return render(request, "accounts/anonymous.html", {})
     elif request.user in user.blocking.all():
         raise PermissionDenied
+    elif not user.is_active:
+        raise Http404
     else:
         photos = (Photo.objects.filter(creator=user)
                                .select_related('category', 'creator')
@@ -58,7 +60,6 @@ def profile_view(request, username):
             'user': user
         }
         return render(request, "accounts/profile_view.html", context)
-    # raise Http404
 
 
 @cache_page(60 * 4)
