@@ -39,7 +39,8 @@ class PhotoManager(models.Manager):
 
     def following(self, user):
         return super(PhotoManager, self).get_queryset() \
-            .filter(creator__follower__in=user.follower.following.all()) \
+            .filter(is_active=True,
+                    creator__follower__in=user.follower.following.all()) \
             .select_related('category', 'creator') \
             .prefetch_related('likers')
 
@@ -70,14 +71,13 @@ class PhotoManager(models.Manager):
 
     def own(self, user):
         return super(PhotoManager, self).get_queryset() \
-            .filter(creator=user) \
+            .filter(is_active=True, creator=user) \
             .select_related('category', 'creator') \
             .prefetch_related('likers')
 
     def suggested(self, user):
-        print user.blocking.all()
         return super(PhotoManager, self).get_queryset() \
-            .exclude(creator=user) \
+            .exclude(creator=user, is_active=False) \
             .select_related("creator", "category") \
             .prefetch_related('likers')
 

@@ -121,8 +121,7 @@ class RegisterForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
-        if MyUser.objects.filter(
-                Q(email=email)).exists():
+        if MyUser.objects.filter(email=email).exists():
             raise forms.ValidationError("This email is already taken. "
                                         "Please try a different one.")
         return email
@@ -149,8 +148,8 @@ class LoginForm(forms.Form):
 
     def clean_username(self):
         username = self.cleaned_data.get("username").lower()
-        # if not self.user.is_active:
-        #     raise forms.ValidationError("This account has been disabled")
+        if not MyUser.objects.get(username=username).is_active:
+            raise forms.ValidationError("This account has been disabled")
         return username
 
 

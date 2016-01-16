@@ -629,12 +629,16 @@ class CategoryDetailAPIView(CacheMixin, DefaultsMixin,
 class SearchListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                         generics.ListAPIView):
     serializer_class = SearchMyUserSerializer
-    queryset = MyUser.objects.only('id', 'username', 'full_name',
-                                   'profile_picture')
     # '^' Starts-with search
     # '=' Exact matches
     # '$' Regex search
     search_fields = ('^username', '^full_name',)
+
+    def get_queryset(self):
+        queryset = (MyUser.objects.filter(is_active=True)
+                                  .only('id', 'username', 'full_name',
+                                        'profile_picture'))
+        return queryset
 
 
 # S H O P

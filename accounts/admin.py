@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 
+from photos.models import Photo
 from .models import MyUser
 from .forms import UserChangeForm, UserCreationForm
 
@@ -41,10 +42,16 @@ class MyUserAdmin(UserAdmin):
     search_fields = ('email', 'username', 'full_name',)
     ordering = ('username',)
     filter_horizontal = ('user_permissions',)
-    actions = ('disable', 'verified',)
+    actions = ('activate', 'disable', 'verified',)
+
+    def activate(self, request, queryset):
+        queryset.update(is_active=True)
+        Photo.objects.filter(creator=queryset).update(is_active=True)
+    activate.short_description = _("Activate selected users")
 
     def disable(self, request, queryset):
         queryset.update(is_active=False)
+        Photo.objects.filter(creator=queryset).update(is_active=False)
     disable.short_description = _("Disable selected users")
 
     def verified(self, request, queryset):

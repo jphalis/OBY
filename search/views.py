@@ -24,7 +24,8 @@ class SearchListView(LoginRequiredMixin, ListView):
         query = self.request.GET.get('q')
 
         if query:
-            user_qs = self.model.objects.filter(username__icontains=query)
+            user_qs = self.model.objects.filter(username__icontains=query,
+                                                is_active=True)
             # adds multiple filters to the queryset
             # user_qs = self.model.objects.filter(
             #     Q(username__icontains=query) |
@@ -41,6 +42,6 @@ def search_ajax(request):
     data = {}
 
     if q:
-        users = MyUser.objects.filter(username__icontains=q)
+        users = MyUser.objects.filter(username__icontains=q, is_active=True)
         data = [{'username': user.username} for user in users]
     return JsonResponse(data, safe=False)
