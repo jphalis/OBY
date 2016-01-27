@@ -186,7 +186,6 @@ def follow_create_api(request, user_pk):
             device = None
 
         if device:
-            # Alert message may only be sent as text.
             device.send_message(
                 "{} is now supporting you.".format(viewing_user))
             # No alerts but with badge.
@@ -396,7 +395,6 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                         device = None
 
                     if device:
-                        # Alert message may only be sent as text.
                         device.send_message(
                             "{} commented on your photo.".format(user))
                         # No alerts but with badge.
@@ -504,7 +502,7 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
                 notification.save()
             else:
                 raise Http404
-        return notifications
+        return notifications[:50]
 
 
 class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
@@ -552,7 +550,6 @@ def like_create_api(request, photo_pk):
                 device = None
 
             if device:
-                # Alert message may only be sent as text.
                 device.send_message("{} liked your photo.".format(user))
                 # No alerts but with badge.
                 # device.send_message(None, badge=1)
