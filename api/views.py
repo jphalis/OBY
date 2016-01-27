@@ -180,7 +180,11 @@ def follow_create_api(request, user_pk):
         )
 
         # Push notifications
-        device = APNSDevice.objects.get(user=user)
+        try:
+            device = APNSDevice.objects.get(user=user)
+        except APNSDevice.DoesNotExist:
+            device = None
+
         if device:
             # Alert message may only be sent as text.
             device.send_message(
@@ -386,7 +390,11 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
 
                 # Push notifications
                 if user != photo_creator:
-                    device = APNSDevice.objects.get(user=photo_creator)
+                    try:
+                        device = APNSDevice.objects.get(user=photo_creator)
+                    except APNSDevice.DoesNotExist:
+                        device = None
+
                     if device:
                         # Alert message may only be sent as text.
                         device.send_message(
@@ -538,7 +546,11 @@ def like_create_api(request, photo_pk):
 
         # Push notifications
         if user != photo_creator:
-            device = APNSDevice.objects.get(user=user)
+            try:
+                device = APNSDevice.objects.get(user=user)
+            except APNSDevice.DoesNotExist:
+                device = None
+
             if device:
                 # Alert message may only be sent as text.
                 device.send_message("{} liked your photo.".format(user))
