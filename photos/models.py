@@ -29,7 +29,7 @@ class PhotoManager(models.Manager):
             .prefetch_related('likers')
 
     def category_detail(self, obj):
-        date_from = datetime.now() - timedelta(days=150)
+        date_from = datetime.now() - timedelta(days=360)
         return super(PhotoManager, self).get_queryset() \
             .filter(is_active=True, created__gte=date_from, category=obj) \
             .select_related('category', 'creator') \
@@ -61,7 +61,7 @@ class PhotoManager(models.Manager):
             .order_by('-the_count')
 
     def most_liked_offset(self):
-        date_from = datetime.now() - timedelta(days=150)
+        date_from = datetime.now() - timedelta(days=360)
         return super(PhotoManager, self).get_queryset() \
             .filter(is_active=True, created__gte=date_from) \
             .select_related('category', 'creator') \
