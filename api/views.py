@@ -547,7 +547,7 @@ def like_create_api(request, photo_pk):
         # Push notifications
         if user != photo_creator:
             try:
-                device = APNSDevice.objects.get(user=user)
+                device = APNSDevice.objects.get(user=photo_creator)
             except APNSDevice.DoesNotExist:
                 device = None
 
