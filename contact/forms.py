@@ -8,13 +8,13 @@ class BusinessContactForm(forms.Form):
         max_length=120,
         widget=forms.TextInput(attrs={"placeholder": "Name"})
     )
-    organization = forms.CharField(
+    company = forms.CharField(
         max_length=120,
-        widget=forms.TextInput(attrs={"placeholder": "Organization"})
+        widget=forms.TextInput(attrs={"placeholder": "Company"})
     )
     email = forms.EmailField(
         widget=forms.TextInput(
-            attrs={"placeholder": "contact@organization.com"})
+            attrs={"placeholder": "contact@company.com"})
     )
     coupons = forms.ChoiceField(
         choices=(

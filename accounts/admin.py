@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 
 from photos.models import Photo
-from .models import MyUser
+from .models import Advertiser, Follower, MyUser
 from .forms import UserChangeForm, UserCreationForm
 
 
@@ -56,7 +56,29 @@ class MyUserAdmin(UserAdmin):
 
     def verified(self, request, queryset):
         queryset.update(is_verified=True)
+        oby_verified = MyUser.objects.get(username="verified")
+        follower, created = Follower.objects.get_or_create(
+            user=oby_verified)
+        followed, created = Follower.objects.get_or_create(user=queryset)
+        followed.followers.add(follower)
     verified.short_description = _("Verify selected users")
 
 admin.site.register(MyUser, MyUserAdmin)
+
+
+class AdvertiserAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'user_status', 'company_name',
+                    'is_active', 'creations_allowed',)
+    list_filter = ('is_active', 'user_status',)
+    fields = ('user_status', 'user', 'company_name', 'description',
+              'company_website', 'twitter', 'instagram', 'is_active',
+              'creations_allowed', 'created', 'modified',)
+    readonly_fields = ('created', 'modified',)
+
+    class Meta:
+        model = Advertiser
+
+    # add actions for changing the state of the advertiser
+
+admin.site.register(Advertiser, AdvertiserAdmin)
 admin.site.unregister(Group)

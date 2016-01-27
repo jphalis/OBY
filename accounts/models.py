@@ -1,4 +1,5 @@
 from datetime import datetime
+# from urlparse import urlparse
 
 from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
@@ -48,15 +49,6 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
-    # USER_TYPES = (
-    #     (0, _('Admin')),
-    #     (1, _('Staff')),
-    #     (2, _('Default')),
-    #     (3, _('Verified')),
-    #     (4, _('Advertiser')),
-    # )
-    # user_type = models.IntegerField(max_length=1, null=True,
-    #                                 choices=USER_TYPES)
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(verbose_name='email',
                               max_length=80, unique=True)
@@ -84,7 +76,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     total_points = models.IntegerField(default=0)
     # points_at_last_check = models.IntegerField(default=0)
     # last_point_check = models.DateTimeField()
-    # creations_allowed = models.IntegerField(default=0)
     blocking = models.ManyToManyField('self', related_name='blocked_by',
                                       symmetrical=False)
 
@@ -181,6 +172,45 @@ class Follower(TimeStampedModel):
         return readable_number(count, short=short)
 
 MyUser.profile = property(lambda u: Follower.objects.get_or_create(user=u)[0])
+
+
+class Advertiser(TimeStampedModel):
+    USER_STATUSES = (
+        (0, _('Pending review')),
+        (1, _('In review')),
+        (2, _('Approved')),
+        (3, _('Declined')),
+        (4, _('Black listed'))
+    )
+    user_status = models.IntegerField(choices=USER_STATUSES,
+                                      default=USER_STATUSES[0][0])
+    user = models.OneToOneField(MyUser)
+    company_name = models.CharField(max_length=120, blank=True)
+    description = models.TextField(max_length=200, blank=True)
+    company_website = models.CharField(max_length=90, blank=True)
+    twitter = models.CharField(max_length=80, blank=True)
+    instagram = models.CharField(max_length=80, blank=True)
+    is_active = models.BooleanField(default=False)
+    creations_allowed = models.IntegerField(default=0)
+
+    class Meta:
+        app_label = 'accounts'
+
+    def __unicode__(self):
+        return u"{}".format(self.user.username)
+
+    # Not working
+    # @cached_property
+    # def hyperlink_company_website(self):
+    #     return "http://www.{}".format(urlparse(self.company_website).netloc)
+
+    @cached_property
+    def hyperlink_twitter(self):
+        return "http://www.twitter.com/{}".format(self.twitter)
+
+    @cached_property
+    def hyperlink_instagram(self):
+        return "http://www.instagram.com/{}".format(self.twitter)
 
 
 # def new_user_receiver(sender, instance, created, *args, **kwargs):
