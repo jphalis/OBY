@@ -52,7 +52,7 @@ class Comment(HashtagMixin, TimeStampedModel):
 
     class Meta:
         app_label = 'comments'
-        ordering = ['created']
+        ordering = ['-created']
 
     def __unicode__(self):
         return self.text
