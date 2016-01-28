@@ -10,6 +10,7 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     sender_url = serializers.SerializerMethodField()
     sender_profile_picture = serializers.ReadOnlyField(
         source="sender_object.default_profile_picture")
+    view_target_photo_url = serializers.SerializerMethodField()
     target_photo = serializers.ReadOnlyField(
         source="target_object.get_photo_url")
     target_url = serializers.SerializerMethodField()
@@ -17,8 +18,9 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Notification
         fields = ('id', 'sender', 'sender_url', 'sender_profile_picture',
-                  'display_thread', 'target_photo', 'target_url',
-                  'recipient_url', 'read', 'created', 'modified',)
+                  'display_thread', 'view_target_photo_url', 'target_photo',
+                  'target_url', 'recipient_url', 'read',
+                  'created', 'modified',)
 
     def get_recipient_url(self, obj):
         request = self.context['request']
@@ -31,6 +33,17 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
         kwargs = {'username': obj.sender_object.username}
         return api_reverse('user_account_detail_api', kwargs=kwargs,
                            request=request)
+
+    def get_view_target_photo_url(self, obj):
+        request = self.context['request']
+        if obj.target_object:
+            kwargs = {
+                'cat_slug': obj.target_object.category.slug,
+                'photo_slug': obj.target_object.slug
+            }
+            return api_reverse('photo_detail_api', kwargs=kwargs,
+                               request=request)
+        return None
 
     def get_target_url(self, obj):
         request = self.context['request']
