@@ -19,18 +19,18 @@ def business_inquiry(request):
         form_organization = escape(form.cleaned_data['organization'])
         form_email = escape(form.cleaned_data['email'])
         form_coupons = escape(form.cleaned_data['coupons'])
-        form_expectations = escape(form.cleaned_data['expectations'])
+        form_message = escape(form.cleaned_data['message'])
 
         subject = 'Business Inquiry Form'
         from_email = 'partnerships@obystudio.com'
         to_email = ['partnerships@obystudio.com']
         contact_message = "Name: {} \nOrganization: {} \nEmail: {} \
-        \nOffer coupons: {} \nExpectations: {}".format(
+        \nOffer coupons: {} \Message: {}".format(
             form_name,
             form_organization,
             form_email,
             form_coupons,
-            form_expectations,
+            form_message,
         )
         send_mail(
             subject,

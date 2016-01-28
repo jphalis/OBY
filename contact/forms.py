@@ -25,8 +25,8 @@ class BusinessContactForm(forms.Form):
         initial='Yes',
         label='Are you able to contribute promotional offers?'
     )
-    expectations = forms.CharField(
+    message = forms.CharField(
         widget=forms.Textarea(
-            attrs={"placeholder": "What are you hoping to gain from this partnership?",
+            attrs={"placeholder": "Is there anything we should know?",
                    "style": "height: 6em;"})
     )
