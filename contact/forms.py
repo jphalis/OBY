@@ -28,5 +28,6 @@ class BusinessContactForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea(
             attrs={"placeholder": "Is there anything we should know?",
-                   "style": "height: 6em;"})
+                   "style": "height: 6em;"}),
+        required=False
     )

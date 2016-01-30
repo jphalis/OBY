@@ -1,7 +1,7 @@
 {% extends "simple_base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}OBY / Profile Settings{% endblock title %}
+{% block title %}{{ username }} / Company Settings{% endblock title %}
 
 <style>
     {% block style %}
@@ -17,10 +17,8 @@
         <ul class="nav nav-sidebar">
             <li><a href="{% url 'profile_view' request.user.username %}">back to profile</a>
             <br/><br/>
-            {% if advertiser %}
-                <li><a href="{% url 'accounts:business_settings' %}">company settings</a></li>
-            {% endif %}
-            <li class="active"><a href="{% url 'accounts:account_settings' %}">profile<span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="{% url 'accounts:business_settings' %}">company settings<span class="sr-only">(current)</span></a></li>
+            <li><a href="{% url 'accounts:account_settings' %}">profile</a></li>
             <li><a href="{% url 'accounts:password_change' %}">change password</a></li>
             <li>
                 <a href="mailto:team@obystudio.com?subject=Contact us&body=Have a question, concern, comment, or just want someone to talk to? Please feel free to reach out! We'd be more than happy to help. Thank you for using OBY!">contact us</a>
@@ -29,10 +27,10 @@
         </ul>
     </div>
     <div class="col-sm-7 col-sm-offset-3 account-settings-container general-container">
-        <h2 class="page-header settings-title">Profile Settings</h2>
+        <h2 class="page-header settings-title">Company Settings</h2>
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ account_change_form|crispy }}
+            {{ company_change_form|crispy }}
             <input class="submit-btn go-btn-form" type="submit" value="Update Settings" />
         </form>    
     </div>

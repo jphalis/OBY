@@ -6,6 +6,8 @@ from . import views
 app_name = 'accounts'
 urlpatterns = [
     url(r'^account/$', views.account_settings, name='account_settings'),
+    url(r'^business/settings/$', views.business_settings,
+        name='business_settings'),
     url(r'^signout/$', views.auth_logout, name='logout'),
     url(r'^password/change/$', views.password_change, name="password_change"),
     url(r'^password/reset/$', views.password_reset, name="password_reset"),

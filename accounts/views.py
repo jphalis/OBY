@@ -18,9 +18,10 @@ from django.views.decorators.http import require_http_methods
 
 from notifications.signals import notify
 from photos.models import Photo
-from .forms import (AccountBasicsChangeForm, LoginForm, PasswordChangeForm,
-                    RegisterForm, PasswordResetForm, SetPasswordForm)
-from .models import Follower, MyUser
+from .forms import (AccountBasicsChangeForm, CompanyBasicsChangeForm,
+                    LoginForm, PasswordChangeForm, RegisterForm,
+                    PasswordResetForm, SetPasswordForm)
+from .models import Advertiser, Follower, MyUser
 
 # Create your views here.
 
@@ -28,6 +29,10 @@ from .models import Follower, MyUser
 @login_required
 @cache_page(60 * 5)
 def profile_view(request, username):
+    # page_view.send(
+    #     user,
+    #     page_path=request.get_full_path(),
+    # )
     user = get_object_or_404(MyUser, username=username)
 
     if user.username == "anonymous":
@@ -37,9 +42,10 @@ def profile_view(request, username):
     elif not user.is_active:
         raise Http404
     else:
-        photos = (Photo.objects.filter(creator=user)
-                               .select_related('category', 'creator')
-                               .prefetch_related('likers')[:150])
+        try:
+            advertiser = Advertiser.objects.get(user__username=username)
+        except Advertiser.DoesNotExist:
+            advertiser = None
 
         try:
             follow = (Follower.objects.select_related('user')
@@ -49,17 +55,20 @@ def profile_view(request, username):
         except Follower.DoesNotExist:
             follow = None
 
-        # page_view.send(
-        #     user,
-        #     page_path=request.get_full_path(),
-        # )
+        photos = (Photo.objects.filter(creator=user)
+                               .select_related('category', 'creator')
+                               .prefetch_related('likers')[:150])
 
+        template = "accounts/profile_view.html"
         context = {
             'follow': follow,
             'photos': photos,
             'user': user
         }
-        return render(request, "accounts/profile_view.html", context)
+        if advertiser:
+            template = "advertisers/advertiser_view.html"
+            context.update({'advertiser': advertiser})
+        return render(request, template, context)
 
 
 @cache_page(60 * 4)
@@ -138,6 +147,12 @@ def follow_ajax(request):
 @login_required
 def account_settings(request):
     user = request.user
+
+    try:
+        advertiser = Advertiser.objects.get(user=request.user)
+    except Advertiser.DoesNotExist:
+        advertiser = None
+
     account_change_form = AccountBasicsChangeForm(request.POST or None,
                                                   request.FILES or None,
                                                   instance=user, user=user)
@@ -156,10 +171,38 @@ def account_settings(request):
                              "You have successfully updated your profile.")
 
     context = {
-        'account_change_form': account_change_form
+        'account_change_form': account_change_form,
+        'advertiser': advertiser
     }
     return render(request, 'accounts/settings/account_settings.html', context)
-    # raise Http404
+
+
+@login_required
+def business_settings(request):
+    try:
+        user = Advertiser.objects.get(user=request.user)
+    except Advertiser.DoesNotExist:
+        user = None
+
+    if user:
+        company_change_form = CompanyBasicsChangeForm(request.POST or None,
+                                                      request.FILES or None,
+                                                      instance=user, user=user)
+
+        if request.method == 'POST':
+            if company_change_form.is_valid():
+                company_name = company_change_form.cleaned_data['company_name']
+
+                company_change_form.company_name = company_name
+                company_change_form.save()
+                messages.success(request,
+                                 "You have successfully updated your profile.")
+        context = {
+            'company_change_form': company_change_form,
+            'username': user.user.username
+        }
+        return render(request, 'advertisers/business_settings.html', context)
+    return HttpResponseRedirect(reverse("accounts:account_settings"))
 
 
 # @login_required
@@ -198,6 +241,11 @@ def account_settings(request):
 @sensitive_post_parameters()
 @login_required
 def password_change(request):
+    try:
+        advertiser = Advertiser.objects.get(user=request.user)
+    except Advertiser.DoesNotExist:
+        advertiser = None
+
     form = PasswordChangeForm(request.POST or None, user=request.user)
 
     if request.method == "POST":
@@ -209,8 +257,11 @@ def password_change(request):
             update_session_auth_hash(request, form.user)
             messages.success(request,
                              "You have successfully changed your password.")
-    return render(request, 'accounts/settings/password_change.html',
-                  {'form': form})
+    context = {
+        'advertiser': advertiser,
+        'form': form
+    }
+    return render(request, 'accounts/settings/password_change.html', context)
 
 
 def password_reset(request, from_email=settings.EMAIL_FROM,

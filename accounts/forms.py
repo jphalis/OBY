@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from oby.settings.approved_universities import APPROVED_UNIVERSITIES
 from oby.settings.forbidden_usernames import FORBIDDEN_USERNAMES
 from oby.settings.reserved_usernames import RESERVED_USERNAMES
-from .models import MyUser
+from .models import Advertiser, MyUser
 
 # Create models here.
 
@@ -34,6 +34,13 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = MyUser
         fields = ('email', 'username',)
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        if MyUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already taken. "
+                                        "Please try a different one.")
+        return email
 
     def clean_password2(self):
         password_length = settings.MIN_PASSWORD_LENGTH
@@ -231,7 +238,46 @@ class AccountBasicsChangeForm(forms.ModelForm):
             return edu_email
 
 
-# Need to fix the from_email to send from a set email, not jphalisnj
+class CompanyBasicsChangeForm(forms.ModelForm):
+    company_name = forms.CharField(widget=forms.TextInput(), max_length=120,
+                                   required=True, label='Company name')
+    company_logo = forms.ImageField(required=False,
+                                    widget=ClearableFileInput(
+                                        attrs={'class': 'form-control'}))
+    description = forms.CharField(required=False, max_length=200,
+                                  label='Company slogan or description',
+                                  widget=forms.Textarea(
+                                        attrs={"style": "height: 5em;"}))
+    company_website = forms.CharField(required=False, max_length=90,
+                                      label="Website",
+                                      widget=forms.TextInput(
+                                            attrs={'placeholder':
+                                                   'www.company.com'}))
+    twitter = forms.CharField(required=False, max_length=80,
+                              widget=forms.TextInput(
+                                    attrs={'placeholder': 'username'}))
+    instagram = forms.CharField(required=False, max_length=80,
+                                widget=forms.TextInput(
+                                    attrs={'placeholder': 'username'}))
+
+    class Meta:
+        model = Advertiser
+        fields = ('company_name', 'company_logo', 'description',
+                  'company_website', 'twitter', 'instagram',)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(CompanyBasicsChangeForm, self).__init__(*args, **kwargs)
+
+    def clean_company_name(self):
+        company_name = self.cleaned_data['company_name']
+        if Advertiser.objects.filter(
+                Q(company_name=company_name) & ~Q(id=self.user.id)).exists():
+            raise forms.ValidationError("That company name is already taken. "
+                                        "Please try a different one.")
+        return company_name
+
+
 class PasswordResetForm(forms.Form):
     email = forms.EmailField(label=_("Email"), max_length=80,
                              widget=forms.widgets.EmailInput(

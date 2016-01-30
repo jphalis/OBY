@@ -174,6 +174,10 @@ class Follower(TimeStampedModel):
 MyUser.profile = property(lambda u: Follower.objects.get_or_create(user=u)[0])
 
 
+def company_upload_location(instance, filename):
+    return "{}/company_logo/{}".format(instance.user.username, filename)
+
+
 class Advertiser(TimeStampedModel):
     USER_STATUSES = (
         (0, _('Pending review')),
@@ -186,6 +190,8 @@ class Advertiser(TimeStampedModel):
                                       default=USER_STATUSES[0][0])
     user = models.OneToOneField(MyUser)
     company_name = models.CharField(max_length=120, blank=True)
+    company_logo = models.ImageField(upload_to=company_upload_location,
+                                     blank=True)
     description = models.TextField(max_length=200, blank=True)
     company_website = models.CharField(max_length=90, blank=True)
     twitter = models.CharField(max_length=80, blank=True)
@@ -198,6 +204,12 @@ class Advertiser(TimeStampedModel):
 
     def __unicode__(self):
         return u"{}".format(self.user.username)
+
+    @property
+    def default_company_logo(self):
+        if self.company_logo:
+            return "{}{}".format(settings.MEDIA_URL, self.company_logo)
+        return settings.STATIC_URL + 'img/default_company_logo.png'
 
     # Not working
     # @cached_property

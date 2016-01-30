@@ -1,0 +1,53 @@
+{% extends "simple_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}OBY / Company Application{% endblock title %}
+
+<style>
+    {% block style %}
+        body{
+            background: #F9615B; /* For browsers that do not support gradients */
+            background: -webkit-linear-gradient(#87080c, #b44d3e); /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(#87080c, #b44d3e); /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient(#87080c, #b44d3e); /* For Firefox 3.6 to 15 */
+            background: linear-gradient(#87080c, #b44d3e); /* Standard syntax */
+        }
+    {% endblock style %}
+</style>
+
+{% block content %}
+    <div class="authentication-container">
+        <div class="col-sm-12">
+            <h1>Register</h1>
+            <br/>
+        </div>
+        <div class="col-sm-4 col-sm-offset-4">
+            <form method="POST" action="{{ action_url }}">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <br/>
+                <input type="hidden" name="next" value="{% url 'accounts:business_settings' %}" />
+                <input class="submit-btn signin-btn btn-block" type="submit" value="Create Company Account" />
+            </form>
+            {% if title == "Register" %}
+                <p class="account-create-agreement">
+                    Creating an account means you're okay with OBY's<br/>
+                    <a href="{% url 'terms_of_use' %}">Terms</a> and <a href="{% url 'privacy_policy' %}">Privacy</a> policies.
+                </p>
+                {% endif %}
+            <br/>
+            <div class="redirect-link">
+                <br/>
+                <p>Already have an account? <a href="mailto:partnerships@obystudio.com?subject=Company Signup Existing Account&body=Please tell us which username you would like to use for your company. Please make sure you already own the account, or have legal rights to the name. Thank you!">Email us. We'll transfer the account to a company profile.</a></p>
+            </div>
+        </div>
+        <div class="col-sm-12 visitor-footer" style="text-shadow: none;">
+            <a href="{% url 'home' %}" class="visitor-footer-item">OBY</a>
+            <a href="{% url 'about' %}" class="visitor-footer-item">About</a>
+            <a href="mailto:team@obystudio.com" class="visitor-footer-item">team@obystudio.com</a>
+            <a href="{% url 'privacy_policy' %}" class="visitor-footer-item">Privacy</a>
+            <a href="{% url 'terms_of_use' %}" class="visitor-footer-item">Terms</a>
+            <p class="visitor-footer-item">&copy; 2016 OBY</p>
+        </div>
+    </div>
+{% endblock content %}

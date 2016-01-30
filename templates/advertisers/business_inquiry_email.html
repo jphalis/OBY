@@ -1,25 +1,9 @@
-<!-- {% load i18n %}{% autoescape off %}
-{% blocktrans %}You're receiving this email because your email address was entered in the forgotten password form at OBY.{% endblocktrans %}
-
-{% trans "Please go to the following page and choose a new password:" %}
-{% block reset_link %}
-{{ protocol }}://{{ domain }}{% url 'accounts:password_reset_confirm' uidb64=uid token=token %}
-{% endblock %}
-{% trans "Your username, in case you've forgotten:" %} {{ user.get_username }}
-
-{% trans "Thanks for using OBY!" %}
-
-{% trans "If you believe you have received this email in error, please ignore it." %}
-
-{% blocktrans %}The OBY team{% endblocktrans %}
-
-{% endautoescape %} -->
 <!doctype html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>OBY Reset Account Password</title>
+<title>OBY Partnership Inquiry</title>
 <style>
 /* -------------------------------------
     GLOBAL
@@ -178,25 +162,24 @@ ol li {
       <table>
         <tr>
           <td>
-            <p>Hey,</p>
-            <p>We wanted to let you know that your email was entered in the forgotten password form at OBY.<br/>
-            If you made this request, please click the button below to create a new password:</p>
-            <h2>Password reset:</h2>
+            <p>Hi!</p>
+            <p>Thank you for your interest in partnering with OBY.<br/>
+            We are an optimisitc bunch, so in the meantime, could you please apply for a company profile by clicking the link below? </p>
+            <h2>Register company:</h2>
             <!-- button -->
             <table class="btn-primary" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td>
-                  <a href="{{ protocol }}://{{ domain }}{% url 'accounts:password_reset_confirm' uidb64=uid token=token %}">RESET PASSWORD</a>
+                  <a href="http://{{ domain }}{% url 'contact:business_signup' %}">COMPANY REGISTRATION</a>
                 </td>
               </tr>
             </table>
             <!-- /button -->
             <br/>
             <br/>
-            <p>If you forgot, your username is: <b>{{ user.get_username|upper }}</b></p>
-            <p>If you don't think this was you, please ignore this email.</p>
+            <p>If you don't think this request was made by you, please ignore this email.</p>
             <p>Thanks for using OBY!</p>
-            <p><a href="https://www.obystudio.com/">www.obystudio.com</a></p>
+            <p><a href="http://{{ domain }}">www.obystudio.com</a></p>
           </td>
         </tr>
       </table>
