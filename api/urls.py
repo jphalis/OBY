@@ -3,7 +3,7 @@ from django.conf.urls import url
 from push_notifications.api.views import APNSDeviceAuthorizedViewSet
 
 from . import views
-from .views import APIHomeView, HomepageAPIView, TimelineAPIView
+from .views import APIHomeView, TimelineAPIView  # HomepageAPIView
 from .views import (AccountCreateAPIView,
                     MyUserDetailAPIView, MyUserListAPIView)
 from .views import CommentCreateAPIView, CommentDetailAPIView
@@ -22,7 +22,7 @@ urlpatterns = [
     # G E N E R A L
     url(r'^$', APIHomeView.as_view(),
         name='api_home'),
-    url(r'^homepage/$', HomepageAPIView.as_view(),
+    url(r'^homepage/$', views.homepage_api_view,
         name='homepage_api'),
     url(r'^timeline/$', TimelineAPIView.as_view(),
         name='timeline_api'),

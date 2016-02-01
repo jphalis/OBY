@@ -1,4 +1,5 @@
 # from collections import Counter
+from datetime import datetime
 # from itertools import chain
 
 from django.conf import settings
@@ -117,12 +118,39 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
         return RestResponse(data)
 
 
-class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-    cache_timeout = 60 * 7
-    serializer_class = PhotoSerializer
+@api_view()
+def homepage_api_view(request):
+    obj1 = Photo.objects.most_liked_offset()[:30]
+    titles = Category.objects.most_posts().values_list('title', flat=True)
+    categories = []
+    for title in titles:
+        categories.append(title)
+    categories.insert(0, "Popular")
+    photo_serializer = PhotoSerializer(obj1, context={'request': request},
+                                       many=True)
+    return RestResponse({
+        "gms": categories,
+        "photos": photo_serializer.data
+    })
 
-    def get_queryset(self):
-        return Photo.objects.most_liked_offset()[:30]
+
+# class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
+#     cache_timeout = 60 * 7
+#     serializer_class = PhotoSerializer
+
+#     # def get_categories(self):
+#     #     titles = Category.objects.most_posts().values('title')
+#     #     categories = []
+#     #     for title in titles:
+#     #         categories.append(title)
+#     #     categories.insert(0, {'title': 'Popular'})
+#     #     return categories
+
+#     def get_queryset(self):
+#         # obj1 = Photo.objects.most_liked_offset()[:30]
+#         # categories = self.get_categories()
+#         # return chain(categories, obj1)
+#         return Photo.objects.most_liked_offset()[:30]
 
 
 class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
@@ -510,8 +538,10 @@ class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
-        notifications = Notification.objects.all_unread(
-            self.request.user)[:1]
+        user = self.request.user
+        user.last_login = datetime.now()
+        user.save(update_fields=['last_login'])
+        notifications = Notification.objects.all_unread(user)[:1]
         return notifications
 
 
