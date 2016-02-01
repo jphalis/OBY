@@ -1,11 +1,10 @@
 # from collections import Counter
 from datetime import datetime
-# from itertools import chain
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import F
-from django.shortcuts import get_object_or_404, Http404
+from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 
@@ -408,8 +407,6 @@ class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
                             "{} commented on your photo.".format(user))
                         # No alerts but with badge.
                         # device.send_message(None, badge=1)
-                        # Silent message with badge and added custom data.
-                        # device.send_message(None, badge=1, extra={"foo": "bar"})
             if user != photo_creator:
                 user.available_points = F('available_points') + 1
                 user.total_points = F('total_points') + 1
@@ -502,12 +499,19 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
+        """
+        Update all of the notifications to read=True.
+        Get 50 most recent notifications for the user.
+        Delete all of the notifications older than the 50 displayed.
+        Return the 50 most recent notifications for the user.
+        """
         user = self.request.user
-        notifications = Notification.objects.all_for_user(user)[:50]
+        notifications = Notification.objects.all_for_user(user)
+        notifications.update(read=True)
+        notifications = notifications[:50]
         delete_after_datetime = list(notifications)[-1].created
         Notification.objects.all_for_user(user).filter(
             created__lt=delete_after_datetime).delete()
-        notifications.update(read=True)
         return notifications
 
 
