@@ -90,12 +90,15 @@ urlpatterns = [
         name='like_create_api'),
 
     # S H O P
-    url(r'^shop/rewards/check/$', views.reward_check_view,
-        name='reward_check_view'),
-    url(r'^shop/rewards/redeemed/$', views.reward_redeemed_view,
-        name='reward_redeemed_view'),
     url(r'^shop/$', ProductListAPIView.as_view(),
         name='product_list_api'),
     url(r'^shop/create/$', ProductCreateAPIView.as_view({'post': 'create'}),
         name='product_create_api'),
+    url(r'^shop/rewards/check/$', views.reward_check_view,
+        name='reward_check_view'),
+    url(r'^shop/rewards/redeemed/$', views.reward_redeemed_view,
+        name='reward_redeemed_view'),
+    url(r'^shop/rewards/purchase/(?P<product_pk>\d+)/$',
+        views.reward_purchase_view,
+        name='reward_purchase_view'),
 ]

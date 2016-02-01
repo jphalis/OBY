@@ -8,7 +8,7 @@ from .models import Product
 class ProductAdmin(admin.ModelAdmin):
     date_hierarchy = 'list_date_start'
     search_fields = ['id', 'buyers__username',
-                     'owner__username', 'description']
+                     'owner__user__username', 'description']
     list_display = ['id', '__unicode__', 'cost', 'discount_cost', 'is_listed']
     list_filter = ['is_listed']
     readonly_fields = ['buyers']

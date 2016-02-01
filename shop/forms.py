@@ -17,7 +17,6 @@ class ProductCreateForm(forms.ModelForm):
         attrs={'class': 'form-control', 'placeholder': 'Coupon Title'}),
         max_length=120, label="Coupon Title"
     )
-    image = forms.ImageField(required=False, label="Image (109px x 109px)")
     description = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control',
                'placeholder': 'About this coupon',
@@ -41,8 +40,8 @@ class ProductCreateForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ('title', 'image', 'description',
-                  'cost', 'promo_code', 'list_date_start',)
+        fields = ('title', 'description', 'cost', 'promo_code',
+                  'list_date_start',)
 
     def __init__(self, data=None, files=None, **kwargs):
         super(ProductCreateForm, self).__init__(data, files, kwargs)

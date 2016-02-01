@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 
+from accounts.models import Advertiser
 from core.models import TimeStampedModel
 
 # Create your models here.
@@ -34,7 +35,7 @@ class ProductManager(models.Manager):
 
 
 class Product(TimeStampedModel):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    owner = models.ForeignKey(Advertiser)
     buyers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                     related_name='buyers', blank=True)
     is_listed = models.BooleanField(default=False)

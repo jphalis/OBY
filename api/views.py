@@ -105,12 +105,12 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
                 'help_text': "add '?q=searched_parameter' to the "
                              "end of the url to display results"
             },
-            # 'shop': {
-            #     'count': Product.objects.all().count(),
-            #     'url': api_reverse('product_list_api', request=request),
-            #     'create_url': api_reverse('product_create_api',
-            #                               request=request),
-            # },
+            'shop': {
+                'count': Product.objects.all().count(),
+                'url': api_reverse('product_list_api', request=request),
+                'create_url': api_reverse('product_create_api',
+                                          request=request),
+            },
             'timeline': {
                 'url': api_reverse('timeline_api', request=request),
             },
@@ -132,25 +132,6 @@ def homepage_api_view(request):
         "gms": categories,
         "photos": photo_serializer.data
     })
-
-
-# class HomepageAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
-#     cache_timeout = 60 * 7
-#     serializer_class = PhotoSerializer
-
-#     # def get_categories(self):
-#     #     titles = Category.objects.most_posts().values('title')
-#     #     categories = []
-#     #     for title in titles:
-#     #         categories.append(title)
-#     #     categories.insert(0, {'title': 'Popular'})
-#     #     return categories
-
-#     def get_queryset(self):
-#         # obj1 = Photo.objects.most_liked_offset()[:30]
-#         # categories = self.get_categories()
-#         # return chain(categories, obj1)
-#         return Photo.objects.most_liked_offset()[:30]
 
 
 class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
@@ -522,15 +503,12 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        # Show 50, but delete all objects after the 50
-        notifications = Notification.objects.all_for_user(user)
-        for notification in notifications:
-            if notification.recipient == user:
-                notification.read = True
-                notification.save()
-            else:
-                raise Http404
-        return notifications[:50]
+        notifications = Notification.objects.all_for_user(user)[:50]
+        delete_after_datetime = list(notifications)[-1].created
+        Notification.objects.all_for_user(user).filter(
+            created__lt=delete_after_datetime).delete()
+        notifications.update(read=True)
+        return notifications
 
 
 class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
@@ -693,9 +671,26 @@ def reward_check_view(request):
 @api_view(['GET'])
 def reward_redeemed_view(request):
     user = request.user
-    user.available_points = F('available_points') - settings.DESERVES_REWARD_AMOUNT
+    user.available_points = (
+        F('available_points') - settings.DESERVES_REWARD_AMOUNT)
     user.save()
     return RestResponse(status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+def reward_purchase_view(request, product_pk):
+    user = request.user
+    product = get_object_or_404(Product, pk=product_pk)
+
+    serializer = ProductSerializer(product, context={'request': request})
+
+    if user not in product.buyers.all():
+        product.buyers.add(user)
+        user.available_points = F('available_points') - product.cost
+        user.save()
+        return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        raise PermissionDenied("You already redeemed this.")
 
 
 # Need to fix the list_use_date_start
@@ -706,8 +701,7 @@ class ProductCreateAPIView(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user,
-                        slug=slugify(self.request.data.get('title')),
-                        image=self.request.data.get('image'))
+                        slug=slugify(self.request.data.get('title')))
 
 
 class ProductListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
@@ -732,7 +726,7 @@ class ProductDetailAPIView(CacheMixin, DefaultsMixin,
                            mixins.DestroyModelMixin,
                            mixins.UpdateModelMixin):
     cache_timeout = 60 * 60 * 24
-    permission_classes = (IsAdvertiser, IsOwnerOrReadOnly,)
+    permission_classes = (IsAdvertiser,)
     queryset = (Product.objects.select_related('owner')
                                .prefetch_related('buyers'))
     serializer_class = ProductSerializer

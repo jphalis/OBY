@@ -1,6 +1,8 @@
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
 
+from accounts.models import Advertiser
+
 
 class MyUserIsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -28,7 +30,7 @@ class IsCreatorOrReadOnly(permissions.BasePermission):
 class IsAdvertiser(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_authenticated():
-            if request.user.is_advertiser:
+            if Advertiser.objects.get(user=request.user):
                 return True
             else:
                 raise PermissionDenied(
