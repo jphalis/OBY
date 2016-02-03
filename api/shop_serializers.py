@@ -7,8 +7,8 @@ from shop.models import Product
 class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('title', 'description', 'cost', 'discount_cost',
-                  'max_downloads', 'promo_code', 'list_date_start',)
+        fields = ('title', 'description', 'cost', 'max_downloads',
+                  'promo_code', 'list_date_start',)
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):

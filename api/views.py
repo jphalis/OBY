@@ -42,7 +42,7 @@ from .pagination import (AccountPagination, HashtagPagination,
                          NotificationPagination, PhotoPagination,
                          ShopPagination)
 from .permissions import (IsAdvertiser, IsCreatorOrReadOnly, IsOwnerOrReadOnly,
-                          MyUserIsOwnerOrReadOnly)
+                          IsProductOwnerOrReadOnly, MyUserIsOwnerOrReadOnly)
 from .photo_serializers import (CategorySerializer, PhotoCreateSerializer,
                                 PhotoSerializer)
 from .search_serializers import SearchMyUserSerializer
@@ -730,7 +730,8 @@ class ProductDetailAPIView(CacheMixin, DefaultsMixin,
                            mixins.DestroyModelMixin,
                            mixins.UpdateModelMixin):
     cache_timeout = 60 * 60 * 24
-    permission_classes = (IsAdvertiser,)
+    permission_classes = (permissions.IsAuthenticated, IsAdvertiser,
+                          IsProductOwnerOrReadOnly,)
     queryset = (Product.objects.select_related('owner')
                                .prefetch_related('buyers'))
     serializer_class = ProductSerializer
@@ -741,7 +742,12 @@ class ProductDetailAPIView(CacheMixin, DefaultsMixin,
         return obj
 
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        product_slug = self.kwargs["product_slug"]
+        obj = get_object_or_404(Product, slug=product_slug)
+        if request.user == obj.owner:
+            return self.destroy(request, *args, **kwargs)
+        raise PermissionDenied(
+            {"message": "You don't have permission to access this"})
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

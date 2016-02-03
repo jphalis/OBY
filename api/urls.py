@@ -13,7 +13,8 @@ from .views import (CategoryDetailAPIView, CategoryListAPIView,
 from .views import NotificationAPIView, NotificationAjaxAPIView
 from .views import (PasswordChangeView, PasswordResetView,
                     PasswordResetConfirmView)
-from .views import ProductCreateAPIView, ProductListAPIView
+from .views import (ProductCreateAPIView, ProductDetailAPIView,
+                    ProductListAPIView)
 from .views import SearchListAPIView
 
 
@@ -84,7 +85,8 @@ urlpatterns = [
     url(r'^photos/create/$', PhotoCreateAPIView.as_view({'post': 'create'}),
         name='photo_create_api'),
     url(r'^photos/(?P<cat_slug>[\w-]+)/(?P<photo_slug>[\w-]+)/$',
-        PhotoDetailAPIView.as_view(), name='photo_detail_api'),
+        PhotoDetailAPIView.as_view(),
+        name='photo_detail_api'),
     url(r'^like/(?P<photo_pk>\d+)/$', views.like_create_api,
         name='like_create_api'),
 
@@ -93,6 +95,9 @@ urlpatterns = [
         name='product_list_api'),
     url(r'^shop/create/$', ProductCreateAPIView.as_view({'post': 'create'}),
         name='product_create_api'),
+    url(r'^shop/product/(?P<product_slug>[\w-]+)/$',
+        ProductDetailAPIView.as_view(),
+        name='product_detail_api'),
     url(r'^shop/rewards/check/$', views.reward_check_view,
         name='reward_check_view'),
     url(r'^shop/rewards/redeemed/$', views.reward_redeemed_view,

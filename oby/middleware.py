@@ -14,7 +14,7 @@ class CustomFetchFromCacheMiddleware(FetchFromCacheMiddleware):
         Checks whether the page is already cached and returns the cached
         version if available.
         """
-        if not request.method in ('GET', 'HEAD'):
+        if request.method not in ('GET', 'HEAD'):
             request._cache_update_cache = False
             return None  # Don't bother checking the cache.
 
@@ -37,7 +37,8 @@ class CustomFetchFromCacheMiddleware(FetchFromCacheMiddleware):
             request._cache_update_cache = True
             return None  # No cache information available, need to rebuild.
         response = self.cache.get(cache_key, None)
-        # if it wasn't found and we are looking for a HEAD, try looking just for that
+        # if it wasn't found and we are looking for a HEAD,
+        # try looking just for that
         if response is None and request.method == 'HEAD':
             cache_key = get_cache_key(request, self.key_prefix, 'HEAD',
                                       cache=self.cache)
