@@ -18,6 +18,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Product
+        # add company logo
         fields = ('id', 'is_listed', 'is_featured', 'owner', 'owner_url',
                   'title', 'slug', 'description', 'cost', 'discount_cost',
                   'promo_code', 'get_buyer_usernames', 'is_useable',

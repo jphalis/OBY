@@ -33,6 +33,12 @@ class ProductManager(models.Manager):
             .select_related('owner') \
             .prefetch_related('buyers')
 
+    def redeemed_by_user(self, user):
+        return super(ProductManager, self).get_queryset() \
+            .filter(buyers=user) \
+            .select_related('owner') \
+            .prefetch_related('buyers')
+
 
 class Product(TimeStampedModel):
     owner = models.ForeignKey(Advertiser)

@@ -107,6 +107,8 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
             'shop': {
                 'count': Product.objects.all().count(),
                 'url': api_reverse('product_list_api', request=request),
+                'redeemed_by_user': api_reverse('product_redeemed_api',
+                                                request=request),
                 'create_url': api_reverse('product_create_api',
                                           request=request),
             },
@@ -723,6 +725,33 @@ class ProductListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
             listuse_status_check.send(sender=product)
         queryset = products.filter(is_listed=True)
         return queryset
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ProductSerializer(queryset, many=True)
+        if queryset:
+            return RestResponse(serializer.data)
+        return RestResponse({'detail': 'Promotions will be available soon!'})
+
+
+class ProductRedeemedListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
+                                 generics.ListAPIView):
+    cache_timeout = 60 * 60 * 24
+    pagination_class = ShopPagination
+    serializer_class = ProductSerializer
+    search_fields = ('title', 'owner',)
+    ordering_fields = ('created', 'modified', 'list_date_start',)
+
+    def get_queryset(self):
+        return Product.objects.redeemed_by_user(user=self.request.user)
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ProductSerializer(queryset, many=True)
+        if queryset:
+            return RestResponse(serializer.data)
+        return RestResponse(
+            {'detail': 'You have not redeemed any promotions yet.'})
 
 
 class ProductDetailAPIView(CacheMixin, DefaultsMixin,

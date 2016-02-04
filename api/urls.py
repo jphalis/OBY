@@ -14,7 +14,7 @@ from .views import NotificationAPIView, NotificationAjaxAPIView
 from .views import (PasswordChangeView, PasswordResetView,
                     PasswordResetConfirmView)
 from .views import (ProductCreateAPIView, ProductDetailAPIView,
-                    ProductListAPIView)
+                    ProductListAPIView, ProductRedeemedListAPIView)
 from .views import SearchListAPIView
 
 
@@ -93,6 +93,8 @@ urlpatterns = [
     # S H O P
     url(r'^shop/$', ProductListAPIView.as_view(),
         name='product_list_api'),
+    url(r'^shop/redeemed/$', ProductRedeemedListAPIView.as_view(),
+        name='product_redeemed_api'),
     url(r'^shop/create/$', ProductCreateAPIView.as_view({'post': 'create'}),
         name='product_create_api'),
     url(r'^shop/product/(?P<product_slug>[\w-]+)/$',
