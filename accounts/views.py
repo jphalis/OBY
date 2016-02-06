@@ -336,72 +336,70 @@ def auth_logout(request):
 def auth_login(request):
     if request.user.is_authenticated():
         return redirect("home")
-    else:
-        form = LoginForm(request.POST or None)
-        next_url = request.GET.get('next')
+    form = LoginForm(request.POST or None)
+    next_url = request.GET.get('next')
 
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
 
-            if user is not None:
-                login(request, user)
+        if user is not None:
+            login(request, user)
 
-                if next_url is not None:
-                    return HttpResponseRedirect(next_url)
-                return HttpResponseRedirect(reverse("home"))
-            else:
-                messages.warning(request, "Username or password is incorrect.")
-        action_url = reverse("login")
-        title = "Sign in"
-        submit_btn = title
-        context = {
-            "form": form,
-            "action_url": action_url,
-            "title": title,
-            "submit_btn": submit_btn
-        }
-        return render(request, "visitor/login_register.html", context)
+            if next_url is not None:
+                return HttpResponseRedirect(next_url)
+            return HttpResponseRedirect(reverse("home"))
+        else:
+            messages.warning(request, "Username or password is incorrect.")
+    action_url = reverse("login")
+    title = "Sign in"
+    submit_btn = title
+    context = {
+        "form": form,
+        "action_url": action_url,
+        "title": title,
+        "submit_btn": submit_btn
+    }
+    return render(request, "visitor/login_register.html", context)
 
 
 def auth_register(request):
     if request.user.is_authenticated():
         return redirect("home")
-    else:
-        form = RegisterForm(request.POST or None)
-        next_url = request.GET.get('next')
+    form = RegisterForm(request.POST or None)
+    next_url = request.GET.get('next')
 
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password2']
-            new_user = MyUser()
-            new_user.username = username
-            new_user.email = email
-            new_user.set_password(password)
-            new_user.save()
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                admin = MyUser.objects.get(username='oby')
-                thank_you_message = "Thank you for signing up!"
-                notify.send(
-                    admin,
-                    recipient=user,
-                    verb=thank_you_message
-                )
-                login(request, user)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password2']
+        new_user = MyUser()
+        new_user.username = username
+        new_user.email = email
+        new_user.set_password(password)
+        new_user.save()
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            admin = MyUser.objects.get(username='oby')
+            thank_you_message = "Thank you for signing up!"
+            notify.send(
+                admin,
+                recipient=user,
+                verb=thank_you_message
+            )
+            login(request, user)
 
-                if next_url is not None:
-                    return HttpResponseRedirect(next_url)
-                return HttpResponseRedirect(reverse("home"))
-        action_url = reverse("register")
-        title = "Register"
-        submit_btn = "Create account"
-        context = {
-            "form": form,
-            "action_url": action_url,
-            "title": title,
-            "submit_btn": submit_btn
-        }
-        return render(request, "visitor/login_register.html", context)
+            if next_url is not None:
+                return HttpResponseRedirect(next_url)
+            return HttpResponseRedirect(reverse("home"))
+    action_url = reverse("register")
+    title = "Register"
+    submit_btn = "Create account"
+    context = {
+        "form": form,
+        "action_url": action_url,
+        "title": title,
+        "submit_btn": submit_btn
+    }
+    return render(request, "visitor/login_register.html", context)

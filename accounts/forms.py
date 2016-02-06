@@ -155,7 +155,8 @@ class LoginForm(forms.Form):
 
     def clean_username(self):
         username = self.cleaned_data.get("username").lower()
-        if not MyUser.objects.get(username=username).is_active:
+        user = MyUser.objects.filter(username=username)
+        if user.exists() and not user.is_active:
             raise forms.ValidationError("This account has been disabled")
         return username
 
