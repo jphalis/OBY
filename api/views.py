@@ -510,10 +510,11 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         user = self.request.user
         notifications = Notification.objects.all_for_user(user)
         notifications.update(read=True)
-        notifications = notifications[:50]
-        delete_after_datetime = list(notifications)[-1].created
-        Notification.objects.all_for_user(user).filter(
-            created__lt=delete_after_datetime).delete()
+        notifications = notifications[:0]
+        if notifications.count() > 0:
+            delete_after_datetime = list(notifications)[-1].created
+            Notification.objects.all_for_user(user).filter(
+                created__lt=delete_after_datetime).delete()
         return notifications
 
 

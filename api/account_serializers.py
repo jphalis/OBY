@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
 
-from accounts.models import Follower, MyUser
+from accounts.models import Advertiser, Follower, MyUser
 # from oby.settings.approved_universities import APPROVED_UNIVERSITIES
 from photos.models import Photo
 from .photo_serializers import PhotoSerializer
@@ -50,13 +50,14 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
     is_admin = serializers.BooleanField(read_only=True)
     is_verified = serializers.BooleanField(read_only=True)
     follow_url = serializers.SerializerMethodField()
+    is_advertiser = serializers.SerializerMethodField()
 
     class Meta:
         model = MyUser
         fields = ('id', 'account_url', 'username', 'email', 'full_name', 'bio',
                   'website', 'edu_email', 'gender', 'photo_set',
                   'profile_picture', 'follow_url', 'follower', 'is_active',
-                  'is_admin', 'is_verified', 'date_joined', 'modified',)
+                  'is_admin', 'is_verified', 'date_joined', 'modified', 'is_advertiser',)
 
     def get_account_url(self, obj):
         request = self.context['request']
@@ -89,3 +90,7 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
             return value
         else:
             pass
+
+    def get_is_advertiser(self, request):
+        return Advertiser.objects.filter(
+            user__username=request.username, is_active=True).exists()
