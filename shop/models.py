@@ -78,6 +78,11 @@ class Product(TimeStampedModel):
     def get_buyer_usernames(self):
         return map(str, self.buyers.all().values_list('username', flat=True))
 
+    @cached_property
+    def get_buyers_info(self):
+        return self.buyers.values(
+            'username', 'full_name', 'profile_picture')
+
     @property
     def get_image_url(self):
         if self.image:

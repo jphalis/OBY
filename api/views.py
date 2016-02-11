@@ -17,7 +17,7 @@ from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from accounts.models import Follower, MyUser
+from accounts.models import Advertiser, Follower, MyUser
 from comments.models import Comment
 from core.mixins import AdminRequiredMixin, CacheMixin
 from flag.models import Flag
@@ -731,8 +731,16 @@ class ProductListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
         queryset = self.get_queryset()
         serializer = ProductSerializer(queryset, many=True)
         if queryset:
-            return RestResponse(serializer.data)
-        return RestResponse({'detail': 'Promotions will be available soon!'})
+            return RestResponse({
+                'is_advertiser': Advertiser.objects.filter(
+                    user=request.user, is_active=True).exists(),
+                'detail': serializer.data
+            })
+        return RestResponse({
+            'is_advertiser': Advertiser.objects.filter(
+                user=request.user, is_active=True).exists(),
+            'detail': 'Promotions will be available soon!'
+        })
 
 
 class ProductRedeemedListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
@@ -750,9 +758,16 @@ class ProductRedeemedListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
         queryset = self.get_queryset()
         serializer = ProductSerializer(queryset, many=True)
         if queryset:
-            return RestResponse(serializer.data)
-        return RestResponse(
-            {'detail': 'You have not redeemed any promotions yet.'})
+            return RestResponse({
+                'is_advertiser': Advertiser.objects.filter(
+                    user=request.user, is_active=True).exists(),
+                'detail': serializer.data
+            })
+        return RestResponse({
+            'is_advertiser': Advertiser.objects.filter(
+                user=request.user, is_active=True).exists(),
+            'detail': 'You have not redeemed any promotions yet.'
+        })
 
 
 class ProductDetailAPIView(CacheMixin, DefaultsMixin,

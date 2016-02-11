@@ -28,7 +28,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
     def get_photo_url(self, obj):
         request = self.context['request']
-        kwargs = kwargs = {
+        kwargs = {
             'cat_slug': obj.category.slug,
             'photo_slug': obj.slug
         }
