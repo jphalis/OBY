@@ -151,13 +151,23 @@ class Photo(HashtagMixin, TimeStampedModel):
         return self.likers.values(
             'username', 'full_name', 'profile_picture')
 
-    def like_count(self, short=True):
+    def short_like_count(self):
         count = self.likers.count()
-        return readable_number(count, short=short)
+        return readable_number(count, short=True)
 
-    def comment_count(self, short=True):
+    def short_comment_count(self):
         count = self.comment_set.count()
-        return readable_number(count, short=short)
+        return readable_number(count, short=True)
+
+    def like_count(self):
+        # count = self.likers.count()
+        # return readable_number(count, short=True)
+        return self.likers.count()
+
+    def comment_count(self):
+        # count = self.comment_set.count()
+        # return readable_number(count, short=True)
+        return self.comment_set.count()
 
 
 class CategoryManager(models.Manager):

@@ -70,7 +70,7 @@
                 <div class="account-home-stat">
                     <b>
                         {% if follow %}
-                            {{ follow.get_following_count }}
+                            {{ follow.short_following_count }}
                         {% else %}
                             0
                         {% endif %}
@@ -79,7 +79,7 @@
                 <div class="account-home-stat">
                     <b>
                         {% if follow %}
-                            {{ follow.get_followers_count }}
+                            {{ follow.short_followers_count }}
                         {% else %}
                             0
                         {% endif %}
@@ -131,10 +131,10 @@
                 <div class="photo-item-interactions">
                     <div class="photo-item-interaction">
                         <label class="like_count" style="cursor: default;">
-                            {{ photo.like_count }} likes
+                            {{ photo.short_like_count }} likes
                         </label>
                         <label style="cursor: default;">
-                            {{ photo.comment_count }} comments
+                            {{ photo.short_comment_count }} comments
                         </label>
                     </div>
                 </div>

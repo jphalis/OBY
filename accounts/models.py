@@ -163,13 +163,19 @@ class Follower(TimeStampedModel):
         return reverse('following_thread',
                        kwargs={'username': self.user.username})
 
-    def get_followers_count(self, short=True):
+    def short_followers_count(self):
         count = self.get_followers_info.count()
-        return readable_number(count, short=short)
+        return readable_number(count, short=True)
+
+    def short_following_count(self):
+        count = self.get_following_info.count()
+        return readable_number(count, short=True)
+
+    def get_followers_count(self, short=True):
+        return self.get_followers_info.count()
 
     def get_following_count(self, short=True):
-        count = self.get_following_info.count()
-        return readable_number(count, short=short)
+        return self.get_following_info.count()
 
 MyUser.profile = property(lambda u: Follower.objects.get_or_create(user=u)[0])
 
