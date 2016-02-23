@@ -172,11 +172,13 @@ class Follower(TimeStampedModel):
         return readable_number(count, short=True)
 
     def get_followers_count(self):
+        # use only last line
         count = self.get_followers_info.count()
         return readable_number(count, short=True)
         # return self.get_followers_info.count()
 
     def get_following_count(self):
+        # use only last line
         count = self.get_following_info.count()
         return readable_number(count, short=True)
         # return self.get_following_info.count()
