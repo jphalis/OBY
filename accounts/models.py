@@ -191,15 +191,21 @@ def company_upload_location(instance, filename):
 
 
 class Advertiser(TimeStampedModel):
+    PENDING_REVIEW = 0
+    IN_REVIEW = 1
+    APPROVED = 2
+    DECLINED = 3
+    BLACK_LISTED = 4
+
     USER_STATUSES = (
-        (0, _('Pending review')),
-        (1, _('In review')),
-        (2, _('Approved')),
-        (3, _('Declined')),
-        (4, _('Black listed'))
+        (PENDING_REVIEW, _('Pending review')),
+        (IN_REVIEW, _('In review')),
+        (APPROVED, _('Approved')),
+        (DECLINED, _('Declined')),
+        (BLACK_LISTED, _('Black listed'))
     )
     user_status = models.IntegerField(choices=USER_STATUSES,
-                                      default=USER_STATUSES[0][0])
+                                      default=PENDING_REVIEW)
     user = models.OneToOneField(MyUser)
     company_name = models.CharField(max_length=120, blank=True)
     company_logo = models.ImageField(upload_to=company_upload_location,

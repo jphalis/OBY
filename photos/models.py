@@ -160,13 +160,9 @@ class Photo(HashtagMixin, TimeStampedModel):
         return readable_number(count, short=True)
 
     def like_count(self):
-        # count = self.likers.count()
-        # return readable_number(count, short=True)
         return self.likers.count()
 
     def comment_count(self):
-        # count = self.comment_set.count()
-        # return readable_number(count, short=True)
         return self.comment_set.count()
 
 

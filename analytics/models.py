@@ -68,6 +68,7 @@ class PageView(TimeStampedModel):
 #             user=user, hashtag=hashtag)
 #         obj.count += 1
 #         obj.save()
+#         obj.update(count=F('count') + 1)  # use instead of two lines above
 #         return obj
 
 
