@@ -161,7 +161,9 @@ class TimelineAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
             return photos_suggested
 
 
-# A C C O U N T S
+########################################################################
+# ACCOUNTS                                                             #
+########################################################################
 @api_view(['POST'])
 def follow_create_api(request, user_pk):
     viewing_user = request.user
@@ -287,7 +289,9 @@ class MyUserDetailAPIView(CacheMixin,
         return self.update(request, *args, **kwargs)
 
 
-# A U T H E N T I C A T I O N
+########################################################################
+# AUTHENTICATION                                                       #
+########################################################################
 class PasswordResetView(generics.GenericAPIView):
     """
     Calls PasswordResetForm save method
@@ -339,7 +343,9 @@ class PasswordChangeView(generics.GenericAPIView):
         return RestResponse({"success": "New password has been saved."})
 
 
-# C O M M E N T S
+########################################################################
+# COMMENTS                                                             #
+########################################################################
 class CommentCreateAPIView(CacheMixin, generics.CreateAPIView):
     serializer_class = CommentCreateSerializer
 
@@ -437,7 +443,9 @@ class CommentDetailAPIView(CacheMixin,
         return self.destroy(request, *args, **kwargs)
 
 
-# F L A G S
+########################################################################
+# FLAGS                                                                #
+########################################################################
 @api_view(['POST'])
 def flag_create_api(request, photo_pk):
     photo = get_object_or_404(Photo, pk=photo_pk)
@@ -459,7 +467,9 @@ def flag_create_api(request, photo_pk):
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
-# H A S H T A G S
+########################################################################
+# HASHTAGS                                                             #
+########################################################################
 class HashtagTrendingListAPIView(CacheMixin, DefaultsMixin,
                                  generics.ListAPIView):
     cache_timeout = 60 * 7
@@ -494,7 +504,9 @@ class HashtagPhotoListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
         return queryset
 
 
-# N O T I F I C A T I O N S
+########################################################################
+# NOTIFICATIONS                                                        #
+########################################################################
 class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     cache_timeout = 60 * 7
     pagination_class = NotificationPagination
@@ -530,7 +542,9 @@ class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         return notifications
 
 
-# P H O T O S
+########################################################################
+# PHOTOS                                                               #
+########################################################################
 @api_view(['POST'])
 def like_create_api(request, photo_pk):
     user = request.user
@@ -649,7 +663,9 @@ class CategoryDetailAPIView(CacheMixin, DefaultsMixin,
         return obj
 
 
-# S E A R C H
+########################################################################
+# SEARCH                                                               #
+########################################################################
 class SearchListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
                         generics.ListAPIView):
     serializer_class = SearchMyUserSerializer
@@ -665,7 +681,9 @@ class SearchListAPIView(CacheMixin, DefaultsMixin, FiltersMixin,
         return queryset
 
 
-# S H O P
+########################################################################
+# SHOP                                                                 #
+########################################################################
 @api_view(['GET'])
 def reward_check_view(request):
     context = {
