@@ -177,6 +177,7 @@ INSTALLED_APPS = (
     'photos',
     'push_notifications',
     'search',
+    'shop',
     'widget_tweaks',
 )
 

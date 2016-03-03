@@ -104,14 +104,14 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
                 'help_text': "add '?q=searched_parameter' to the "
                              "end of the url to display results"
             },
-            # 'shop': {
-            #     'count': Product.objects.all().count(),
-            #     'url': api_reverse('product_list_api', request=request),
-            #     'redeemed_by_user': api_reverse('product_redeemed_api',
-            #                                     request=request),
-            #     'create_url': api_reverse('product_create_api',
-            #                               request=request),
-            # },
+            'shop': {
+                'count': Product.objects.all().count(),
+                'url': api_reverse('product_list_api', request=request),
+                'redeemed_by_user': api_reverse('product_redeemed_api',
+                                                request=request),
+                # 'create_url': api_reverse('product_create_api',
+                #                           request=request),
+            },
             'timeline': {
                 'url': api_reverse('timeline_api', request=request),
             },
