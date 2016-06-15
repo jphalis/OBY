@@ -14,7 +14,7 @@ class MyUserAdmin(UserAdmin):
 
     list_display = ('username', 'is_superuser', 'is_admin', 'is_verified',
                     'date_joined', 'times_flagged')
-    list_filter = ('is_active', 'is_admin', 'is_verified')
+    list_filter = ('is_active', 'is_admin', 'is_superuser', 'is_verified')
     readonly_fields = ['date_joined', 'last_login', 'modified',
                        'times_flagged']
     fieldsets = (
@@ -26,7 +26,7 @@ class MyUserAdmin(UserAdmin):
         ('Points',
             {'fields': ('available_points', 'total_points',)}),
         ('Permissions',
-            {'fields': ('is_active', 'is_admin',
+            {'fields': ('is_active', 'is_admin', 'is_superuser',
                         'is_verified', 'user_permissions')}),
         (_('Dates'),
             {'fields': ('date_joined', 'last_login', 'modified',)}),

@@ -15,7 +15,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'nl59wul4fep=2nk_e=nfe-frid9b)kqox#7sgh2wsws!x!e&^('
 LOGIN_URL = "/signin/"
 AUTH_USER_MODEL = 'accounts.MyUser'
-MIN_USERNAME_LENGTH = 3
 MIN_PASSWORD_LENGTH = 5
 FULL_DOMAIN_NAME = 'www.obystudio.com'
 
@@ -247,8 +246,13 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5 MB
 
 # A P I
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.AllowAny',
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (

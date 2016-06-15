@@ -121,16 +121,16 @@ class APIHomeView(AdminRequiredMixin, CacheMixin, DefaultsMixin, APIView):
 
 @api_view()
 def homepage_api_view(request):
-    obj1 = Photo.objects.most_liked_offset()[:30]
+    obj = Photo.objects.most_liked_offset()[:30]
     titles = Category.objects.most_posts().values_list('title', flat=True)
     categories = []
     for title in titles:
         categories.append(title)
     categories.insert(0, "Popular")
-    photo_serializer = PhotoSerializer(obj1, context={'request': request},
+    photo_serializer = PhotoSerializer(obj, context={'request': request},
                                        many=True)
     return RestResponse({
-        "gms": categories,
+        "gms": categories,  # Gina Marie Salmins
         "photos": photo_serializer.data
     })
 
@@ -262,15 +262,11 @@ class MyUserListAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
     queryset = MyUser.objects.all()
 
 
-class MyUserDetailAPIView(CacheMixin,
-                          generics.RetrieveAPIView,
-                          mixins.DestroyModelMixin,
-                          mixins.UpdateModelMixin):
+class MyUserDetailAPIView(CacheMixin, generics.RetrieveAPIView,
+                          mixins.DestroyModelMixin, mixins.UpdateModelMixin):
     cache_timeout = 60 * 5
-    permission_classes = (
-        permissions.IsAuthenticated,
-        MyUserIsOwnerOrReadOnly,
-    )
+    permission_classes = (permissions.IsAuthenticated,
+                          MyUserIsOwnerOrReadOnly,)
     serializer_class = MyUserSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
@@ -461,7 +457,7 @@ def flag_create_api(request, photo_pk):
 
     send_mail('FLAGGED ITEM',
               'There is a new flagged item with the id: {}'.format(flagged.id),
-              settings.EMAIL_FROM, ['team@obystudio.com'], fail_silently=False)
+              settings.EMAIL_FROM, ['team@obystudio.com'], fail_silently=True)
 
     serializer = PhotoSerializer(photo, context={'request': request})
     return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -530,7 +526,7 @@ class NotificationAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         return notifications
 
 
-class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
+class NotificationAjaxAPIView(DefaultsMixin, generics.ListAPIView):
     pagination_class = NotificationPagination
     serializer_class = NotificationSerializer
 
@@ -538,7 +534,7 @@ class NotificationAjaxAPIView(CacheMixin, DefaultsMixin, generics.ListAPIView):
         user = self.request.user
         user.last_login = datetime.now()
         user.save(update_fields=['last_login'])
-        notifications = Notification.objects.all_unread(user)[:1]
+        notifications = Notification.objects.all_unread(user).last()
         return notifications
 
 
@@ -714,8 +710,7 @@ def reward_purchase_view(request, product_pk):
         user.available_points = F('available_points') - product.cost
         user.save()
         return RestResponse(serializer.data, status=status.HTTP_201_CREATED)
-    else:
-        raise PermissionDenied("You already redeemed this.")
+    raise PermissionDenied("You already redeemed this.")
 
 
 # Need to fix the list_use_date_start

@@ -13,7 +13,7 @@ from .models import Flag
 
 @login_required
 @require_http_methods(['POST'])
-def follow_ajax(request):
+def flag_create_ajax(request):
     photo_pk = request.POST.get('photo_pk')
     photo = get_object_or_404(Photo, pk=photo_pk)
     photo_creator = photo.creator
@@ -28,7 +28,7 @@ def follow_ajax(request):
 
     send_mail('FLAGGED ITEM',
               'There is a new flagged item with the id: {}'.format(flagged.id),
-              settings.EMAIL_FROM, ['team@obystudio.com'], fail_silently=False)
+              settings.EMAIL_FROM, ['team@obystudio.com'], fail_silently=True)
 
     data = {
         "photo_flagged": True,

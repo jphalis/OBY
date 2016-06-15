@@ -16,8 +16,7 @@ class Newsletter(TimeStampedModel):
     def __unicode__(self):
         if self.subscribed:
             return "Subscribed"
-        else:
-            return "Unsubscribed"
+        return "Unsubscribed"
 
     def email(self):
         return "{}".format(self.user.email)

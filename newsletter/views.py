@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import Http404
 from django.shortcuts import HttpResponseRedirect
 
 from .models import Newsletter
@@ -22,4 +21,3 @@ def toggle_newsletter(request):
     return HttpResponseRedirect(reverse(
         'profile_view',
         kwargs={'username': request.user.get_username()}))
-    # raise Http404

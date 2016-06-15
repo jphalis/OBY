@@ -78,7 +78,6 @@ def category_detail(request, cat_slug):
         return HttpResponseRedirect('{}?next={}'.format(
             (reverse('login'), next_url)))
     return render(request, 'photos/category_detail.html', context)
-    # raise Http404
 
 
 class PhotoDelete(DeleteView):

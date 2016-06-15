@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
 
 from accounts.models import Advertiser, Follower, MyUser
-# from oby.settings.approved_universities import APPROVED_UNIVERSITIES
 from photos.models import Photo
 from .photo_serializers import PhotoSerializer
 
@@ -29,9 +28,6 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        # update username validation requirements
-        # update email validation requirements
-        # make password >= 3 characters
         user = MyUser.objects.create(
             username=validated_data['username'],
             email=validated_data['email']
@@ -57,7 +53,8 @@ class MyUserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'account_url', 'username', 'email', 'full_name', 'bio',
                   'website', 'edu_email', 'gender', 'photo_set',
                   'profile_picture', 'follow_url', 'follower', 'is_active',
-                  'is_admin', 'is_verified', 'date_joined', 'modified', 'is_advertiser',)
+                  'is_admin', 'is_verified', 'date_joined', 'modified',
+                  'is_advertiser',)
 
     def get_account_url(self, obj):
         request = self.context['request']

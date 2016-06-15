@@ -9,6 +9,9 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 
 
 def readable_number(value, short=False):
+    """
+    Returns an abbreviated value for numbers over 1,000.
+    """
     powers = [10 ** x for x in (3, 6, 9, 12, 18)]
     human_powers = ('thousand', 'million', 'billion', 'trillion',
                     'quadrillion')

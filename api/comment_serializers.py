@@ -37,8 +37,8 @@ class ChildCommentSerializer(serializers.HyperlinkedModelSerializer):
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     photo_url = serializers.SerializerMethodField()
-    comment_url = serializers.HyperlinkedIdentityField("comment_detail_api",
-                                                       lookup_field='id')
+    comment_url = serializers.HyperlinkedIdentityField(
+        "comment_detail_api", lookup_field='id')
     user = serializers.HyperlinkedRelatedField(
         view_name='user_account_detail_api', read_only=True,
         lookup_field='username')

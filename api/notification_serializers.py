@@ -55,7 +55,7 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
                     'photo_slug': obj.target_object.slug
                 }
                 return api_reverse(view_name, kwargs=kwargs, request=request)
-            if obj.verb == "commented":
+            elif obj.verb == "commented":
                 view_name = "comment_detail_api"
                 kwargs = {'id': obj.action_object.id}
                 return api_reverse(view_name, kwargs=kwargs, request=request)

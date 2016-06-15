@@ -50,7 +50,7 @@ def profile_view(request, username):
         try:
             follow = (Follower.objects.select_related('user')
                                       .prefetch_related(
-                                            'following', 'followers')
+                                          'following', 'followers')
                                       .get(user=user))
         except Follower.DoesNotExist:
             follow = None
@@ -82,7 +82,6 @@ def followers_thread(request, username):
                                      .prefetch_related('followers'))
     return render(request, "accounts/followers_thread.html",
                   {'followers_set': followers_set})
-    # raise Http404
 
 
 @cache_page(60 * 4)
@@ -96,17 +95,15 @@ def following_thread(request, username):
                                      .prefetch_related('following'))
     return render(request, "accounts/following_thread.html",
                   {"following_set": following_set})
-    # raise Http404
 
 
 @login_required
 @require_http_methods(['POST'])
 def follow_ajax(request):
     viewing_user = request.user
-    follower, created = Follower.objects.get_or_create(user=request.user)
     user_id = request.POST.get('user_id')
     user = get_object_or_404(MyUser, id=user_id)
-
+    follower, created = Follower.objects.get_or_create(user=viewing_user)
     followed, created = Follower.objects.get_or_create(user=user)
 
     try:
@@ -156,7 +153,6 @@ def account_settings(request):
     account_change_form = AccountBasicsChangeForm(request.POST or None,
                                                   request.FILES or None,
                                                   instance=user, user=user)
-
     if request.method == 'POST':
         if account_change_form.is_valid():
             email = account_change_form.cleaned_data['email']
@@ -186,7 +182,6 @@ def business_settings(request):
         company_change_form = CompanyBasicsChangeForm(request.POST or None,
                                                       request.FILES or None,
                                                       instance=user, user=user)
-
         if request.method == 'POST':
             if company_change_form.is_valid():
                 company_name = company_change_form.cleaned_data['company_name']
@@ -334,6 +329,7 @@ def auth_logout(request):
 def auth_login(request):
     if request.user.is_authenticated():
         return redirect("home")
+
     form = LoginForm(request.POST or None)
     next_url = request.GET.get('next')
 
@@ -365,6 +361,7 @@ def auth_login(request):
 def auth_register(request):
     if request.user.is_authenticated():
         return redirect("home")
+
     form = RegisterForm(request.POST or None)
     next_url = request.GET.get('next')
 

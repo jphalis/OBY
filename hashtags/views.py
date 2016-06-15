@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
@@ -17,4 +16,3 @@ def hashtagged_item_list(request, tag):
         'tag': tag
     }
     return render(request, 'hashtags/hashtagged_item_list.html', context)
-    # raise Http404

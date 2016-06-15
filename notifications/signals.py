@@ -14,13 +14,11 @@ def new_notification(sender, **kwargs):
     recipient = kwargs.pop("recipient")
     verb = kwargs.pop("verb")
 
-    if recipient == sender:
-        pass
-    else:
+    if recipient != sender:
         if affected_users is not None:
-            for u in affected_users:
+            for user in affected_users:
                 new_note = Notification(
-                    recipient=u,
+                    recipient=user,
                     verb=verb,
                     sender_content_type=ContentType.objects.get_for_model(sender),
                     sender_object_id=sender.id,

@@ -36,7 +36,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email,  password):
+    def create_superuser(self, username, email, password):
         user = self.create_user(
             username=username,
             email=email,
@@ -74,8 +74,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
                                           blank=True)
     available_points = models.IntegerField(default=0)
     total_points = models.IntegerField(default=0)
-    # points_at_last_check = models.IntegerField(default=0)
-    # last_point_check = models.DateTimeField()
     blocking = models.ManyToManyField('self', related_name='blocked_by',
                                       symmetrical=False)
 

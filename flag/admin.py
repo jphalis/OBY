@@ -5,11 +5,11 @@ from flag.models import Flag
 
 
 class FlagAdmin(admin.ModelAdmin):
-    list_display = ['id', 'creator', 'link_to_photo', 'resolved', 'flag_count']
+    list_display = ('id', 'creator', 'link_to_photo', 'resolved', 'flag_count')
     list_filter = ('flag_count', 'resolved',)
     search_fields = ['id', 'creator']
-    fields = ['id', 'creator', 'photo', 'comment', 'resolved', 'flag_count',
-              'created', 'modified']
+    fields = ('id', 'creator', 'photo', 'comment', 'resolved', 'flag_count',
+              'created', 'modified',)
     readonly_fields = ['id', 'flag_count', 'created', 'modified']
     ordering = ['resolved']
 

@@ -83,19 +83,16 @@ class UserChangeForm(forms.ModelForm):
             f.queryset = f.queryset.select_related('content_type')
 
     def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
         return self.initial["password"]
 
 
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=30,
                                widget=forms.widgets.TextInput(
-                                    attrs={'placeholder': 'Username'}))
+                                   attrs={'placeholder': 'Username'}))
     email = forms.EmailField(max_length=80,
                              widget=forms.widgets.EmailInput(
-                                attrs={'placeholder': 'Email'}))
+                                 attrs={'placeholder': 'Email'}))
     password1 = forms.CharField(label='Create password',
                                 widget=forms.PasswordInput(
                                     attrs={'placeholder': 'Password'}))
@@ -117,7 +114,7 @@ class RegisterForm(forms.Form):
                 raise forms.ValidationError(
                     "Username must be longer than "
                     "{} characters".format(username_length))
-            if MyUser.objects.filter(Q(username=username)).exists():
+            if MyUser.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken. "
                                             "Please try a different one.")
             if not re.match(r'^[A-Za-z0-9_]+$', username):
@@ -147,11 +144,11 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="Username",
-                               widget=forms.widgets.TextInput(
-                                    attrs={'placeholder': 'Username'}))
-    password = forms.CharField(widget=forms.PasswordInput(
-                                    attrs={'placeholder': 'Password'}))
+    username = forms.CharField(
+        label="Username",
+        widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
 
     def clean_username(self):
         username = self.cleaned_data.get("username").lower()
@@ -166,7 +163,7 @@ class AccountBasicsChangeForm(forms.ModelForm):
                                 required=False, label='Name')
     profile_picture = forms.ImageField(required=False,
                                        widget=ClearableFileInput(
-                                            attrs={'class': 'form-control'}))
+                                           attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(), max_length=80)
     edu_email = forms.EmailField(widget=forms.widgets.EmailInput(),
                                  label="University email", max_length=80,
@@ -175,7 +172,7 @@ class AccountBasicsChangeForm(forms.ModelForm):
                                  'UNIVERSITY category.')
     bio = forms.CharField(required=False, max_length=200,
                           widget=forms.Textarea(
-                                attrs={"style": "height: 5em;"}))
+                              attrs={"style": "height: 5em;"}))
     website = forms.CharField(widget=forms.TextInput(), required=False,
                               max_length=90)
 
@@ -256,7 +253,7 @@ class CompanyBasicsChangeForm(forms.ModelForm):
                                                    'www.company.com'}))
     twitter = forms.CharField(required=False, max_length=80,
                               widget=forms.TextInput(
-                                    attrs={'placeholder': 'username'}))
+                                  attrs={'placeholder': 'username'}))
     instagram = forms.CharField(required=False, max_length=80,
                                 widget=forms.TextInput(
                                     attrs={'placeholder': 'username'}))
@@ -383,7 +380,7 @@ class PasswordChangeForm(forms.Form):
     """
     old_password = forms.CharField(label=_("Old password"),
                                    widget=forms.PasswordInput(
-                                    attrs={'placeholder': 'Old password'}))
+                                       attrs={'placeholder': 'Old password'}))
     password1 = forms.CharField(label='New password',
                                 widget=forms.PasswordInput(
                                     attrs={'placeholder': 'New password'}))
