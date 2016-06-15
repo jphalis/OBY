@@ -12,6 +12,7 @@ ALLOWED_HOSTS = [
     '*.obystudio.com',
     '127.0.0.1',
     '52.2.52.114',  # AWS Elastic IP
+    'obystudio.herokuapp.com',
 ]
 CORS_URLS_REGEX = r'^/hide/oby/api/.*$'
 
